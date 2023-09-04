@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"generate/bootcamp/src/model"
 	"net/http"
+	"salutemp/backend/src/model"
 	"strconv"
 
 	"github.com/gin-contrib/cors"

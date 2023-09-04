@@ -3,11 +3,11 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
-	c "generate/bootcamp/src/controller"
-	"generate/bootcamp/src/model"
 	"net/http"
 	"net/http/httptest"
 	"os"
+	c "salutemp/backend/src/controller"
+	"salutemp/backend/src/model"
 	"testing"
 
 	"github.com/huandu/go-assert"
