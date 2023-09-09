@@ -9,23 +9,23 @@ type PgModel struct {
 }
 
 type Model interface {
-	Book(int64) Medication
-	AllBooks() ([]Medication, error)
-	AddBook(Medication) (Medication, error)
+	Medication(int64) Medication
+	AllMedications() ([]Medication, error)
+	AddMedication(Medication) (Medication, error)
 }
 
-func (m *PgModel) Book(id int64) Medication {
-	book, err := GetBookFromDB(m.Conn, id)
+func (m *PgModel) Medication(id int64) Medication {
+	med, err := GetMedFromDB(m.Conn, id)
 
 	if err != nil {
 		panic(err)
 	}
 
-	return book
+	return med
 }
 
-func (m *PgModel) AddBook(book Medication) (Medication, error) {
-	b, err := WriteBookToDb(m.Conn, book)
+func (m *PgModel) AddMedication(med Medication) (Medication, error) {
+	b, err := WriteMedToDb(m.Conn, med)
 
 	if err != nil {
 		return Medication{}, err
@@ -34,11 +34,11 @@ func (m *PgModel) AddBook(book Medication) (Medication, error) {
 	return b, nil
 }
 
-func (m *PgModel) AllBooks() ([]Medication, error) {
-	books, err := GetAllBooksFromDB(m.Conn)
+func (m *PgModel) AllMedications() ([]Medication, error) {
+	meds, err := GetAllMedsFromDB(m.Conn)
 
 	if err != nil {
 		return []Medication{}, err
 	}
-	return books, nil
+	return meds, nil
 }

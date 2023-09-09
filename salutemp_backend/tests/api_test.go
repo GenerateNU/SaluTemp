@@ -50,22 +50,22 @@ func TestGetBooks(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	req, _ := http.NewRequest("GET", "/v1/books/1738", nil)
+	req, _ := http.NewRequest("GET", "/v1/medications/1738", nil)
 
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
 
-	var books model.Book
+	var meds model.Medication
 
-	if e := json.Unmarshal(w.Body.Bytes(), &books); e != nil {
+	if e := json.Unmarshal(w.Body.Bytes(), &meds); e != nil {
 		panic(err)
 	}
 
-	test_book := model.Book{
-		BookId: 1738,
+	test_book := model.Medication{
+		MedID:  1738,
 		Title:  "Percy Jackson and the Olympians - The Lighning Thief",
 		Author: "Rick Riordan",
 	}
-	assert.Equal(t, test_book, books)
+	assert.Equal(t, test_book, meds)
 }

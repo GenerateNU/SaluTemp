@@ -6,34 +6,34 @@ import (
 	"github.com/jackc/pgx"
 )
 
-func WriteBookToDb(pool *pgx.Conn, book Medication) (Medication, error) {
+func WriteMedToDb(pool *pgx.Conn, med Medication) (Medication, error) {
 
-	err := pool.QueryRow(fmt.Sprintf("INSERT INTO books (title, author) VALUES ('%s','%s') RETURNING book_id;", book.Title, book.Author)).Scan(&book.BookId)
+	err := pool.QueryRow(fmt.Sprintf("INSERT INTO medications (title, author) VALUES ('%s','%s') RETURNING med_id;", med.Title, med.Author)).Scan(&med.MedID)
 
 	if err != nil {
 		return Medication{}, err
 	}
 
-	return book, nil
+	return med, nil
 }
 
-func GetBookFromDB(pool *pgx.Conn, book_id int64) (Medication, error) {
-	book := Medication{
-		BookId: book_id,
+func GetMedFromDB(pool *pgx.Conn, med_id int64) (Medication, error) {
+	med := Medication{
+		MedID: med_id,
 	}
 
 	var bid int
-	err := pool.QueryRow(fmt.Sprintf("SELECT book_id, title, author FROM books where book_id = '%d';", book_id)).Scan(&bid, &book.Title, &book.Author)
+	err := pool.QueryRow(fmt.Sprintf("SELECT med_id, title, author FROM medications where med_id = '%d';", med_id)).Scan(&bid, &med.Title, &med.Author)
 
 	if err != nil {
 		panic(err)
 	}
 
-	return book, nil
+	return med, nil
 }
 
-func GetAllBooksFromDB(pool *pgx.Conn) ([]Medication, error) {
-	rows, err := pool.Query("SELECT book_id, title, author FROM books;")
+func GetAllMedsFromDB(pool *pgx.Conn) ([]Medication, error) {
+	rows, err := pool.Query("SELECT med_id, title, author FROM medications;")
 
 	if err != nil {
 		panic(err)
@@ -44,14 +44,14 @@ func GetAllBooksFromDB(pool *pgx.Conn) ([]Medication, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		book := Medication{}
-		err := rows.Scan(&book.BookId, &book.Title, &book.Author)
+		med := Medication{}
+		err := rows.Scan(&med.MedID, &med.Title, &med.Author)
 
 		if err != nil {
 			panic(err)
 		}
 
-		results = append(results, book)
+		results = append(results, med)
 	}
 
 	return results, nil

@@ -21,39 +21,39 @@ func (pg *PgController) Serve() *gin.Engine {
 	r := gin.Default()
 
 	r.Use(cors.Default())
-	r.GET("/v1/books/:bookId", func(c *gin.Context) {
-		id := c.Param("bookId")
+	r.GET("/v1/medications/:medID", func(c *gin.Context) {
+		id := c.Param("medID")
 		intId, err := strconv.Atoi(id)
 
 		if err != nil {
 			panic(err)
 		}
-		c.JSON(http.StatusOK, pg.Book(int64(intId)))
+		c.JSON(http.StatusOK, pg.Medication(int64(intId)))
 	})
-	r.GET("/v1/books/", func(c *gin.Context) {
-		books, err := pg.AllBooks()
+	r.GET("/v1/medications/", func(c *gin.Context) {
+		meds, err := pg.AllMedications()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
 		}
-		c.JSON(http.StatusOK, books)
+		c.JSON(http.StatusOK, meds)
 	})
 
-	r.POST("/v1/addBook", func(c *gin.Context) {
-		var book model.Book
+	r.POST("/v1/addmedications", func(c *gin.Context) {
+		var med model.Medication
 
-		if err := c.BindJSON(&book); err != nil {
-			c.JSON(http.StatusBadRequest, "Failed to unmarshal book")
+		if err := c.BindJSON(&med); err != nil {
+			c.JSON(http.StatusBadRequest, "Failed to unmarshal medication")
 			return
 		}
 
-		insertedBook, err := pg.AddBook(book)
+		insertedMed, err := pg.AddMedication(med)
 
 		if err != nil {
-			c.JSON(http.StatusBadRequest, "Failed to add a book")
+			c.JSON(http.StatusBadRequest, "Failed to add a medication")
 			panic(err)
 		}
 
-		c.JSON(http.StatusOK, insertedBook)
+		c.JSON(http.StatusOK, insertedMed)
 	})
 
 	return r

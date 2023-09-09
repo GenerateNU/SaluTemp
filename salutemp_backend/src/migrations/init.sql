@@ -1,33 +1,33 @@
-CREATE TABLE IF NOT EXISTS students (
-    nuid integer PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS patients (
+    id integer PRIMARY KEY,
     name varchar NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS books (
-    book_id integer PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS medications (
+    med_id integer PRIMARY KEY,
     title varchar NOT NULL,
     author varchar NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS checked_out_books (
+CREATE TABLE IF NOT EXISTS checked_out_medications (
     checkout_id serial PRIMARY KEY,
-    book_id integer NOT NULL REFERENCES books (book_id),
-    nuid integer NOT NULL REFERENCES students (nuid),
+    med_id integer NOT NULL REFERENCES medications (med_id),
+    id integer NOT NULL REFERENCES patients (id),
     expected_return_date timestamp with time zone NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS holds (
     hold_id serial PRIMARY KEY,
-    book_id integer NOT NULL REFERENCES books (book_id),
-    nuid integer NOT NULL REFERENCES students (nuid),
+    med_id integer NOT NULL REFERENCES medications (med_id),
+    id integer NOT NULL REFERENCES patients (id),
     hold_creation_date timestamp with time zone NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS liked_books (
+CREATE TABLE IF NOT EXISTS liked_medications (
     like_id serial PRIMARY KEY,
-    book_id integer NOT NULL REFERENCES books (book_id),
-    nuid integer NOT NULL REFERENCES students (nuid)
+    med_id integer NOT NULL REFERENCES medications (med_id),
+    id integer NOT NULL REFERENCES patients (id)
 );
 
 
-INSERT INTO books (book_id, title, author) VALUES (1738, 'The Lightning Thief', 'Rick Riordan');
+INSERT INTO medications (med_id, title, author) VALUES (1738, 'The Lightning Thief', 'Rick Riordan');
