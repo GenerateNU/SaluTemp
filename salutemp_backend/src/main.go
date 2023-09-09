@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"generate/bootcamp/src/controller"
-	"generate/bootcamp/src/model"
 	"os"
+	"salutemp/backend/src/controller"
+	"salutemp/backend/src/model"
 
 	"github.com/jackc/pgx"
 )
