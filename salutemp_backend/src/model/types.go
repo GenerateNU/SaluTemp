@@ -1,7 +1,7 @@
 package model
 
 type Medication struct {
-	med_id int64  `json:"id" db:"med_id"`
+	MedID  int64  `json:"id" db:"med_id"`
 	Title  string `json:"title" db:"title"`
 	Author string `json:"author" db:"author"`
 }
