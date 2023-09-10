@@ -4,10 +4,10 @@ version: '3'
 
 tasks:
   run:
-    - cd salutemp_backend/src && go run main.go
+    - "cd salutemp_backend/src && go run main.go"
 
   test-all:
-    - cd salutemp_backend && go test ./...
+    - "cd salutemp_backend && go test ./..."
 
   connect:
-    - postgres -u user --password=pwd -P 5434 -h localhost --protocopl=tcp
+    - "postgres -u user --password=pwd -P 5434 -h localhost --protocopl=tcp"
