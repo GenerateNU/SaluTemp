@@ -14,7 +14,7 @@ func main() {
 
 	cfg := pgx.ConnConfig{
 		User:     "user",
-		Database: "bootcamp",
+		Database: "salutemp",
 		Password: "pwd",
 		Host:     "localhost",
 		Port:     5434,
