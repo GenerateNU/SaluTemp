@@ -17,6 +17,12 @@ func WriteMedToDb(pool *pgx.Conn, med Medication) (Medication, error) {
 	return med, nil
 }
 
+func DeleteMedication(pool *pgx.Conn, medID int64) error {
+    _, err := pool.Exec(fmt.Sprintf("DELETE FROM medications WHERE med_id = %d;", medID))
+    return err
+}
+
+
 func GetMedFromDB(pool *pgx.Conn, med_id int64) (Medication, error) {
 	med := Medication{
 		MedID: med_id,
@@ -55,4 +61,14 @@ func GetAllMedsFromDB(pool *pgx.Conn) ([]Medication, error) {
 	}
 
 	return results, nil
+}
+
+
+
+func EditMedication(pool *pgx.Conn, med Medication) error {
+    _, err := pool.Exec(
+        "UPDATE medications SET title = $2, author = $3 WHERE med_id = $1",
+        med.MedID, med.Title, med.Author,
+    )
+    return err
 }
