@@ -27,7 +27,7 @@ func GetPatientFromDB(pool *pgx.Conn, id int64) (Patient, error) {
     }
 
     err := pool.QueryRow(
-        "SELECT id, name FROM patients WHERE id = $1;",
+        "SELECT * FROM patients WHERE id = $1;",
         id,
     ).Scan(&patient.ID, &patient.Name)
 
@@ -40,7 +40,7 @@ func GetPatientFromDB(pool *pgx.Conn, id int64) (Patient, error) {
 
 // GetAllPatientsFromDB retrieves all patient records from the database.
 func GetAllPatientsFromDB(pool *pgx.Conn) ([]Patient, error) {
-    rows, err := pool.Query("SELECT id, name FROM patients;")
+    rows, err := pool.Query("SELECT * patients;")
 
     if err != nil {
         panic(err)

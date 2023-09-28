@@ -90,3 +90,13 @@ func (m *PgModel) EditPatient(patient Patient) error {
     err := EditPatient(m.Conn, patient)
     return err
 }
+
+
+func (m *PgModel) AllPatients() ([]Patient, error) {
+    pat, err := GetAllPatientsFromDB(m.Conn)
+
+    if err != nil {
+        return []Patient{}, err
+    }
+    return pat, nil
+}

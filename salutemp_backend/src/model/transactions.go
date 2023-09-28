@@ -29,7 +29,7 @@ func GetMedFromDB(pool *pgx.Conn, med_id int64) (Medication, error) {
 	}
 
 	var bid int
-	err := pool.QueryRow(fmt.Sprintf("SELECT med_id, title, author FROM medications where med_id = '%d';", med_id)).Scan(&bid, &med.Title, &med.Author)
+	err := pool.QueryRow(fmt.Sprintf("SELECT * FROM medications where med_id = '%d';", med_id)).Scan(&bid, &med.Title, &med.Author)
 
 	if err != nil {
 		panic(err)
