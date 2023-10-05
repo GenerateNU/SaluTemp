@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS medication_constraint (
     FOREIGN KEY (medication_id) REFERENCES medication (medication_id)
 );
 
+-- populate
 INSERT INTO "user" VALUES (200, 'John', 'Doe', 'johndoe@gmail.com');
 INSERT INTO medication VALUES (301, 'TestMed');
 INSERT INTO stored_medication VALUES (1, 301, 200, 70, 20, 20);
