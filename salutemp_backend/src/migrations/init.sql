@@ -30,4 +30,4 @@ CREATE TABLE IF NOT EXISTS liked_medications (
 );
 
 
-INSERT INTO medications (med_id, title, author) VALUES (1738, 'The Lightning Thief', 'Rick Riordan');
+INSERT INTO medications (med_id, title, author) VALUES (1242, 'Med1', 'Ayush Rana');

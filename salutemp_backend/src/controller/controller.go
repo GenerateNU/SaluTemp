@@ -7,6 +7,8 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"fmt"
+
 )
 
 type Controller interface {
@@ -30,6 +32,8 @@ func (pg *PgController) Serve() *gin.Engine {
 		}
 		c.JSON(http.StatusOK, pg.Medication(int64(intId)))
 	})
+
+
 	r.GET("/v1/medications/", func(c *gin.Context) {
 		meds, err := pg.AllMedications()
 		if err != nil {
@@ -40,13 +44,23 @@ func (pg *PgController) Serve() *gin.Engine {
 
 	r.POST("/v1/addmedications", func(c *gin.Context) {
 		var med model.Medication
+		fmt.Println("Hello, ")
+		fmt.Println(med)
 
 		if err := c.BindJSON(&med); err != nil {
 			c.JSON(http.StatusBadRequest, "Failed to unmarshal medication")
 			return
 		}
+		fmt.Println("Bye, ")
+
+		fmt.Println(med)
+
+
 
 		insertedMed, err := pg.AddMedication(med)
+		fmt.Println(insertedMed)
+		fmt.Println(err)
+
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, "Failed to add a medication")
