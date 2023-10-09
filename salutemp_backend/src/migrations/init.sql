@@ -1,3 +1,5 @@
+CREATE DATABASE salutemp;
+
 CREATE TABLE IF NOT EXISTS patients (
     id integer PRIMARY KEY,
     name varchar NOT NULL
