@@ -43,9 +43,7 @@ func (pg *PgController) Serve() *gin.Engine {
 	})
 
 	r.POST("/v1/addmedications", func(c *gin.Context) {
-		var med model.Medication
-		fmt.Println("Hello, ")
-		fmt.Println(med)
+		var med model.Medication	
 
 		if err := c.BindJSON(&med); err != nil {
 			c.JSON(http.StatusBadRequest, "Failed to unmarshal medication")

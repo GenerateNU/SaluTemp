@@ -2,13 +2,13 @@ package model
 
 import (
 	"fmt"
-
+    "strconv"
 	"github.com/jackc/pgx"
 )
 
 func WriteMedToDb(pool *pgx.Conn, med Medication) (Medication, error) {
 	var insertedMed Medication
-	err := pool.QueryRow("INSERT INTO medications (med_id,title, author) VALUES ($1, $2, $3) RETURNING med_id;", med.Title, med.Author, med.MedID).Scan(&insertedMed.MedID)
+	err := pool.QueryRow("INSERT INTO medications (med_id, title, author) VALUES ($1, $2, $3) RETURNING med_id;", strconv.FormatInt(med.MedID, 10), med.Title, med.Author).Scan(&insertedMed.MedID)
 
 	if err != nil {
 		return Medication{}, err
@@ -84,16 +84,16 @@ func EditMedication(pool *pgx.Conn, med Medication) error {
 
 // WritePatientToDb inserts a new patient record into the database and returns the updated patient object with the assigned ID.
 func WritePatientToDb(pool *pgx.Conn, patient Patient) (Patient, error) {
-	err := pool.QueryRow(
-		"INSERT INTO patients (name) VALUES ($1) RETURNING id;",
-		patient.Name,
-	).Scan(&patient.ID)
+	var insertedPatient Patient
+
+	err := pool.QueryRow("INSERT INTO patients (id, name) VALUES ($1, $2) RETURNING id;", strconv.FormatInt(patient.ID, 10), patient.Name).Scan(&insertedPatient.ID)
+
 
 	if err != nil {
 		return Patient{}, err
 	}
 
-	return patient, nil
+	return insertedPatient, nil
 }
 
 // GetPatientFromDB retrieves a patient record from the database based on the given patient ID.
@@ -116,7 +116,7 @@ func GetPatientFromDB(pool *pgx.Conn, id int64) (Patient, error) {
 
 // GetAllPatientsFromDB retrieves all patient records from the database.
 func GetAllPatientsFromDB(pool *pgx.Conn) ([]Patient, error) {
-	rows, err := pool.Query("SELECT * patients;")
+	rows, err := pool.Query("SELECT * FROM patients;")
 
 	if err != nil {
 		panic(err)
