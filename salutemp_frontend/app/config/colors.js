@@ -1,9 +1,12 @@
 export default {
-    primary: "#317773",
+    primary: "#B2CDEC",
     secondary: "#457B9D",
-    CTA: "",
-    background: "#ffffff",
+    coordinatingColor: "#53819E",
+    lightNeutral: "#E2E8EF",
+    darkNeutral: "#0C4061",
+    background: "#FCF9F3",
     inactivity: "",
-    errors: "",
-    bodyText: "#FCFFE8"
+    errors: "#CD6161",
+    bodyText: "#FCFFE8",
+    black: "#000000"
 }
