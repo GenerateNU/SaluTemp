@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS medication_constraint;
 DROP TABLE IF EXISTS alert;
-DROP TABLE IF EXISTS condition_event;
+DROP TABLE IF EXISTS status_report;
 DROP TYPE IF EXISTS condition_type;
 DROP TABLE IF EXISTS stored_medication;
 DROP TABLE IF EXISTS medication;
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS alert (
     FOREIGN KEY (stored_medication_id) REFERENCES stored_medication (stored_medication_id)
 );
 
-CREATE TABLE IF NOT EXISTS condition_event (
+CREATE TABLE IF NOT EXISTS status_report (
     event_time timestamp NOT NULL,
     stored_medication_id integer NOT NULL,
     temperature float,
@@ -69,5 +69,5 @@ INSERT INTO "user" VALUES (200, 'John', 'Doe', 'johndoe@gmail.com');
 INSERT INTO medication VALUES (301, 'TestMed');
 INSERT INTO stored_medication VALUES (1, 301, 200, 70, 20, 20);
 INSERT INTO alert VALUES (3, 1, current_timestamp, 'Test Description!', 'TEMPERATURE');
-INSERT INTO condition_event VALUES (current_timestamp, 1, 70, 20, 20);
+INSERT INTO status_report VALUES (current_timestamp, 1, 70, 20, 20);
 INSERT INTO medication_constraint VALUES (301, 'TEMPERATURE', 90, 50, '2 Days, 2 Hours, 10 Minutes');
