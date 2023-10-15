@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, Image } from 'react-native';
+import { Text, View, TextInput, Button, Alert, StyleSheet, Image } from 'react-native';
 import { FIREBASE_AUTH } from '../firebaseConfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, User } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, User, sendEmailVerification } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
-const LoginRegister = () => {
+const Register = () => {
 
   const navigation = useNavigation();
 
@@ -26,9 +26,9 @@ const LoginRegister = () => {
     return unsubscribe;
   }, []);
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     try {
-      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
     } catch (error : any) {
     //   if (error.message === 'The password is invalid or the user does not have a password.') {
     //     Alert.alert('Incorrect password', 'Please try again.');
@@ -41,51 +41,64 @@ const LoginRegister = () => {
     }
   };
 
-  const handleRegister = async () => {
-    try {
-      await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
-    } catch (error) {
-      Alert.alert('Error', 'An error occurred. Please try again.');
-    }
-  };
-
   if (user) {
     // User is logged in
     navigation.navigate("Home");
+    console.log('home');
   } else {
     // User is not logged in
     return (
       <View style={styles.container}>
-        <Image
-            source={require('../assets/icon.png')}
+        <View style={styles.imagecontainer}>
+          <Image
+            source={require('../assets/logo.png')}
             style={styles.image}
+          />
+        </View>
+
+        <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
         />
         <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text.toLowerCase)}
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+        secureTextEntry
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry
-        />
-        <Button title="Login" onPress={handleLogin} />
-        <Button title="New to SaluTemp? Register here!" onPress={handleRegister} />
+        <View style={styles.button}>
+          <Button 
+            title="Register for SaluTemp" 
+            onPress={handleRegister} 
+            color='#fff'
+          />
+        </View>
       </View>
     );
   }
 };
+
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: 'flex-start',
       alignItems: 'center',
-      backgroundColor: 'darkgreen',
+      backgroundColor: '#fff',
+    },
+    imagecontainer: {
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        width: '100%',
+        height: '50%',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        shadowOpacity:10,
+        shadowRadius: 20,
     },
     input: {
       width: '80%',
@@ -94,13 +107,20 @@ const styles = StyleSheet.create({
       margin: 10,
       borderWidth: 1,
       borderRadius: 10,
-      backgroundColor: 'lightgreen',
+      backgroundColor: 'white',
+      borderColor: 'green',
     },
     image: {
-        margin: 10,
-        width: 250,
-        height: 250,
+        flex: 1,
+        width: '100%',
+        height: '100%',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
     },
+    button: {
+        backgroundColor:'green',
+        borderRadius: 10,
+    },     
   });
 
-export default LoginRegister;
+export default Register;
