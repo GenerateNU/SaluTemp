@@ -1,12 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import MedOverviewScreen from './screens/MedOverviewScreen';
+import NewMedScreen from './screens/NewMedScreen';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <MedOverviewScreen />
+    // <View style={styles.container}>
+    //   <Text>Open up App.tsx to start working on your app!</Text>
+    //   <StatusBar style="auto" />
+    // </View>
   );
 }
 
