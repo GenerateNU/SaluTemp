@@ -6,6 +6,7 @@ import NewMedScreen from './screens/NewMedScreen';
 export default function App() {
   return (
     <MedOverviewScreen />
+    // <NewMedScreen />
     // <View style={styles.container}>
     //   <Text>Open up App.tsx to start working on your app!</Text>
     //   <StatusBar style="auto" />
