@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from './screens/Login';
 import Register from './screens/Register';
+import MedOverviewScreen from './screens/MedOverviewScreen';
+import NewMedScreen from './screens/NewMedScreen';
 
 const Stack = createNativeStackNavigator();
 
