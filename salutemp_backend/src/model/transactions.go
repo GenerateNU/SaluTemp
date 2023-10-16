@@ -6,6 +6,8 @@ import (
 	"github.com/jackc/pgx"
 )
 
+// CRUD functions for the medications table
+// WriteMedToDb inserts a new medication record into the database and returns the updated medication object with the assigned ID.
 func WriteMedToDb(pool *pgx.Conn, med Medication) (Medication, error) {
 	var insertedMed Medication
 	err := pool.QueryRow("INSERT INTO medications (med_id, title, author) VALUES ($1, $2, $3) RETURNING med_id;", strconv.FormatInt(med.MedID, 10), med.Title, med.Author).Scan(&insertedMed.MedID)
@@ -30,6 +32,7 @@ func DeleteMedFromDB(pool *pgx.Conn, medID int64) error {
 
 }
 
+// GetMedFromDB retrieves a medication record from the database based on the given medication ID.
 func GetMedFromDB(pool *pgx.Conn, med_id int64) (Medication, error) {
 	med := Medication{
 		MedID: med_id,
@@ -45,6 +48,7 @@ func GetMedFromDB(pool *pgx.Conn, med_id int64) (Medication, error) {
 	return med, nil
 }
 
+// GetAllMedsFromDB retrieves all medication records from the database.
 func GetAllMedsFromDB(pool *pgx.Conn) ([]Medication, error) {
 	rows, err := pool.Query("SELECT med_id, title, author FROM medications;")
 
@@ -70,6 +74,7 @@ func GetAllMedsFromDB(pool *pgx.Conn) ([]Medication, error) {
 	return results, nil
 }
 
+// EditMedication updates a given medication in the database
 func EditMedication(pool *pgx.Conn, med Medication) error {
 	_, err := pool.Exec(
 		"UPDATE medications SET title = $2, author = $3 WHERE med_id = $1",
@@ -78,10 +83,7 @@ func EditMedication(pool *pgx.Conn, med Medication) error {
 	return err
 }
 
-///patients transactions
-
-///
-
+// CRUD functions for the patients table
 // WritePatientToDb inserts a new patient record into the database and returns the updated patient object with the assigned ID.
 func WritePatientToDb(pool *pgx.Conn, patient Patient) (Patient, error) {
 	var insertedPatient Patient
@@ -140,11 +142,13 @@ func GetAllPatientsFromDB(pool *pgx.Conn) ([]Patient, error) {
 	return results, nil
 }
 
+// DeletePatient deletes a given patient from the database
 func DeletePatient(pool *pgx.Conn, id int64) error {
 	_, err := pool.Exec(fmt.Sprintf("DELETE FROM patients WHERE id = %d;", id))
 	return err
 }
 
+// EditPatient updates a given patient in the database
 func EditPatient(pool *pgx.Conn, user Patient) error {
 	_, err := pool.Exec(
 		"UPDATE patients SET name = $2 WHERE id = $1",
@@ -152,3 +156,46 @@ func EditPatient(pool *pgx.Conn, user Patient) error {
 	)
 	return err
 }
+
+// CRUD functions for the checked_out_medications table
+func WriteCheckoutToDb(pool *pgx.Conn, checkout CheckedOutMedication) (CheckedOutMedication, error) {
+	var insertedCheckout CheckedOutMedication
+	err := pool.QueryRow("INSERT INTO checked_out_medications (med_id, id, expected_return_date) VALUES ($1, $2, $3) RETURNING checkout_id;", checkout.MedID, checkout.ID, checkout.ExpectedReturnDate).Scan(&insertedCheckout.CheckoutID)
+
+	if err != nil {
+		return CheckedOutMedication{}, err
+	}
+
+	return insertedCheckout, nil
+}
+
+
+
+// CRUD functions for the holds table
+func WriteHoldToDb(pool *pgx.Conn, hold Hold) (Hold, error) {
+	var insertedHold Hold
+	err := pool.QueryRow("INSERT INTO holds (med_id, id, hold_creation_date) VALUES ($1, $2, $3) RETURNING hold_id;", hold.MedID, hold.ID, hold.HoldCreationDate).Scan(&insertedHold.HoldID)
+
+	if err != nil {
+		return Hold{}, err
+	}
+
+	return insertedHold, nil
+}
+
+// CRUD functions for the liked_medications table
+// WriteLikeToDb inserts a new liked medication record into the database and returns the updated liked medication object with the assigned ID.
+func WriteLikeToDb(pool *pgx.Conn, like LikedMedication) (LikedMedication, error) {
+	var insertedLike LikedMedication
+	err := pool.QueryRow("INSERT INTO liked_medications (med_id, id) VALUES ($1, $2) RETURNING like_id;", like.MedID, like.ID).Scan(&insertedLike.LikeID)
+
+	if err != nil {
+		return LikedMedication{}, err
+	}
+
+	return insertedLike, nil
+}
+
+
+
+
