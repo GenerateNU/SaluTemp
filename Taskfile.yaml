@@ -11,5 +11,4 @@ tasks:
 
   connect:
     - "psql -U user -d salutemp -h localhost -p 5434 -W"
- #    - "psql -U user -d test -h localhost -p 5434 -W"
 
