@@ -29,19 +29,6 @@ func WriteMedToDb(pool *pgx.Conn, med Medication) (Medication, error) {
 	return insertedMed, nil
 }
 
-// Function to delete a given medication from the medication table
-func DeleteMedFromDB(pool *pgx.Conn, medID int64) error {
-	_, err := pool.Exec(fmt.Sprintf("DELETE FROM medications WHERE med_id = %d;", medID))
-
-	if err != nil {
-		return err
-	} else {
-		// return nil because there is nothing to return upon a successful deltion
-		return nil
-	}
-
-}
-
 // GetMedFromDB retrieves a medication record from the database based on the given medication ID.
 func GetMedFromDB(pool *pgx.Conn, med_id int64) (Medication, error) {
 	med := Medication{
@@ -56,6 +43,28 @@ func GetMedFromDB(pool *pgx.Conn, med_id int64) (Medication, error) {
 	}
 
 	return med, nil
+}
+
+// EditMedication updates a given medication in the database
+func EditMedication(pool *pgx.Conn, med Medication) error {
+	_, err := pool.Exec(
+		"UPDATE medications SET title = $2, author = $3 WHERE med_id = $1",
+		med.MedID, med.Title, med.Author,
+	)
+	return err
+}
+
+// Function to delete a given medication from the medication table
+func DeleteMedFromDB(pool *pgx.Conn, medID int64) error {
+	_, err := pool.Exec(fmt.Sprintf("DELETE FROM medications WHERE med_id = %d;", medID))
+
+	if err != nil {
+		return err
+	} else {
+		// return nil because there is nothing to return upon a successful deltion
+		return nil
+	}
+
 }
 
 // GetAllMedsFromDB retrieves all medication records from the database.
@@ -82,15 +91,6 @@ func GetAllMedsFromDB(pool *pgx.Conn) ([]Medication, error) {
 	}
 
 	return results, nil
-}
-
-// EditMedication updates a given medication in the database
-func EditMedication(pool *pgx.Conn, med Medication) error {
-	_, err := pool.Exec(
-		"UPDATE medications SET title = $2, author = $3 WHERE med_id = $1",
-		med.MedID, med.Title, med.Author,
-	)
-	return err
 }
 
 // CRUD functions for the patients table
@@ -126,6 +126,21 @@ func GetPatientFromDB(pool *pgx.Conn, id int64) (Patient, error) {
 	return patient, nil
 }
 
+// EditPatient updates a given patient in the database
+func EditPatient(pool *pgx.Conn, user Patient) error {
+	_, err := pool.Exec(
+		"UPDATE patients SET name = $2 WHERE id = $1",
+		user.ID, user.Name,
+	)
+	return err
+}
+
+// DeletePatient deletes a given patient from the database
+func DeletePatient(pool *pgx.Conn, id int64) error {
+	_, err := pool.Exec(fmt.Sprintf("DELETE FROM patients WHERE id = %d;", id))
+	return err
+}
+
 // GetAllPatientsFromDB retrieves all patient records from the database.
 func GetAllPatientsFromDB(pool *pgx.Conn) ([]Patient, error) {
 	rows, err := pool.Query("SELECT * FROM patients;")
@@ -150,21 +165,6 @@ func GetAllPatientsFromDB(pool *pgx.Conn) ([]Patient, error) {
 	}
 
 	return results, nil
-}
-
-// DeletePatient deletes a given patient from the database
-func DeletePatient(pool *pgx.Conn, id int64) error {
-	_, err := pool.Exec(fmt.Sprintf("DELETE FROM patients WHERE id = %d;", id))
-	return err
-}
-
-// EditPatient updates a given patient in the database
-func EditPatient(pool *pgx.Conn, user Patient) error {
-	_, err := pool.Exec(
-		"UPDATE patients SET name = $2 WHERE id = $1",
-		user.ID, user.Name,
-	)
-	return err
 }
 
 // CRUD functions for the checked_out_medications table
