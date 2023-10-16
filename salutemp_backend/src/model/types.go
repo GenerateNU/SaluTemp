@@ -25,6 +25,12 @@ type Hold struct {
 	HoldCreationDate string `json:"holdCreationDate" db:"hold_creation_date"`
 }
 
+type LikedMedication struct {
+	LikeID int64 `json:"likeId" db:"like_id"`
+	MedID  int64 `json:"medId" db:"med_id"`
+	ID     int64 `json:"id" db:"id"`
+}
+
 
 
 

@@ -6,6 +6,16 @@ import (
 	"github.com/jackc/pgx"
 )
 
+/*
+ * This file contains the CRUD functions for the medications, patients, checked_out_medications, holds, and liked_medications tables.
+ * In the following format:
+ * Write(pool *pgx.Conn, med Medication) (Medication, error)
+ * Get(pool *pgx.Conn, med_id int64) (Medication, error)
+ * Edit(pool *pgx.Conn, med Medication) error
+ * Delete(pool *pgx.Conn, medID int64) error
+ * GetAllFromDB(pool *pgx.Conn) ([]Medication, error)
+*/
+
 // CRUD functions for the medications table
 // WriteMedToDb inserts a new medication record into the database and returns the updated medication object with the assigned ID.
 func WriteMedToDb(pool *pgx.Conn, med Medication) (Medication, error) {
@@ -301,6 +311,57 @@ func WriteLikeToDb(pool *pgx.Conn, like LikedMedication) (LikedMedication, error
 	return insertedLike, nil
 }
 
+// GetLikeFromDb retrieves a liked medication record from the database based on the given like ID.
+func GetLikeFromDb(pool *pgx.Conn, likeID int64) (LikedMedication, error) {
+	var like LikedMedication
+	err := pool.QueryRow("SELECT * FROM liked_medications WHERE like_id = $1;", likeID).Scan(&like.LikeID, &like.MedID, &like.ID)
+
+	if err != nil {
+		return LikedMedication{}, err
+	}
+
+	return like, nil
+}
+
+// EditLike updates a given like in the database
+func EditLike(pool *pgx.Conn, like LikedMedication) error {
+	_, err := pool.Exec(
+		"UPDATE liked_medications SET med_id = $2, id = $3 WHERE like_id = $1;",
+		like.LikeID, like.MedID, like.ID,
+	)
+	return err
+}
+
+// DeleteLikeFromDb deletes a given like from the database
+func DeleteLikeFromDb(pool *pgx.Conn, likeID int64) error {
+	_, err := pool.Exec("DELETE FROM liked_medications WHERE like_id = $1;", likeID)
+	return err
+}
+
+// GetAllLikesFromDb retrieves all liked medication records from the database.
+func GetAllLikesFromDb(pool *pgx.Conn) ([]LikedMedication, error) {
+	rows, err := pool.Query("SELECT * FROM liked_medications;")
+
+	if err != nil {
+		return nil, err
+	}
+
+	var likes []LikedMedication
+	defer rows.Close()
+
+	for rows.Next() {
+		var like LikedMedication
+		err := rows.Scan(&like.LikeID, &like.MedID, &like.ID)
+		
+		if err != nil {
+			return nil, err
+		}
+
+		likes = append(likes, like)
+	}
+
+	return likes, nil
+}
 
 
 
