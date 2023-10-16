@@ -223,6 +223,7 @@ func GetAllCheckoutsFromDb(pool *pgx.Conn) ([]CheckedOutMedication, error) {
 }
 
 // CRUD functions for the holds table
+// WriteHoldToDb inserts a new hold record into the database and returns the updated hold object with the assigned ID.
 func WriteHoldToDb(pool *pgx.Conn, hold Hold) (Hold, error) {
 	var insertedHold Hold
 	err := pool.QueryRow("INSERT INTO holds (med_id, id, hold_creation_date) VALUES ($1, $2, $3) RETURNING hold_id;", hold.MedID, hold.ID, hold.HoldCreationDate).Scan(&insertedHold.HoldID)
@@ -233,6 +234,59 @@ func WriteHoldToDb(pool *pgx.Conn, hold Hold) (Hold, error) {
 
 	return insertedHold, nil
 }
+
+// GetHoldFromDb retrieves a hold record from the database based on the given hold ID.
+func GetHoldFromDb(pool *pgx.Conn, holdID int64) (Hold, error) {
+	var hold Hold
+	err := pool.QueryRow("SELECT * FROM holds WHERE hold_id = $1;", holdID).Scan(&hold.HoldID, &hold.MedID, &hold.ID, &hold.HoldCreationDate)
+
+	if err != nil {
+		return Hold{}, err
+	}
+
+	return hold, nil
+}
+
+// EditHold updates a given hold in the database
+func EditHold(pool *pgx.Conn, hold Hold) error {
+	_, err := pool.Exec(
+		"UPDATE holds SET med_id = $2, id = $3, hold_creation_date = $4 WHERE hold_id = $1;",
+		hold.HoldID, hold.MedID, hold.ID, hold.HoldCreationDate,
+	)
+	return err
+}
+
+// DeleteHoldFromDb deletes a given hold from the database
+func DeleteHoldFromDb(pool *pgx.Conn, holdID int64) error {
+	_, err := pool.Exec("DELETE FROM holds WHERE hold_id = $1;", holdID)
+	return err
+}
+
+// GetAllHoldsFromDb retrieves all hold records from the database.
+func GetAllHoldsFromDb(pool *pgx.Conn) ([]Hold, error) {
+	rows, err := pool.Query("SELECT * FROM holds;")
+
+	if err != nil {
+		return nil, err
+	}
+
+	var holds []Hold
+	defer rows.Close()
+
+	for rows.Next() {
+		var hold Hold
+		err := rows.Scan(&hold.HoldID, &hold.MedID, &hold.ID, &hold.HoldCreationDate)
+		
+		if err != nil {
+			return nil, err
+		}
+
+		holds = append(holds, hold)
+	}
+
+	return holds, nil
+}
+
 
 // CRUD functions for the liked_medications table
 // WriteLikeToDb inserts a new liked medication record into the database and returns the updated liked medication object with the assigned ID.

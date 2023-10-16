@@ -18,6 +18,12 @@ type CheckedOutMedication struct {
     ExpectedReturnDate time.Time `json:"expected_return_date" db:"expected_return_date"`
 }
 
+type Hold struct {
+	HoldID          int64  `json:"holdId" db:"hold_id"`
+	MedID           int64  `json:"medId" db:"med_id"`
+	ID              int64  `json:"id" db:"id"`
+	HoldCreationDate string `json:"holdCreationDate" db:"hold_creation_date"`
+}
 
 
 
