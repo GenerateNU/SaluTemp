@@ -158,6 +158,7 @@ func EditPatient(pool *pgx.Conn, user Patient) error {
 }
 
 // CRUD functions for the checked_out_medications table
+// WriteCheckoutToDb inserts a new checkout record into the database and returns the updated checkout object with the assigned ID.
 func WriteCheckoutToDb(pool *pgx.Conn, checkout CheckedOutMedication) (CheckedOutMedication, error) {
 	var insertedCheckout CheckedOutMedication
 	err := pool.QueryRow("INSERT INTO checked_out_medications (med_id, id, expected_return_date) VALUES ($1, $2, $3) RETURNING checkout_id;", checkout.MedID, checkout.ID, checkout.ExpectedReturnDate).Scan(&insertedCheckout.CheckoutID)
@@ -169,7 +170,57 @@ func WriteCheckoutToDb(pool *pgx.Conn, checkout CheckedOutMedication) (CheckedOu
 	return insertedCheckout, nil
 }
 
+// GetCheckoutFromDb retrieves a checkout record from the database based on the given checkout ID.
+func GetCheckoutFromDb(pool *pgx.Conn, checkoutID int64) (CheckedOutMedication, error) {
+    var checkout CheckedOutMedication
+    err := pool.QueryRow("SELECT * FROM checked_out_medications WHERE checkout_id = $1;", checkoutID).Scan(&checkout.CheckoutID, &checkout.MedID, &checkout.ID, &checkout.ExpectedReturnDate)
 
+    if err != nil {
+        return CheckedOutMedication{}, err
+    }
+
+    return checkout, nil
+}
+
+// EditCheckout updates a given checkout in the database
+func EditCheckout(pool *pgx.Conn, checkout CheckedOutMedication) error {
+    _, err := pool.Exec(
+        "UPDATE checked_out_medications SET med_id = $2, id = $3, expected_return_date = $4 WHERE checkout_id = $1;",
+        checkout.CheckoutID, checkout.MedID, checkout.ID, checkout.ExpectedReturnDate,
+    )
+    return err
+}
+
+// DeleteCheckoutFromDb deletes a given checkout from the database
+func DeleteCheckoutFromDb(pool *pgx.Conn, checkoutID int64) error {
+    _, err := pool.Exec("DELETE FROM checked_out_medications WHERE checkout_id = $1;", checkoutID)
+    return err
+}
+
+// GetAllCheckoutsFromDb retrieves all checkout records from the database.
+func GetAllCheckoutsFromDb(pool *pgx.Conn) ([]CheckedOutMedication, error) {
+    rows, err := pool.Query("SELECT * FROM checked_out_medications;")
+
+    if err != nil {
+        return nil, err
+    }
+
+    var checkouts []CheckedOutMedication
+    defer rows.Close()
+
+    for rows.Next() {
+        var checkout CheckedOutMedication
+        err := rows.Scan(&checkout.CheckoutID, &checkout.MedID, &checkout.ID, &checkout.ExpectedReturnDate)
+        
+        if err != nil {
+            return nil, err
+        }
+
+        checkouts = append(checkouts, checkout)
+    }
+
+    return checkouts, nil
+}
 
 // CRUD functions for the holds table
 func WriteHoldToDb(pool *pgx.Conn, hold Hold) (Hold, error) {
