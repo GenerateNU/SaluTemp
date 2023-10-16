@@ -10,4 +10,5 @@ tasks:
     - "cd salutemp_backend && go test ./..."
 
   connect:
+#    - "postgres -u user --password=pwd -P 5434 -h localhost --protocopl=tcp"
     - "psql -U user -d salutemp -h localhost -p 5434 -W"
