@@ -9,8 +9,10 @@ import (
 )
 
 /*
- * This file contains the CRUD functions for the medications, patients, checked_out_medications, holds, and liked_medications tables.
- * In the following format:
+ * This file contains the CRUD functions for the medications, patients, 
+ * checked_out_medications, holds, and liked_medications tables.
+ * and also has the structs for the corresponding tables.
+ * CRUD format for each table:
  * Write(pool *pgx.Conn, med Medication) (Medication, error)
  * Get(pool *pgx.Conn, med_id int64) (Medication, error)
  * Edit(pool *pgx.Conn, med Medication) error
@@ -53,6 +55,7 @@ type LikedMedication struct {
 	MedID  int64 `json:"med_id"`
 	ID     int64 `json:"id"`
 }
+
 
 // CRUD functions for the medications table.
 // WriteMedToDb inserts a new medication record into the database.
@@ -121,6 +124,7 @@ func GetAllMedsFromDB(pool *pgx.Conn) ([]Medication, error) {
 	return meds, rows.Err()
 }
 
+
 // CRUD functions for patients table
 // WritePatientToDb inserts a new patient record into the database.
 func WritePatientToDb(pool *pgx.Conn, patient Patient) (Patient, error) {
@@ -188,6 +192,7 @@ func GetAllPatientsFromDB(pool *pgx.Conn) ([]Patient, error) {
 	return patients, rows.Err()
 }
 
+
 // CRUD functions for checkouts table
 // WriteCheckedOutMedToDb inserts a new CheckedOutMedication record into the database.
 func WriteCheckedOutMedToDb(pool *pgx.Conn, checkedOutMed CheckedOutMedication) (CheckedOutMedication, error) {
@@ -197,17 +202,6 @@ func WriteCheckedOutMedToDb(pool *pgx.Conn, checkedOutMed CheckedOutMedication) 
 		return CheckedOutMedication{}, err
 	}
 	return insertedCheckedOutMed, nil
-}
-
-// CRUD functions for holds table
-// WriteHoldToDB inserts a new Hold record into the database and returns the inserted record.
-func WriteHoldToDB(pool *pgx.Conn, hold Hold) (Hold, error) {
-	var insertedHold Hold
-	err := pool.QueryRow("INSERT INTO holds (med_id, id, placed_on) VALUES ($1, $2, $3) RETURNING hold_id;", hold.MedID, hold.ID, hold.PlacedOn).Scan(&insertedHold.HoldID)
-	if err != nil {
-		return Hold{}, err
-	}
-	return insertedHold, nil
 }
 
 // GetCheckedOutMedFromDB retrieves a CheckedOutMedication record from the database by checkout ID.
