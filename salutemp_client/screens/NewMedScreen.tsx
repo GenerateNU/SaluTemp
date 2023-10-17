@@ -40,7 +40,7 @@ const NewMedScreen = () => {
         <TextInput style={styles.textInputWide}></TextInput>
       </View>
 
-      <View style={styles.storageConditions}>
+      <View style={styles.titleAndChildren}>
         <Text style={styles.title}>Storage Conditions</Text>
         <View style={styles.columns}>
           <View style={styles.columnStyle}>
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   titleLight: {
     fontSize: 20,
     fontWeight: '400',
-    color: colors.lightNeutral,
+    color: colors.white,
   },
 
   medName: {
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: 160,
     fontSize: 14,
-    backgroundColor: colors.lightNeutral,
+    backgroundColor: colors.grey,
     color: colors.darkNeutral,
   },
 
@@ -140,18 +140,13 @@ const styles = StyleSheet.create({
     width: 330,
     height: 80,
     fontSize: 14,
-    backgroundColor: colors.lightNeutral,
+    backgroundColor: colors.grey,
     color: colors.darkNeutral,
   },
 
   titleAndChildren: {
     alignSelf: 'center',
-    gap: 15
-  },
-
-  storageConditions: {
-    alignSelf: 'center',
-    gap: 15
+    gap: 14
   },
 
   columns: {
@@ -170,7 +165,8 @@ const styles = StyleSheet.create({
     width: 340,
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginTop: 10
   }
 
 });
