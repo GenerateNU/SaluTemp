@@ -19,7 +19,7 @@ function MedicationsList(props: MedicationListProps) {
                     <TouchableHighlight style={styles.addPhoto}>
                         <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
                     </TouchableHighlight>
-                    <View style={styles.nestedPreview}>
+                    <View>
                         <Text>Name</Text>
                         <Text style={styles.subtitle}>Status Check</Text>
                     </View>
@@ -31,7 +31,7 @@ function MedicationsList(props: MedicationListProps) {
                     <TouchableHighlight style={styles.addPhoto}>
                         <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
                     </TouchableHighlight>
-                    <View style={styles.nestedPreview}>
+                    <View>
                         <Text>Name</Text>
                         <Text style={styles.subtitle}>Status Check</Text>
                     </View>
@@ -43,7 +43,7 @@ function MedicationsList(props: MedicationListProps) {
                     <TouchableHighlight style={styles.addPhoto}>
                         <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
                     </TouchableHighlight>
-                    <View style={styles.nestedPreview}>
+                    <View>
                         <Text>Name</Text>
                         <Text style={styles.subtitle}>Status Check</Text>
                     </View>
@@ -55,7 +55,7 @@ function MedicationsList(props: MedicationListProps) {
                     <TouchableHighlight style={styles.addPhoto}>
                         <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
                     </TouchableHighlight>
-                    <View style={styles.nestedPreview}>
+                    <View>
                         <Text>Name</Text>
                         <Text style={styles.subtitle}>Status Check</Text>
                     </View>
@@ -86,16 +86,16 @@ const styles = StyleSheet.create({
     medCard: {
         backgroundColor: colors.lightNeutral,
         borderRadius: 10,
-        height: 80,
-        width: 300,
-        padding: 10,
+        height: 100,
+        width: 360,
+        padding: 20,
         alignItems: 'flex-start',
         justifyContent: 'center'
     },
 
     preview: {
         flexDirection: 'row',
-        gap: 20
+        gap: 16
     },
 
     addPhoto: {
@@ -105,10 +105,6 @@ const styles = StyleSheet.create({
         width: 60,
         alignItems: 'center',
         justifyContent: 'center'
-    },
-
-    nestedPreview: {
-
     },
 
 });
