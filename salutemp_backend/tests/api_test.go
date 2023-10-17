@@ -12,6 +12,7 @@ import (
 
 	"github.com/huandu/go-assert"
 	"github.com/jackc/pgx"
+
 )
 
 func TestGetBooks(t *testing.T) {
@@ -19,10 +20,10 @@ func TestGetBooks(t *testing.T) {
 
 	cfg := pgx.ConnConfig{
 		User:     "user",
-		Database: "bootcamp",
+		Database: "salutemp",
 		Password: "pwd",
 		Host:     "localhost",
-		Port:     5433,
+		Port:     5434,
 	}
 	var err error
 	if exists {
@@ -51,21 +52,29 @@ func TestGetBooks(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	req, _ := http.NewRequest("GET", "/v1/medications/1738", nil)
-
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, 200, w.Code)
+	// Check for HTTP Status OK (200)
+	assert.Equal(t, http.StatusOK, w.Code)
 
-	var meds model.Medication
+	var responseMedication model.Medication
 
-	if e := json.Unmarshal(w.Body.Bytes(), &meds); e != nil {
-		panic(err)
-	}
+	var err2 error
+	a := assert.New(t)
 
-	test_book := model.Medication{
+	err2 = json.Unmarshal(w.Body.Bytes(), &responseMedication);
+	a.NilError(t, err2,"Error unmarshaling JSON response" )
+
+
+	// Define the expected medication data
+	expectedMedication := model.Medication{
 		MedID:  1738,
-		Title:  "Percy Jackson and the Olympians - The Lighning Thief",
+		Title:  "The Lightning Thief",  // Updated expected title
 		Author: "Rick Riordan",
 	}
-	assert.Equal(t, test_book, meds)
+
+	// Check individual fields of the response
+	assert.Equal(t, expectedMedication.MedID, responseMedication.MedID)
+	assert.Equal(t, expectedMedication.Title, responseMedication.Title)
+	assert.Equal(t, expectedMedication.Author, responseMedication.Author)
 }
