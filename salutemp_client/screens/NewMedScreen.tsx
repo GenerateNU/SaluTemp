@@ -1,41 +1,122 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View, TouchableHighlight, TextInput } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Image, TouchableHighlight, TextInput, FlatList } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+
 import colors from '../config/colors';
+import { useNavigation } from '@react-navigation/native';
+
 
 interface NewMedScreenProps {
   // Define any props if necessary
 }
 
-function NewMedScreen(props: NewMedScreenProps) {
+const NewMedScreen = () => {
+
+  const navigation = useNavigation();
+  // function NewMedScreen(props: NewMedScreenProps) {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Add New Medication</Text>
+      {/* <FlatList
+      data={NewMedScreen}> */}
+      {/* <MaterialCommunityIcons name="toggle-switch-off-outline" size={60} color={colors.coordinatingColor} /> */}
+      <View style={styles.titleAndChildren}>
+        <Text style={styles.title}>Medication Info</Text>
+        <View style={styles.medInfo}>
+          <TouchableHighlight style={styles.addPhoto}>
+            <MaterialIcons name="add" size={50} color={colors.darkNeutral} />
+          </TouchableHighlight>
+          <View style={styles.nestedMedInfo}>
+            <Text>Medication Name</Text>
+            <TextInput style={styles.textInputThin}></TextInput>
+            <Text>Expiration Date</Text>
+            <TextInput style={styles.textInputThin}></TextInput>
+          </View>
+        </View>
+      </View>
 
-      <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD">
-        <View style={styles.card}>
-          <TextInput style={styles.textInput} placeholder="Name..." />
+      <View style={styles.titleAndChildren}>
+        <Text>Notes</Text>
+        <TextInput style={styles.textInputWide}></TextInput>
+      </View>
+
+      <View style={styles.storageConditions}>
+        <Text style={styles.title}>Storage Conditions</Text>
+        <View style={styles.columns}>
+          <View style={styles.columnStyle}>
+            <Text>Max Temp</Text>
+            <TextInput style={styles.textInputThin}></TextInput>
+            <Text>Max Humidity</Text>
+            <TextInput style={styles.textInputThin}></TextInput>
+            <Text>Max Light</Text>
+            <TextInput style={styles.textInputThin}></TextInput>
+          </View>
+
+          <View style={styles.columnStyle}>
+            <Text>Min Temp</Text>
+            <TextInput style={styles.textInputThin}></TextInput>
+            <Text>Min Humidity</Text>
+            <TextInput style={styles.textInputThin}></TextInput>
+            <Text>Min Light</Text>
+            <TextInput style={styles.textInputThin}></TextInput>
+          </View>
+        </View>
+      </View>
+
+      <TouchableHighlight>
+        <View style={styles.confirmButton}>
+          <Text style={styles.titleLight}>Confirm</Text>
         </View>
       </TouchableHighlight>
+      {/* </FlatList> */}
+
     </SafeAreaView>
   );
 }
+// }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: 20,
-    backgroundColor: colors.backgroundColor,
+    backgroundColor: colors.background,
     flexDirection: 'column',
+  },
+
+  addPhoto: {
+    backgroundColor: colors.lightNeutral,
+    borderRadius: 8,
+    height: 160,
+    width: 160,
     alignItems: 'center',
-    alignContent: 'center',
-    marginTop: 60,
+    justifyContent: 'center'
+  },
+
+  medInfo: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 15
+  },
+
+  nestedMedInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 14
   },
 
   title: {
-    backgroundColor: colors.backgroundColor,
+    backgroundColor: colors.background,
     fontSize: 20,
     fontWeight: '500',
-    color: colors.secondary,
+    color: colors.darkNeutral,
+  },
+
+  titleLight: {
+    fontSize: 20,
+    fontWeight: '400',
+    color: colors.lightNeutral,
   },
 
   medName: {
@@ -44,20 +125,54 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  card: {
-    padding: 20,
-    backgroundColor: colors.secondary,
-    borderRadius: 20,
-    height: 600,
-    width: 350,
+  textInputThin: {
+    padding: 8,
+    borderRadius: 8,
+    width: 160,
+    fontSize: 14,
+    backgroundColor: colors.lightNeutral,
+    color: colors.darkNeutral,
   },
 
-  textInput: {
+  textInputWide: {
     padding: 8,
-    borderRadius: 4,
-    fontSize: 20,
-    color: colors.bodyText,
+    borderRadius: 8,
+    width: 330,
+    height: 80,
+    fontSize: 14,
+    backgroundColor: colors.lightNeutral,
+    color: colors.darkNeutral,
   },
+
+  titleAndChildren: {
+    alignSelf: 'center',
+    gap: 15
+  },
+
+  storageConditions: {
+    alignSelf: 'center',
+    gap: 15
+  },
+
+  columns: {
+    flexDirection: 'row',
+    gap: 14
+  },
+
+  columnStyle: {
+    gap: 15
+  },
+
+  confirmButton: {
+    backgroundColor: colors.coordinatingColor,
+    borderRadius: 20,
+    height: 60,
+    width: 340,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center'
+  }
+
 });
 
 export default NewMedScreen;
