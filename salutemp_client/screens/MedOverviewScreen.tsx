@@ -1,6 +1,6 @@
 import React from 'react';
-import { AntDesign, FontAwesome5, Entypo, MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, SafeAreaView, Text, View, Button, TouchableWithoutFeedback } from 'react-native';
+import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
+import { StyleSheet, SafeAreaView, Text, View, TouchableWithoutFeedback } from 'react-native';
 
 import colors from '../config/colors';
 
@@ -25,10 +25,10 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
       <View style={styles.monitorDetails}>
         <View style={styles.card}>
           <Text>Temperature</Text>
-            <View style={styles.row}>
-              <Text>46°F </Text>
-              <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
-            </View>
+          <View style={styles.row}>
+            <Text>46°F </Text>
+            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+          </View>
         </View>
 
         <View style={styles.card}>
@@ -138,10 +138,10 @@ const styles = StyleSheet.create({
   },
 
   colorTab: {
-    height : 70,
-    width : 5,
-    borderTopLeftRadius : 20,
-    borderBottomLeftRadius : 20
+    height: 70,
+    width: 5,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20
   },
 
   row: {
