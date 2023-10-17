@@ -13,12 +13,9 @@ interface NewMedScreenProps {
 const NewMedScreen = () => {
 
   const navigation = useNavigation();
-  // function NewMedScreen(props: NewMedScreenProps) {
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* <FlatList
-      data={NewMedScreen}> */}
-      {/* <MaterialCommunityIcons name="toggle-switch-off-outline" size={60} color={colors.coordinatingColor} /> */}
       <View style={styles.titleAndChildren}>
         <Text style={styles.title}>Medication Info</Text>
         <View style={styles.medInfo}>
@@ -67,12 +64,10 @@ const NewMedScreen = () => {
           <Text style={styles.titleLight}>Confirm</Text>
         </View>
       </TouchableHighlight>
-      {/* </FlatList> */}
-
     </SafeAreaView>
   );
 }
-// }
+
 
 const styles = StyleSheet.create({
   container: {
