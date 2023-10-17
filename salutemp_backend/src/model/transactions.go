@@ -11,7 +11,6 @@ import (
 /*
  * This file contains the CRUD functions for the medications, patients, 
  * checked_out_medications, holds, and liked_medications tables.
- * and also has the structs for the corresponding tables.
  * CRUD format for each table:
  * Write(pool *pgx.Conn, med Medication) (Medication, error)
  * Get(pool *pgx.Conn, med_id int64) (Medication, error)
@@ -19,43 +18,6 @@ import (
  * Delete(pool *pgx.Conn, medID int64) error
  * GetAllFromDB(pool *pgx.Conn) ([]Medication, error)
 */
-
-// Medication represents a medication record.
-type Medication struct {
-	MedID  int64  `json:"med_id"`
-	Title  string `json:"title"`
-	Author string `json:"author"`
-}
-
-// Patient represents a patient record.
-type Patient struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-}
-
-// CheckedOutMedication represents a medication that has been checked out.
-type CheckedOutMedication struct {
-	CheckoutID          int64  `json:"checkout_id"`
-	MedID               int64  `json:"med_id"`
-	ID                  int64  `json:"id"`
-	ExpectedReturnDate  string `json:"expected_return_date"`
-}
-
-// Hold represents a hold on a medication.
-type Hold struct {
-	HoldID          int64  `json:"hold_id"`
-	MedID           int64  `json:"med_id"`
-	ID              int64  `json:"id"`
-	HoldCreationDate string `json:"hold_creation_date"`
-}
-
-// LikedMedication represents a medication that has been liked.
-type LikedMedication struct {
-	LikeID int64 `json:"like_id"`
-	MedID  int64 `json:"med_id"`
-	ID     int64 `json:"id"`
-}
-
 
 // CRUD functions for the medications table.
 // WriteMedToDb inserts a new medication record into the database.

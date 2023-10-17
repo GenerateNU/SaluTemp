@@ -1,37 +1,47 @@
 package model
+import "time"
+
+type User struct {
+    UserID    int    `json:"user_id"`
+    FirstName string `json:"first_name"`
+    LastName  string `json:"last_name"`
+    Email     string `json:"email"`
+}
 
 type Medication struct {
-	MedID  int64  `json:"id" db:"med_id"`
-	Title  string `json:"title" db:"title"`
-	Author string `json:"author" db:"author"`
+    MedicationID   int    `json:"medication_id"`
+    MedicationName string `json:"medication_name"`
 }
 
-type Patient struct {
-	ID   int64  `json:"id" db:"id"`
-	Name string `json:"name" db:"name"`
+type StoredMedication struct {
+    StoredMedicationID int     `json:"stored_medication_id"`
+    MedicationID       int     `json:"medication_id"`
+    UserID             int     `json:"user_id"`
+    CurrentTemperature float64 `json:"current_temperature"`
+    CurrentHumidity    float64 `json:"current_humidity"`
+    CurrentLight       float64 `json:"current_light"`
 }
 
-type CheckedOutMedication struct {
-    CheckoutID         int64     `json:"checkout_id" db:"checkout_id"`
-    MedID              int64     `json:"med_id" db:"med_id"`
-    ID                 int64     `json:"id" db:"id"`
-    ExpectedReturnDate time.Time `json:"expected_return_date" db:"expected_return_date"`
+type Alert struct {
+    WarningID           int       `json:"warning_id"`
+    StoredMedicationID  int       `json:"stored_medication_id"`
+    WarningTimestamp    time.Time `json:"warning_timestamp"`
+    WarningDescription  string    `json:"warning_description"`
+    ConditionType       string    `json:"condition_type"`
 }
 
-type Hold struct {
-	HoldID          int64  `json:"holdId" db:"hold_id"`
-	MedID           int64  `json:"medId" db:"med_id"`
-	ID              int64  `json:"id" db:"id"`
-	HoldCreationDate string `json:"holdCreationDate" db:"hold_creation_date"`
+type StatusReport struct {
+    EventTime           time.Time  `json:"event_time"`
+    StoredMedicationID  int        `json:"stored_medication_id"`
+    Temperature         float64    `json:"temperature"`
+    Humidity            float64    `json:"humidity"`
+    Light               float64    `json:"light"`
 }
 
-type LikedMedication struct {
-	LikeID int64 `json:"likeId" db:"like_id"`
-	MedID  int64 `json:"medId" db:"med_id"`
-	ID     int64 `json:"id" db:"id"`
+type MedicationConstraint struct {
+    MedicationID  int     `json:"medication_id"`
+    ConditionType string  `json:"condition_type"` 
+    MaxThreshold  float64 `json:"max_threshold"`
+    MinThreshold  float64 `json:"min_threshold"`
+    Duration      string  `json:"duration"` 
 }
-
-
-
-
-
