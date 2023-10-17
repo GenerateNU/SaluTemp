@@ -1,11 +1,9 @@
 package model
 
 import (
-	"errors"
-	"fmt"
-	"strconv"
-
-	"github.com/jackc/pgx"
+    "github.com/jackc/pgx"
+    "errors"
+    "time"
 )
 
 /*
