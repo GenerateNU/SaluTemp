@@ -4,6 +4,8 @@ import (
     "github.com/jackc/pgx"
     "errors"
     "time"
+    "strconv"
+    "fmt"
 )
 
 /*
@@ -85,7 +87,92 @@ func GetAllUsersFromDB(pool *pgx.Conn) ([]User, error) {
     return users, rows.Err()
 }
 
-// CRUD functions for the medications table.
+
+
+
+//Crud functions for med table
+
+func WriteMedToDb(pool *pgx.Conn, med Medication) (Medication, error) {
+    var insertedMed Medication
+	medIDStr := strconv.FormatInt(int64(med.MedicationID), 10)
+	err := pool.QueryRow("INSERT INTO medication (medication_id, medication_name) VALUES ($1, $2) RETURNING medication_id;", medIDStr, med.MedicationName).Scan(&insertedMed.MedicationID)
+	
+    if err != nil {
+        return Medication{}, err
+    }
+
+    return insertedMed, nil
+}
+
+// Function to delete a given medication from the medication table
+func DeleteMedFromDB(pool *pgx.Conn, medID int) error {
+    _, err := pool.Exec(fmt.Sprintf("DELETE FROM medication WHERE medication_id = %d;", medID))
+
+    if err != nil {
+        return err
+    }
+
+    return nil
+}
+
+// Function to get a specific medication from the medication table
+func GetMedFromDB(pool *pgx.Conn, medID int) (Medication, error) {
+    med := Medication{
+        MedicationID: medID,
+    }
+
+    err := pool.QueryRow(
+        "SELECT medication_id, medication_name FROM medication WHERE medication_id = $1;",
+        medID,
+    ).Scan(&med.MedicationID, &med.MedicationName)
+
+    if err != nil {
+        return Medication{}, err
+    }
+
+    return med, nil
+}
+
+func GetAllMedsFromDB(pool *pgx.Conn) ([]Medication, error) {
+    rows, err := pool.Query("SELECT medication_id, medication_name FROM medication;")
+
+    if err != nil {
+        print(err, "from transactions err ");
+
+        return nil, err
+    }
+
+    defer rows.Close()
+
+    var results []Medication
+
+    for rows.Next() {
+        med := Medication{}
+        err := rows.Scan(&med.MedicationID, &med.MedicationName)
+
+        if err != nil {
+            print(err, "from transactions err2 ");
+
+            return nil, err
+        }
+
+        results = append(results, med)
+    }
+
+    println(results, "from transactions results ");
+
+    return results, nil
+}
+
+func EditMedicationToDB(pool *pgx.Conn, med Medication) error {
+    _, err := pool.Exec(
+        "UPDATE medication SET medication_name = $2 WHERE medication_id = $1",
+        med.MedicationID, med.MedicationName,
+    )
+    return err
+}
+
+// CRUD functions for the storedmedications table.
 // WriteStoredMedToDb inserts a new stored medication record into the database.
 func WriteStoredMedToDb(pool *pgx.Conn, med StoredMedication) (StoredMedication, error) {
 	var insertedMed StoredMedication
@@ -109,7 +196,7 @@ func GetStoredMedFromDB(pool *pgx.Conn, storedMedID int) (StoredMedication, erro
 }
 
 // UpdateStoredMedication updates a stored medication record in the database.
-func UpdateStoredMedication(pool *pgx.Conn, med StoredMedication) error {
+func UpdateStoredMed(pool *pgx.Conn, med StoredMedication) error {
 	commandTag, err := pool.Exec("UPDATE stored_medication SET medication_id = $1, user_id = $2, current_temperature = $3, current_humidity = $4, current_light = $5 WHERE stored_medication_id = $6;",
 		med.MedicationID, med.UserID, med.CurrentTemperature, med.CurrentHumidity, med.CurrentLight, med.StoredMedicationID)
 	if err != nil {
@@ -154,46 +241,6 @@ func GetAllStoredMedsFromDB(pool *pgx.Conn) ([]StoredMedication, error) {
 	return meds, rows.Err()
 }
 
-// CRUD functions for the stored_medication table
-// WriteStoredMedToDb inserts a new stored medication record into the database.
-func WriteStoredMedToDb(pool *pgx.Conn, med StoredMedication) (StoredMedication, error) {
-    var insertedMed StoredMedication
-    err := pool.QueryRow("INSERT INTO stored_medication (stored_medication_id, medication_id, user_id, current_temperature, current_humidity, current_light) VALUES ($1, $2, $3, $4, $5, $6) RETURNING stored_medication_id;",
-        med.StoredMedicationID, med.MedicationID, med.UserID, med.CurrentTemperature, med.CurrentHumidity, med.CurrentLight).Scan(&insertedMed.StoredMedicationID)
-    if err != nil {
-        return StoredMedication{}, err
-    }
-    return insertedMed, nil
-}
-
-// GetStoredMedFromDB retrieves a stored medication record from the database.
-func GetStoredMedFromDB(pool *pgx.Conn, storedMedID int) (StoredMedication, error) {
-    med := StoredMedication{StoredMedicationID: storedMedID}
-    err := pool.QueryRow("SELECT * FROM stored_medication WHERE stored_medication_id = $1", storedMedID).Scan(&med.StoredMedicationID, &med.MedicationID, &med.UserID, &med.CurrentTemperature, &med.CurrentHumidity, &med.CurrentLight)
-    if err != nil {
-        return StoredMedication{}, err
-    }
-    return med, nil
-}
-
-// UpdateStoredMedication updates a stored medication record in the database.
-func UpdateStoredMed(pool *pgx.Conn, med StoredMedication) error {
-    _, err := pool.Exec("UPDATE stored_medication SET medication_id = $1, user_id = $2, current_temperature = $3, current_humidity = $4, current_light = $5 WHERE stored_medication_id = $6",
-        med.MedicationID, med.UserID, med.CurrentTemperature, med.CurrentHumidity, med.CurrentLight, med.StoredMedicationID)
-    if err != nil {
-        return err
-    }
-    return nil
-}
-
-// DeleteStoredMedFromDB deletes a stored medication record from the database.
-func DeleteStoredMed(pool *pgx.Conn, storedMedID int) error {
-    _, err := pool.Exec("DELETE FROM stored_medication WHERE stored_medication_id = $1", storedMedID)
-    if err != nil {
-        return err
-    }
-    return nil
-}
 
 // GetAllStoredMedsFromDB retrieves all stored medication records.
 func GetAllStoredMeds(pool *pgx.Conn) ([]StoredMedication, error) {
