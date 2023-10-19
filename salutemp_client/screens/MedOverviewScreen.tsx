@@ -12,9 +12,9 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topShape}>
-        <TouchableWithoutFeedback style={styles.navButton}>
+        {/* <TouchableWithoutFeedback style={styles.navButton}>
           <Text>   <Entypo name="chevron-thin-left" size={24} color="black" /></Text>
-        </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback> */}
         <View style={styles.header}>
           <Text style={styles.title}>Medication Name</Text>
           <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>

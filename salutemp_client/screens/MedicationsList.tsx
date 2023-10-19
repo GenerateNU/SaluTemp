@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, Text, View, Button, TouchableHighlight } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation, StackActions } from '@react-navigation/native';
 
 
 import colors from '../config/colors';
@@ -10,11 +11,13 @@ interface MedicationListProps {
 }
 
 function MedicationsList(props: MedicationListProps) {
+    const navigation = useNavigation();
+
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Medications</Text>
 
-            <View style={styles.medCard}>
+            <View style={styles.medCard} onTouchEnd={() => navigation.navigate("MedicationOverview")}>
                 <View style={styles.preview}>
                     <TouchableHighlight style={styles.addPhoto}>
                         <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
@@ -26,7 +29,7 @@ function MedicationsList(props: MedicationListProps) {
                 </View>
             </View>
 
-            <View style={styles.medCard}>
+            <View style={styles.medCard} onTouchEnd={() => navigation.navigate("New")}>
                 <View style={styles.preview}>
                     <TouchableHighlight style={styles.addPhoto}>
                         <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
