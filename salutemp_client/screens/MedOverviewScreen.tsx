@@ -1,5 +1,5 @@
 import React from 'react';
-import { AntDesign, FontAwesome5, Entypo } from '@expo/vector-icons';
+import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, SafeAreaView, Text, View, TouchableWithoutFeedback } from 'react-native';
 
 import colors from '../config/colors';
@@ -11,31 +11,50 @@ interface MedOverviewScreenProps {
 function MedOverviewScreen(props: MedOverviewScreenProps) {
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback style={styles.navButton}>
-        <Text>   <Entypo name="chevron-thin-left" size={24} color="black" /></Text>
-      </TouchableWithoutFeedback>
-      <View style={styles.header}>
-        <Text style={styles.title}>Medication Name</Text>
-        <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>
-        <AntDesign name="smileo" size={200} color={colors.coordinatingColor} style={styles.icon} />
+      <View style={styles.topShape}>
+        {/* <TouchableWithoutFeedback style={styles.navButton}>
+          <Text>   <Entypo name="chevron-thin-left" size={24} color="black" /></Text>
+        </TouchableWithoutFeedback> */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Medication Name</Text>
+          <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>
+          <AntDesign name="smileo" size={180} color={colors.coordinatingColor} style={styles.icon} />
+        </View>
       </View>
 
-      <View style={styles.info}>
-        <Text style={styles.subHeadingOne}>Monitor Details</Text>
-        <View>
-          <Text><FontAwesome5 name="temperature-low" size={20} color={colors.coordinatingColor} />  Temperature: %</Text>
+      <View style={styles.monitorDetails}>
+        <View style={styles.card}>
+          <Text>Temperature</Text>
+          <View style={styles.row}>
+            <Text>46°F </Text>
+            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+          </View>
         </View>
 
         <View style={styles.card}>
-          <Text>   Humidity: %</Text>
+          <Text>Humidity</Text>
+          <View style={styles.row}>
+            <Text>95%</Text>
+            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+          </View>
         </View>
 
-        <Text><Entypo name="light-bulb" size={22} color={colors.coordinatingColor} />  Light: %</Text>
+        <View style={styles.card}>
+          <Text>Light</Text>
+          <View style={styles.row}>
+            <Text>22 lumens</Text>
+            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+          </View>
+        </View>
       </View>
 
-      <View style={styles.button}>
-        <Text style={styles.textOnDark}>Dosage Reminder</Text>
+      <View style={styles.navBar}>
+
       </View>
+
+      {/* <View style={styles.button}>
+        <Text style={styles.textOnDark}>Dosage Reminder</Text>
+      </View> */}
     </SafeAreaView>
   );
 }
@@ -44,6 +63,15 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flexDirection: 'column',
+  },
+
+  topShape: {
+    backgroundColor: colors.lightNeutral,
+    height: 350,
+    width: 'auto',
+    borderBottomLeftRadius: 200,
+    borderBottomRightRadius: 200,
+    marginBottom: 20
   },
 
   navButton: {
@@ -74,7 +102,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 
-  info: {
+  monitorDetails: {
     alignSelf: 'center',
     padding: 20,
     gap: 20,
@@ -101,11 +129,24 @@ const styles = StyleSheet.create({
 
   card: {
     alignSelf: 'center',
-    padding: 20,
-    backgroundColor: colors.lightNeutral,
+    gap: 5,
+    padding: 15,
+    backgroundColor: colors.grey,
     borderRadius: 20,
-    height: 140,
-    width: 340,
+    height: 70,
+    width: 280,
+  },
+
+  colorTab: {
+    height: 70,
+    width: 5,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20
+  },
+
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
 
   textOnDark: {
@@ -114,6 +155,15 @@ const styles = StyleSheet.create({
     color: colors.lightNeutral,
     lineHeight: 17,
   },
+
+  navBar: {
+    backgroundColor: colors.coordinatingColor,
+    height: 80,
+    width: 'auto',
+    borderTopLeftRadius: 160,
+    borderTopRightRadius: 160,
+    marginTop: 30
+  }
 });
 
 export default MedOverviewScreen;

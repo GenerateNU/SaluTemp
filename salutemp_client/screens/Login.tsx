@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet, Image } from 'react-native';
 import { FIREBASE_AUTH } from '../firebaseConfig';
 import { signInWithEmailAndPassword, onAuthStateChanged, User } from 'firebase/auth';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, StackActions } from '@react-navigation/native';
 
 const Login = () => {
 
@@ -52,8 +52,9 @@ const Login = () => {
 
   if (user) {
     // User is logged in
-    navigation.navigate("Home");
-    console.log('home');
+    navigation.dispatch(StackActions.replace('MedList'))
+    // navigation.navigate("MedicationOverview");
+    console.log('MedicationOverview');
   } else {
     // User is not logged in
     return (

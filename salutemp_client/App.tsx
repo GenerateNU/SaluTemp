@@ -7,6 +7,7 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import MedOverviewScreen from './screens/MedOverviewScreen';
 import NewMedScreen from './screens/NewMedScreen';
+import MedicationsList from './screens/MedicationsList';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,31 @@ export default function App() {
           options={{
             title: 'Register'
           }}
+        />        
+        <Stack.Screen
+          name="MedicationOverview"
+          component={MedOverviewScreen}
+          options={{
+            headerShown: true
+          }
+          }
+        />       
+        <Stack.Screen
+          name="New"
+          component={NewMedScreen}
+          options={{
+            headerShown: true
+          }
+          }
+        />        
+        <Stack.Screen
+          name="MedList"
+          component={MedicationsList}
+          options={{
+            headerShown: false
+          }
+          }
+          
         />
       </Stack.Navigator>
     </NavigationContainer>
