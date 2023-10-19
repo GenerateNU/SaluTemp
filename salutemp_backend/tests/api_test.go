@@ -12,7 +12,6 @@ import (
 
 	"github.com/huandu/go-assert"
 	"github.com/jackc/pgx"
-
 )
 
 func TestGetBooks(t *testing.T) {
@@ -62,14 +61,13 @@ func TestGetBooks(t *testing.T) {
 	var err2 error
 	a := assert.New(t)
 
-	err2 = json.Unmarshal(w.Body.Bytes(), &responseMedication);
-	a.NilError(t, err2,"Error unmarshaling JSON response" )
-
+	err2 = json.Unmarshal(w.Body.Bytes(), &responseMedication)
+	a.NilError(t, err2, "Error unmarshaling JSON response")
 
 	// Define the expected medication data
 	expectedMedication := model.Medication{
 		MedID:  1738,
-		Title:  "The Lightning Thief",  // Updated expected title
+		Title:  "The Lightning Thief", // Updated expected title
 		Author: "Rick Riordan",
 	}
 
