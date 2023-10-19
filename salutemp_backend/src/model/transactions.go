@@ -2,7 +2,8 @@ package model
 
 import (
 	"fmt"
-    "strconv"
+	"strconv"
+
 	"github.com/jackc/pgx"
 )
 
@@ -87,7 +88,6 @@ func WritePatientToDb(pool *pgx.Conn, patient Patient) (Patient, error) {
 	var insertedPatient Patient
 
 	err := pool.QueryRow("INSERT INTO patients (id, name) VALUES ($1, $2) RETURNING id;", strconv.FormatInt(patient.ID, 10), patient.Name).Scan(&insertedPatient.ID)
-
 
 	if err != nil {
 		return Patient{}, err
