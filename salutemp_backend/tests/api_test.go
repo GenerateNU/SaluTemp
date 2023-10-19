@@ -14,15 +14,15 @@ import (
 	"github.com/jackc/pgx"
 )
 
-func TestGetBooks(t *testing.T) {
+func TestGetMedication(t *testing.T) {
 	db_url, exists := os.LookupEnv("DATABASE_URL")
 
 	cfg := pgx.ConnConfig{
 		User:     "user",
-		Database: "bootcamp",
+		Database: "salutemp",
 		Password: "pwd",
 		Host:     "localhost",
-		Port:     5433,
+		Port:     5434,
 	}
 	var err error
 	if exists {
@@ -50,22 +50,27 @@ func TestGetBooks(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	req, _ := http.NewRequest("GET", "/v1/medications/1738", nil)
-
+	req, _ := http.NewRequest("GET", "/v1/medications/301", nil)
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, 200, w.Code)
+	// Check for HTTP Status OK (200)
+	assert.Equal(t, http.StatusOK, w.Code)
 
-	var meds model.Medication
+	var responseMedication model.Medication
 
-	if e := json.Unmarshal(w.Body.Bytes(), &meds); e != nil {
-		panic(err)
+	var err2 error
+	a := assert.New(t)
+
+	err2 = json.Unmarshal(w.Body.Bytes(), &responseMedication)
+	a.NilError(t, err2, "Error unmarshaling JSON response")
+
+	// Define the expected medication data
+	expectedMedication := model.Medication{
+		MedicationID:   301,
+		MedicationName: "TestMed",
 	}
 
-	test_book := model.Medication{
-		MedID:  1738,
-		Title:  "Percy Jackson and the Olympians - The Lighning Thief",
-		Author: "Rick Riordan",
-	}
-	assert.Equal(t, test_book, meds)
+	// Check individual fields of the response
+	assert.Equal(t, expectedMedication.MedicationID, responseMedication.MedicationID)
+	assert.Equal(t, expectedMedication.MedicationName, responseMedication.MedicationName)
 }
