@@ -330,7 +330,6 @@ func GetAllAlertsFromDB(pool *pgx.Conn) ([]Alert, error) {
     return alerts, rows.Err()
 }
 
-
 // CRUD functions for the status_report table
 // WriteStatusReportToDb inserts a new status report into the database.
 func WriteStatusReportToDb(pool *pgx.Conn, report StatusReport) (StatusReport, error) {
@@ -339,6 +338,7 @@ func WriteStatusReportToDb(pool *pgx.Conn, report StatusReport) (StatusReport, e
         VALUES ($1, $2, $3, $4, $5) RETURNING event_time, stored_medication_id;`,
 		report.EventTime, report.StoredMedicationID, report.Temperature, report.Humidity, report.Light).
 		Scan(&insertedReport.EventTime, &insertedReport.StoredMedicationID)
+
 	if err != nil {
 		return StatusReport{}, err
 	}

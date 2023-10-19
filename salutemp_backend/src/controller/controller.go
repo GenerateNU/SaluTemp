@@ -5,11 +5,11 @@ import (
 	"salutemp/backend/src/model"
 	"strconv"
 
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"fmt"
 	"time"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 type Controller interface {
@@ -34,7 +34,6 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, pg.Medication(intId))
 	})
 
-
 	r.GET("/v1/medications/", func(c *gin.Context) {
 		meds, err := pg.AllMedications()
 		if err != nil {
@@ -44,7 +43,7 @@ func (pg *PgController) Serve() *gin.Engine {
 	})
 
 	r.POST("/v1/addmedications", func(c *gin.Context) {
-		var med model.Medication	
+		var med model.Medication
 
 		if err := c.BindJSON(&med); err != nil {
 			c.JSON(http.StatusBadRequest, "Failed to unmarshal medication")
@@ -54,12 +53,9 @@ func (pg *PgController) Serve() *gin.Engine {
 
 		fmt.Println(med)
 
-
-
 		insertedMed, err := pg.AddMedication(med)
 		fmt.Println(insertedMed)
 		fmt.Println(err)
-
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, "Failed to add a medication")
@@ -72,7 +68,7 @@ func (pg *PgController) Serve() *gin.Engine {
 	r.DELETE("/v1/medications/:medID", func(c *gin.Context) {
 		id := c.Param("medID")
 		intID, err := strconv.Atoi(id)
-	
+
 		if err != nil {
 			c.JSON(http.StatusBadRequest, "Invalid medID")
 			return
@@ -84,23 +80,21 @@ func (pg *PgController) Serve() *gin.Engine {
 			c.JSON(http.StatusInternalServerError, "Failed to delete medication")
 			return
 		}
-	
+
 		c.JSON(http.StatusOK, "Medication deleted successfully")
 	})
-	
-
 
 	r.PUT("/v1/medications/:medID", func(c *gin.Context) {
 		var med model.Medication
-	
+
 		if err := c.BindJSON(&med); err != nil {
 			c.JSON(http.StatusBadRequest, "Failed to unmarshal medication")
 			return
 		}
-	
+
 		id := c.Param("medID")
 		intID, err := strconv.Atoi(id)
-	
+
 		if err != nil {
 			c.JSON(http.StatusBadRequest, "Invalid medID")
 			return
@@ -108,16 +102,16 @@ func (pg *PgController) Serve() *gin.Engine {
 	
 		med.MedicationID = intID
 	
+
 		err = pg.EditMedication(med)
-	
+
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Failed to edit medication")
 			return
 		}
-	
+
 		c.JSON(http.StatusOK, "Medication edited successfully")
 	})
-
 
 	//user routes
 
@@ -155,14 +149,18 @@ func (pg *PgController) Serve() *gin.Engine {
             panic(err)
         }
 
-        c.JSON(http.StatusOK, insertedPatient)
-    })
+		if err != nil {
+			c.JSON(http.StatusBadRequest, "Failed to add a patient")
+			panic(err)
+		}
 
+		c.JSON(http.StatusOK, insertedPatient)
+	})
 
 	r.DELETE("/v1/users/:id", func(c *gin.Context) {
 		id := c.Param("id")
 		intID, err := strconv.Atoi(id)
-	
+
 		if err != nil {
 			c.JSON(http.StatusBadRequest, "Invalid ID")
 			return
@@ -181,14 +179,15 @@ func (pg *PgController) Serve() *gin.Engine {
 	r.PUT("/v1/users/:id", func(c *gin.Context) {
 		var user model.User
 	
+
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, "Failed to unmarshal user")
 			return
 		}
-	
+
 		id := c.Param("id")
 		intID, err := strconv.Atoi(id)
-	
+
 		if err != nil {
 			c.JSON(http.StatusBadRequest, "Invalid ID")
 			return
@@ -202,12 +201,10 @@ func (pg *PgController) Serve() *gin.Engine {
 			c.JSON(http.StatusInternalServerError, "Failed to edit user")
 			return
 		}
-	
+
 		c.JSON(http.StatusOK, "User edited successfully")
 	})
 
-
-	
 	//stored medication routes
 
 	r.GET("/v1/storedmedications/:id", func(c *gin.Context) {
