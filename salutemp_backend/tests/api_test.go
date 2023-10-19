@@ -14,7 +14,7 @@ import (
 	"github.com/jackc/pgx"
 )
 
-func TestGetBooks(t *testing.T) {
+func TestGetMedication(t *testing.T) {
 	db_url, exists := os.LookupEnv("DATABASE_URL")
 
 	cfg := pgx.ConnConfig{
@@ -50,7 +50,7 @@ func TestGetBooks(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	req, _ := http.NewRequest("GET", "/v1/medications/1738", nil)
+	req, _ := http.NewRequest("GET", "/v1/medications/301", nil)
 	router.ServeHTTP(w, req)
 
 	// Check for HTTP Status OK (200)
@@ -66,13 +66,11 @@ func TestGetBooks(t *testing.T) {
 
 	// Define the expected medication data
 	expectedMedication := model.Medication{
-		MedID:  1738,
-		Title:  "The Lightning Thief", // Updated expected title
-		Author: "Rick Riordan",
+		MedicationID:   301,
+		MedicationName: "TestMed",
 	}
 
 	// Check individual fields of the response
-	assert.Equal(t, expectedMedication.MedID, responseMedication.MedID)
-	assert.Equal(t, expectedMedication.Title, responseMedication.Title)
-	assert.Equal(t, expectedMedication.Author, responseMedication.Author)
+	assert.Equal(t, expectedMedication.MedicationID, responseMedication.MedicationID)
+	assert.Equal(t, expectedMedication.MedicationName, responseMedication.MedicationName)
 }
