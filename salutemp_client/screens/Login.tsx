@@ -3,6 +3,7 @@ import { View, TextInput, Button, Alert, StyleSheet, Image } from 'react-native'
 import { FIREBASE_AUTH } from '../firebaseConfig';
 import { signInWithEmailAndPassword, onAuthStateChanged, User } from 'firebase/auth';
 import { useNavigation, StackActions } from '@react-navigation/native';
+import { StackNavigation } from '../App';
 
 const Login = () => {
 
@@ -41,13 +42,15 @@ const Login = () => {
     }
   };
 
+  const { navigate } = useNavigation<StackNavigation>();
+
   const handleRegister = async () => {
     // try {
     //   await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
     // } catch (error) {
     //   Alert.alert('Error', 'An error occurred. Please try again.');
     // }
-    navigation.navigate("Register");
+    navigate("Register");
   };
 
   if (user) {

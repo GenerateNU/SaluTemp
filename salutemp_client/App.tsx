@@ -2,19 +2,30 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationProp } from '@react-navigation/native';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import MedOverviewScreen from './screens/MedOverviewScreen';
 import NewMedScreen from './screens/NewMedScreen';
 import MedicationsList from './screens/MedicationsList';
 
-const Stack = createNativeStackNavigator();
+export type ScreenNames = ["Home", "Login", "Register", "MedicationOverview", "New", "MedList" ] // type these manually
+export type RootStackParamList = Record<ScreenNames[number], undefined>;
+export type StackNavigation = NavigationProp<RootStackParamList>;
 
+const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+      <Stack.Screen
+          name="MedList"
+          component={MedicationsList}
+          options={{
+            headerShown: false
+          }
+          } 
+        />
         <Stack.Screen 
           name='Login' 
           component={Login} 
@@ -45,15 +56,7 @@ export default function App() {
           }
           }
         />        
-        <Stack.Screen
-          name="MedList"
-          component={MedicationsList}
-          options={{
-            headerShown: false
-          }
-          }
-          
-        />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );
