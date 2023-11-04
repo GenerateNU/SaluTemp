@@ -3,6 +3,7 @@ import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, SafeAreaView, Text, View, TouchableWithoutFeedback } from 'react-native';
 
 import colors from '../config/colors';
+import MonitorInfoCard from '../components/MonitorInfoCard';
 
 interface MedOverviewScreenProps {
   // Define any props if necessary
@@ -23,29 +24,9 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
       </View>
 
       <View style={styles.monitorDetails}>
-        <View style={styles.card}>
-          <Text>Temperature</Text>
-          <View style={styles.row}>
-            <Text>46°F </Text>
-            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
-          </View>
-        </View>
-
-        <View style={styles.card}>
-          <Text>Humidity</Text>
-          <View style={styles.row}>
-            <Text>95%</Text>
-            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
-          </View>
-        </View>
-
-        <View style={styles.card}>
-          <Text>Light</Text>
-          <View style={styles.row}>
-            <Text>22 lumens</Text>
-            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
-          </View>
-        </View>
+        <MonitorInfoCard category='Temperature' value='60°'/>
+        <MonitorInfoCard category='Humidity' value='95%'/>
+        <MonitorInfoCard category='Light' value='22 Lumens'/>
       </View>
 
       <View style={styles.navBar}>
