@@ -8,8 +8,10 @@ import NewMedScreen from './screens/NewMedScreen';
 import MedicationsList from './screens/MedicationsList';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import colors from './config/colors';
-import { SimpleLineIcons } from '@expo/vector-icons';
 import { Text } from 'react-native';
+import ReminderIcon from './assets/ReminderIcon.svg';
+import HomeIcon from './assets/HomeIcon.svg';
+import BluetoothIcon from './assets/BluetoothIcon.svg';
 
 export type ScreenNames = ['Home', 'Login', 'Register', 'MedicationOverview', 'New', 'MedList']; // type these manually
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
@@ -43,15 +45,35 @@ export default function App() {
 
 function Tabs() {
   return (
-    <Tab.Navigator screenOptions={{ tabBarStyle: { backgroundColor: colors.darkNeutral } }}>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: { backgroundColor: colors.darkNeutral }
+      }}
+    >
+      <Tab.Screen
+        name="Devices"
+        options={{
+          headerShown: false,
+          tabBarIcon: () => <BluetoothIcon />,
+          tabBarLabel: () => <Text style={{ color: colors.white, fontSize: 12 }}>Devices</Text>
+        }}
+        component={MedicationsList}
+      />
       <Tab.Screen
         name="Medications"
         options={{
           headerShown: false,
-          tabBarIcon: ({ size }) => (
-            <SimpleLineIcons name="home" size={size} color={colors.white} />
-          ),
-          tabBarLabel: () => <Text style={{ color: colors.white }}>Medications</Text>
+          tabBarIcon: () => <HomeIcon />,
+          tabBarLabel: () => <Text style={{ color: colors.white, fontSize: 12 }}>Medications</Text>
+        }}
+        component={MedicationsList}
+      />
+      <Tab.Screen
+        name="Reminders"
+        options={{
+          headerShown: false,
+          tabBarIcon: () => <ReminderIcon />,
+          tabBarLabel: () => <Text style={{ color: colors.white, fontSize: 12 }}>Reminders</Text>
         }}
         component={MedicationsList}
       />

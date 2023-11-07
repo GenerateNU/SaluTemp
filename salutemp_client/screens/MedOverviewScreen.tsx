@@ -2,10 +2,10 @@ import React from 'react';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
 
 import colors from '../config/colors';
 import Header from '../components/Header';
+import EditIcon from '../assets/EditIcon.svg';
 
 interface MedOverviewScreenProps {
   navigation: any;
@@ -22,7 +22,7 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
     />
   );
 
-  const headerRightIcon = <Ionicons name="pencil" size={30} color="white" />;
+  const headerRightIcon = <EditIcon />;
 
   return (
     <View style={styles.container}>
