@@ -26,7 +26,6 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
 
   return (
     <View style={styles.container}>
-      <View style={{ backgroundColor: colors.darkNeutral }} />
       <Header leftIcon={headerLeftIcon} rightIcon={headerRightIcon} />
       <View style={styles.topShape}>
         {/* <TouchableWithoutFeedback style={styles.navButton}>

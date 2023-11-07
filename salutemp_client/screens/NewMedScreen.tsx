@@ -13,7 +13,6 @@ interface NewMedScreenProps {
 const NewMedScreen = ({ navigation }: NewMedScreenProps) => {
   return (
     <View style={styles.container}>
-      <View style={{ backgroundColor: colors.darkNeutral }} />
       <Header
         title="New Medication"
         leftIcon={

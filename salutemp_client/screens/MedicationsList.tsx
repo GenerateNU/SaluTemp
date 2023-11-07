@@ -19,7 +19,6 @@ function MedicationsList() {
 
   return (
     <View style={styles.container}>
-      <View style={{ backgroundColor: colors.darkNeutral }} />
       <Header
         title="Medications"
         rightIcon={
