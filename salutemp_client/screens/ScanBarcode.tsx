@@ -11,26 +11,42 @@ const ScanBarcodeScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.cameraCard}>
-            <MaterialIcons name="add" size={50} color={colors.darkNeutral} />
-            </View>
 
             <TouchableHighlight>
-                <Ionicons name="scan-circle" size={60} color={colors.lightNeutral} />
+                <View style={styles.toggleButton}>
+                    <View style={styles.pill}>
+                        <Text>Manual</Text>
+                    </View>
+                </View>
             </TouchableHighlight>
+
+            <View style={styles.cameraContainer}>
+                <View style={styles.cameraCard}>
+                    <MaterialIcons name="add" size={50} color={colors.darkNeutral} />
+                </View>
+
+                <TouchableHighlight>
+                    <Ionicons name="scan-circle" size={60} color={colors.lightNeutral} />
+                </TouchableHighlight>
+            </View>
         </SafeAreaView>
 
-      
+
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        gap: 20,
+        gap: 60,
         backgroundColor: colors.background,
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+    },
+
+    cameraContainer: {
+        alignItems: 'center',
+        gap: 50
     },
 
     cameraCard: {
@@ -40,7 +56,28 @@ const styles = StyleSheet.create({
         width: 250,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+
+    toggleButton: {
+        backgroundColor: colors.lightNeutral,
+        borderRadius: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 10,
+        height: 40,
+        width: 280
+    },
+
+    pill: {
+        backgroundColor: colors.white,
+        borderRadius: 30,
+        height: 30,
+        width: 140,
+        alignSelf: 'flex-end',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
+
 
 });
 
