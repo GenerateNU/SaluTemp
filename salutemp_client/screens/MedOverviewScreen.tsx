@@ -1,16 +1,33 @@
 import React from 'react';
-import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, SafeAreaView, Text, View, TouchableWithoutFeedback } from 'react-native';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { StyleSheet, Text, View } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 import colors from '../config/colors';
+import Header from '../components/Header';
 
 interface MedOverviewScreenProps {
-  // Define any props if necessary
+  navigation: any;
 }
 
 function MedOverviewScreen(props: MedOverviewScreenProps) {
+  const headerLeftIcon = (
+    <AntDesign
+      name="left"
+      style={styles.add}
+      size={30}
+      color={colors.white}
+      onTouchEnd={() => props.navigation.dispatch(CommonActions.goBack())}
+    />
+  );
+
+  const headerRightIcon = <Ionicons name="pencil" size={30} color="white" />;
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <View style={{ backgroundColor: colors.darkNeutral }} />
+      <Header leftIcon={headerLeftIcon} rightIcon={headerRightIcon} />
       <View style={styles.topShape}>
         {/* <TouchableWithoutFeedback style={styles.navButton}>
           <Text>   <Entypo name="chevron-thin-left" size={24} color="black" /></Text>
@@ -18,7 +35,12 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
         <View style={styles.header}>
           <Text style={styles.title}>Medication Name</Text>
           <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>
-          <AntDesign name="smileo" size={180} color={colors.coordinatingColor} style={styles.icon} />
+          <AntDesign
+            name="smileo"
+            size={180}
+            color={colors.coordinatingColor}
+            style={styles.icon}
+          />
         </View>
       </View>
 
@@ -48,21 +70,19 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
         </View>
       </View>
 
-      <View style={styles.navBar}>
-
-      </View>
+      <View style={styles.navBar}></View>
 
       {/* <View style={styles.button}>
         <Text style={styles.textOnDark}>Dosage Reminder</Text>
       </View> */}
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
-    flexDirection: 'column',
+    flexDirection: 'column'
   },
 
   topShape: {
@@ -76,40 +96,40 @@ const styles = StyleSheet.create({
 
   navButton: {
     alignSelf: 'baseline',
-    marginLeft: 10,
+    marginLeft: 10
   },
 
   header: {
     marginTop: 10,
     alignItems: 'center',
     alignContent: 'center',
-    gap: 10,
+    gap: 10
   },
 
   dosage: {
     alignItems: 'center',
-    alignContent: 'center',
+    alignContent: 'center'
   },
 
   title: {
     fontSize: 30,
     fontWeight: '500',
-    color: colors.black,
+    color: colors.black
   },
 
   icon: {
     marginTop: 30,
-    marginBottom: 30,
+    marginBottom: 30
   },
 
   monitorDetails: {
     alignSelf: 'center',
     padding: 20,
-    gap: 20,
+    gap: 20
   },
 
   subHeadingOne: {
-    fontSize: 20,
+    fontSize: 20
   },
 
   button: {
@@ -119,12 +139,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkNeutral,
     borderRadius: 20,
     height: 60,
-    width: 310,
+    width: 310
   },
 
   subHeadingTwo: {
     fontSize: 12,
-    color: colors.black,
+    color: colors.black
   },
 
   card: {
@@ -134,7 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grey,
     borderRadius: 20,
     height: 70,
-    width: 280,
+    width: 280
   },
 
   colorTab: {
@@ -153,7 +173,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     color: colors.lightNeutral,
-    lineHeight: 17,
+    lineHeight: 17
   },
 
   navBar: {
@@ -163,6 +183,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 160,
     borderTopRightRadius: 160,
     marginTop: 30
+  },
+
+  add: {
+    textAlign: 'left'
   }
 });
 
