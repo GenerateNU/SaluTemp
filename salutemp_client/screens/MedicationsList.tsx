@@ -8,6 +8,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../App';
 import Header from '../components/Header';
+import AddIcon from '../assets/AddIcon.svg';
 
 function MedicationsList() {
   const { navigate } = useNavigation<StackNavigation>();
@@ -19,18 +20,7 @@ function MedicationsList() {
 
   return (
     <View style={styles.container}>
-      <Header
-        title="Medications"
-        rightIcon={
-          <MaterialIcons
-            name="add"
-            size={40}
-            style={styles.add}
-            color={colors.white}
-            onTouchEnd={() => navigate('New')}
-          />
-        }
-      />
+      <Header title="Medications" rightIcon={<AddIcon />} rightAction={() => navigate('New')} />
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.medicationsList}>
         {medicationsList &&
           medicationsList.map((ml, index) => (

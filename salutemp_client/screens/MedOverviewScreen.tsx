@@ -2,6 +2,7 @@ import React from 'react';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 import { CommonActions } from '@react-navigation/native';
+import LeftArrow from '../assets/LeftArrow.svg';
 
 import colors from '../config/colors';
 import Header from '../components/Header';
@@ -12,21 +13,13 @@ interface MedOverviewScreenProps {
 }
 
 function MedOverviewScreen(props: MedOverviewScreenProps) {
-  const headerLeftIcon = (
-    <AntDesign
-      name="left"
-      style={styles.add}
-      size={30}
-      color={colors.white}
-      onTouchEnd={() => props.navigation.dispatch(CommonActions.goBack())}
-    />
-  );
-
-  const headerRightIcon = <EditIcon />;
-
   return (
     <View style={styles.container}>
-      <Header leftIcon={headerLeftIcon} rightIcon={headerRightIcon} />
+      <Header
+        leftIcon={<LeftArrow height={24} />}
+        leftAction={() => props.navigation.dispatch(CommonActions.goBack())}
+        rightIcon={<EditIcon height={24} />}
+      />
       <View style={styles.topShape}>
         {/* <TouchableWithoutFeedback style={styles.navButton}>
           <Text>   <Entypo name="chevron-thin-left" size={24} color="black" /></Text>

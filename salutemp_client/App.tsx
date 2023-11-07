@@ -8,7 +8,7 @@ import NewMedScreen from './screens/NewMedScreen';
 import MedicationsList from './screens/MedicationsList';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import colors from './config/colors';
-import { Text } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import ReminderIcon from './assets/ReminderIcon.svg';
 import HomeIcon from './assets/HomeIcon.svg';
 import BluetoothIcon from './assets/BluetoothIcon.svg';
@@ -55,7 +55,7 @@ function Tabs() {
         options={{
           headerShown: false,
           tabBarIcon: () => <BluetoothIcon />,
-          tabBarLabel: () => <Text style={{ color: colors.white, fontSize: 12 }}>Devices</Text>
+          tabBarLabel: () => <Text style={styles.text}>Devices</Text>
         }}
         component={MedicationsList}
       />
@@ -64,7 +64,7 @@ function Tabs() {
         options={{
           headerShown: false,
           tabBarIcon: () => <HomeIcon />,
-          tabBarLabel: () => <Text style={{ color: colors.white, fontSize: 12 }}>Medications</Text>
+          tabBarLabel: () => <Text style={styles.text}>Medications</Text>
         }}
         component={MedicationsList}
       />
@@ -73,7 +73,7 @@ function Tabs() {
         options={{
           headerShown: false,
           tabBarIcon: () => <ReminderIcon />,
-          tabBarLabel: () => <Text style={{ color: colors.white, fontSize: 12 }}>Reminders</Text>
+          tabBarLabel: () => <Text style={styles.text}>Reminders</Text>
         }}
         component={MedicationsList}
       />
@@ -90,3 +90,7 @@ function Tabs() {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  text: { color: colors.white, fontSize: 12 }
+});

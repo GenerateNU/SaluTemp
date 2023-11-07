@@ -4,26 +4,19 @@ import { MaterialIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 import Header from '../components/Header';
 import { CommonActions } from '@react-navigation/native';
-import { AntDesign } from '@expo/vector-icons';
+import LeftArrow from '../assets/LeftArrow.svg';
 
 interface NewMedScreenProps {
   navigation: any;
 }
 
-const NewMedScreen = ({ navigation }: NewMedScreenProps) => {
+const NewMedScreen = (props: NewMedScreenProps) => {
   return (
     <View style={styles.container}>
       <Header
-        title="New Medication"
-        leftIcon={
-          <AntDesign
-            name="left"
-            style={styles.add}
-            size={30}
-            color={colors.white}
-            onTouchEnd={() => navigation.dispatch(CommonActions.goBack())}
-          />
-        }
+        title="Add New Medication"
+        leftIcon={<LeftArrow height={24} />}
+        leftAction={() => props.navigation.dispatch(CommonActions.goBack())}
       />
       <View style={styles.titleAndChildren}>
         <Text style={styles.title}>Medication Info</Text>
