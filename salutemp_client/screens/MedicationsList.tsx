@@ -34,7 +34,7 @@ function MedicationsList() {
                   />
                 </TouchableHighlight>
                 <View style={styles.preview}>
-                  <View>
+                  <View style={{ gap: 5 }}>
                     <Text style={{ fontSize: 18 }}>{ml.name}</Text>
                     <Text style={styles.subtitle}>Status: {Status[ml.status]}</Text>
                   </View>
