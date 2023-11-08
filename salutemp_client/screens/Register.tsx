@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TextInput, Button, Alert, StyleSheet, Image } from 'react-native';
+import { View, TextInput, Button, Alert, StyleSheet, Image } from 'react-native';
 import { FIREBASE_AUTH } from '../firebaseConfig';
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  User,
-  sendEmailVerification
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, User } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../App';
 
