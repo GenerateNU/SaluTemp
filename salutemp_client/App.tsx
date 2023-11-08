@@ -9,9 +9,9 @@ import MedicationsList from './screens/MedicationsList';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import colors from './config/colors';
 import { Text, StyleSheet } from 'react-native';
-import ReminderIcon from './assets/ReminderIcon.svg';
-import HomeIcon from './assets/HomeIcon.svg';
-import BluetoothIcon from './assets/BluetoothIcon.svg';
+import ReminderIcon from './assets/footer-icons/reminder.svg';
+import HomeIcon from './assets/footer-icons/home.svg';
+import BluetoothIcon from './assets/footer-icons/bluetooth.svg';
 
 export type ScreenNames = ['Home', 'Login', 'Register', 'MedicationOverview', 'New', 'MedList']; // type these manually
 export type RootStackParamList = Record<ScreenNames[number], undefined>;

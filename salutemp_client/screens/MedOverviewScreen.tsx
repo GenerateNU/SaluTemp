@@ -1,23 +1,21 @@
 import React from 'react';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
-import { CommonActions } from '@react-navigation/native';
-import LeftArrow from '../assets/LeftArrow.svg';
+import { useNavigation } from '@react-navigation/native';
+import LeftArrow from '../assets/header-icons/left-arrow.svg';
+import EditIcon from '../assets/header-icons/edit.svg';
 
 import colors from '../config/colors';
 import Header from '../components/Header';
-import EditIcon from '../assets/EditIcon.svg';
+import { StackNavigation } from '../App';
 
-interface MedOverviewScreenProps {
-  navigation: any;
-}
-
-function MedOverviewScreen(props: MedOverviewScreenProps) {
+function MedOverviewScreen() {
+  const { goBack } = useNavigation<StackNavigation>();
   return (
     <View style={styles.container}>
       <Header
         leftIcon={<LeftArrow height={24} />}
-        leftAction={() => props.navigation.dispatch(CommonActions.goBack())}
+        leftAction={() => goBack()}
         rightIcon={<EditIcon height={24} />}
       />
       <View style={styles.topShape}>

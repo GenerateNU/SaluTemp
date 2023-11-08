@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { StyleSheet, SafeAreaView, Text, View } from 'react-native';
 import colors from '../config/colors';
+import { SvgProps } from 'react-native-svg';
 interface HeaderProps {
   title?: string;
-  rightIcon?: any;
+  rightIcon?: ReactNode;
   rightAction?: () => void;
-  leftIcon?: any;
+  leftIcon?: ReactNode;
   leftAction?: () => void;
 }
 

@@ -3,20 +3,18 @@ import { StyleSheet, Text, View, TouchableHighlight, TextInput } from 'react-nat
 import { MaterialIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 import Header from '../components/Header';
-import { CommonActions } from '@react-navigation/native';
-import LeftArrow from '../assets/LeftArrow.svg';
+import { useNavigation } from '@react-navigation/native';
+import LeftArrow from '../assets/header-icons/left-arrow.svg';
+import { StackNavigation } from '../App';
 
-interface NewMedScreenProps {
-  navigation: any;
-}
-
-const NewMedScreen = (props: NewMedScreenProps) => {
+const NewMedScreen = () => {
+  const { goBack } = useNavigation<StackNavigation>();
   return (
     <View style={styles.container}>
       <Header
         title="Add New Medication"
         leftIcon={<LeftArrow height={24} />}
-        leftAction={() => props.navigation.dispatch(CommonActions.goBack())}
+        leftAction={() => goBack()}
       />
       <View style={styles.titleAndChildren}>
         <Text style={styles.title}>Medication Info</Text>

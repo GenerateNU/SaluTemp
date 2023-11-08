@@ -4,11 +4,10 @@ import colors from '../config/colors';
 import { Medication } from '../types';
 import { GetMedications } from '../api/MedicationsApi';
 import MedicationCard from '../components/MedicationCard';
-import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../App';
 import Header from '../components/Header';
-import AddIcon from '../assets/AddIcon.svg';
+import AddIcon from '../assets/header-icons/add.svg';
 
 function MedicationsList() {
   const { navigate } = useNavigation<StackNavigation>();
