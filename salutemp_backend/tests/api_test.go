@@ -10,7 +10,7 @@ import (
 	c "salutemp/backend/src/controller"
 	"salutemp/backend/src/model"
 	"testing"
-
+	"time"
 	"github.com/huandu/go-assert"
 	"github.com/jackc/pgx"
 )
@@ -408,3 +408,417 @@ func TestUser(t *testing.T) {
 	})
 }
 
+func TestStoredMed(t *testing.T) {
+	// Your database connection setup code here
+	db_url, exists := os.LookupEnv("DATABASE_URL")
+
+	cfg := pgx.ConnConfig{
+		User:     "user",
+		Database: "salutemp",
+		Password: "pwd",
+		Host:     "localhost",
+		Port:     5434,
+	}
+	var err error
+	if exists {
+		cfg, err = pgx.ParseConnectionString(db_url)
+
+		if err != nil {
+			panic(err)
+		}
+	}
+	conn, err := pgx.Connect(cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+
+	defer conn.Close()
+
+	m := &model.PgModel{
+		Conn: conn,
+	}
+	c := &c.PgController{
+		Model: m,
+	}
+	router := c.Serve()
+	a:=assert.New(t)
+
+
+	t.Run("TestGetStoredMedicationByID", func(t *testing.T) {
+		// Make a GET request to retrieve the stored medication by ID 1
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("GET", "/v1/storedmedications/1", nil)
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		var retrievedStoredMedication model.StoredMedication
+		err := json.Unmarshal(w.Body.Bytes(), &retrievedStoredMedication)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check if the retrieved stored medication matches the expected data
+		assert.Equal(t, 1, retrievedStoredMedication.StoredMedicationID)
+		assert.Equal(t, 301, retrievedStoredMedication.MedicationID)
+		assert.Equal(t, 200, retrievedStoredMedication.UserID)
+		assert.Equal(t, 70.0, retrievedStoredMedication.CurrentTemperature)
+		assert.Equal(t, 20.0, retrievedStoredMedication.CurrentHumidity)
+		assert.Equal(t, 20.0, retrievedStoredMedication.CurrentLight)
+	})
+
+	t.Run("TestAddAndRetrieveStoredMedication", func(t *testing.T) {
+		// Prepare a new stored medication to add
+		newStoredMedication := model.StoredMedication{
+			StoredMedicationID:  2,
+			MedicationID:       301,
+			UserID:             200,
+			CurrentTemperature:  25.5,
+			CurrentHumidity:     60.0,
+			CurrentLight:        300.0,
+		}
+
+		// Marshal the new stored medication to JSON
+		payload, err := json.Marshal(newStoredMedication)
+		a.NilError(t, err, "Error marshaling JSON request body")
+
+		// Add a new stored medication
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/v1/addstoredmedications", bytes.NewReader(payload))
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		// Retrieve the newly added stored medication
+		w = httptest.NewRecorder()
+		req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/storedmedications/%d", newStoredMedication.StoredMedicationID), nil)
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		var retrievedStoredMedication model.StoredMedication
+		err = json.Unmarshal(w.Body.Bytes(), &retrievedStoredMedication)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check if the retrieved stored medication matches the expected data
+		assert.Equal(t, newStoredMedication.StoredMedicationID, retrievedStoredMedication.StoredMedicationID)
+		assert.Equal(t, newStoredMedication.MedicationID, retrievedStoredMedication.MedicationID)
+		assert.Equal(t, newStoredMedication.UserID, retrievedStoredMedication.UserID)
+		assert.Equal(t, newStoredMedication.CurrentTemperature, retrievedStoredMedication.CurrentTemperature)
+		assert.Equal(t, newStoredMedication.CurrentHumidity, retrievedStoredMedication.CurrentHumidity)
+		assert.Equal(t, newStoredMedication.CurrentLight, retrievedStoredMedication.CurrentLight)
+	})
+
+	t.Run("TestEditAndRetrieveStoredMedication", func(t *testing.T) {
+		// Prepare the updated stored medication data
+		updatedStoredMedication := model.StoredMedication{
+			StoredMedicationID:  2,
+			MedicationID:       301,
+			UserID:             200,
+			CurrentTemperature:  30.0,
+			CurrentHumidity:     50.0,
+			CurrentLight:        250.0,
+		}
+
+		// Marshal the updated stored medication to JSON
+		updatedPayload, err := json.Marshal(updatedStoredMedication)
+		a.NilError(t, err, "Error marshaling JSON request body")
+
+		// Edit the stored medication
+		editRequest, _ := http.NewRequest("PUT", fmt.Sprintf("/v1/storedmedications/%d", updatedStoredMedication.StoredMedicationID), bytes.NewReader(updatedPayload))
+		editResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(editResponseRecorder, editRequest)
+
+		// Check for HTTP Status OK (200) after editing the stored medication
+		assert.Equal(t, http.StatusOK, editResponseRecorder.Code)
+
+		// Retrieve the edited stored medication
+		retrieveRequest, _ := http.NewRequest("GET", fmt.Sprintf("/v1/storedmedications/%d", updatedStoredMedication.StoredMedicationID), nil)
+		retrieveResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(retrieveResponseRecorder, retrieveRequest)
+
+		// Check for HTTP Status OK (200) when retrieving the edited stored medication
+		assert.Equal(t, http.StatusOK, retrieveResponseRecorder.Code)
+
+		var retrievedStoredMedication model.StoredMedication
+		err = json.Unmarshal(retrieveResponseRecorder.Body.Bytes(), &retrievedStoredMedication)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check if the retrieved stored medication's fields match the updated values
+		assert.Equal(t, updatedStoredMedication.CurrentTemperature, retrievedStoredMedication.CurrentTemperature)
+		assert.Equal(t, updatedStoredMedication.CurrentHumidity, retrievedStoredMedication.CurrentHumidity)
+		assert.Equal(t, updatedStoredMedication.CurrentLight, retrievedStoredMedication.CurrentLight)
+	})
+
+	t.Run("TestDeleteStoredMedication", func(t *testing.T) {
+		// Get all stored medications before deletion
+		initialRequest, _ := http.NewRequest("GET", "/v1/storedmedications/", nil)
+		initialResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(initialResponseRecorder, initialRequest)
+
+		// Check for HTTP Status OK (200) when retrieving all stored medications initially
+		assert.Equal(t, http.StatusOK, initialResponseRecorder.Code)
+
+		var initialStoredMedications []model.StoredMedication
+		err := json.Unmarshal(initialResponseRecorder.Body.Bytes(), &initialStoredMedications)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check that there are initially 1 stored medication in the database
+		assert.Equal(t, 2, len(initialStoredMedications))
+		assert.Equal(t, 1, initialStoredMedications[0].StoredMedicationID)
+		assert.Equal(t, 301, initialStoredMedications[0].MedicationID)
+		assert.Equal(t, 200, initialStoredMedications[0].UserID)
+		assert.Equal(t, 70.0, initialStoredMedications[0].CurrentTemperature)
+		assert.Equal(t, 20.0, initialStoredMedications[0].CurrentHumidity)
+		assert.Equal(t, 20.0, initialStoredMedications[0].CurrentLight)
+
+		assert.Equal(t, 2, initialStoredMedications[1].StoredMedicationID)
+		assert.Equal(t, 301, initialStoredMedications[1].MedicationID)
+		assert.Equal(t, 200, initialStoredMedications[1].UserID)
+		assert.Equal(t, 30.0, initialStoredMedications[1].CurrentTemperature)
+		assert.Equal(t, 50.0, initialStoredMedications[1].CurrentHumidity)
+		assert.Equal(t, 250.0, initialStoredMedications[1].CurrentLight)
+
+		// Delete the stored medication with ID 1
+		deleteRequest, _ := http.NewRequest("DELETE", "/v1/storedmedications/2", nil)
+		deleteResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(deleteResponseRecorder, deleteRequest)
+
+		// Check for HTTP Status OK (200) after deleting the stored medication
+		assert.Equal(t, http.StatusOK, deleteResponseRecorder.Code)
+
+		// Get all stored medications after deletion
+		finalRequest, _ := http.NewRequest("GET", "/v1/storedmedications/", nil)
+		finalResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(finalResponseRecorder, finalRequest)
+
+		// Check for HTTP Status OK (200) when retrieving all stored medications after deletion
+		assert.Equal(t, http.StatusOK, finalResponseRecorder.Code)
+
+		var finalStoredMedications []model.StoredMedication
+		err = json.Unmarshal(finalResponseRecorder.Body.Bytes(), &finalStoredMedications)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check that there are no stored medications remaining in the database after deletion
+		assert.Equal(t, 1, len(finalStoredMedications))
+		assert.Equal(t, 1, initialStoredMedications[0].StoredMedicationID)
+		assert.Equal(t, 301, initialStoredMedications[0].MedicationID)
+		assert.Equal(t, 200, initialStoredMedications[0].UserID)
+		assert.Equal(t, 70.0, initialStoredMedications[0].CurrentTemperature)
+		assert.Equal(t, 20.0, initialStoredMedications[0].CurrentHumidity)
+		assert.Equal(t, 20.0, initialStoredMedications[0].CurrentLight)
+	})
+}
+
+func TestAlertAPI(t *testing.T) {
+			// Your database connection setup code here
+	db_url, exists := os.LookupEnv("DATABASE_URL")
+
+	cfg := pgx.ConnConfig{
+		User:     "user",
+		Database: "salutemp",
+		Password: "pwd",
+		Host:     "localhost",
+		Port:     5434,
+	}
+	var err error
+	if exists {
+		cfg, err = pgx.ParseConnectionString(db_url)
+
+		if err != nil {
+			panic(err)
+		}
+	}
+	conn, err := pgx.Connect(cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+
+	defer conn.Close()
+
+	m := &model.PgModel{
+		Conn: conn,
+	}
+	c := &c.PgController{
+		Model: m,
+	}
+	router := c.Serve()
+	a:=assert.New(t)
+
+
+	
+	t.Run("TestGetAlertByID", func(t *testing.T) {
+		// Make a GET request to retrieve the alert by ID 1
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("GET", "/v1/alerts/3", nil)
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		var retrievedAlert model.Alert
+		err := json.Unmarshal(w.Body.Bytes(), &retrievedAlert)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// // Check if the retrieved alert matches the expected data
+		assert.Equal(t, 3, retrievedAlert.WarningID)
+		assert.Equal(t, 1, retrievedAlert.StoredMedicationID)
+		assert.Equal(t, "Test Description!", retrievedAlert.WarningDescription)
+		assert.Equal(t, "TEMPERATURE", retrievedAlert.ConditionType)
+	})
+
+	t.Run("TestAddAndRetrieveAlert", func(t *testing.T) {
+		// Prepare a new alert to add
+		newAlert := model.Alert{
+			WarningID:          4,
+			StoredMedicationID: 1,
+			WarningTimestamp:   time.Now(),
+			WarningDescription: "Low Humidity",
+			ConditionType:      "HUMIDITY",
+		}
+
+		// Marshal the new alert to JSON
+		payload, err := json.Marshal(newAlert)
+		a.NilError(t, err, "Error marshaling JSON request body")
+
+		// Add a new alert
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/v1/addalerts", bytes.NewReader(payload))
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		// Retrieve the newly added alert
+		w = httptest.NewRecorder()
+		req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/alerts/%d", newAlert.WarningID), nil)
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		var retrievedAlert model.Alert
+		err = json.Unmarshal(w.Body.Bytes(), &retrievedAlert)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check if the retrieved alert matches the expected data
+		assert.Equal(t, newAlert.WarningID, retrievedAlert.WarningID)
+		assert.Equal(t, newAlert.StoredMedicationID, retrievedAlert.StoredMedicationID)
+		assert.Equal(t, newAlert.WarningDescription, retrievedAlert.WarningDescription)
+		assert.Equal(t, newAlert.ConditionType, retrievedAlert.ConditionType)
+	})
+
+	t.Run("TestEditAndRetrieveAlert", func(t *testing.T) {
+		// Prepare the updated alert data
+		updatedAlert := model.Alert{
+			WarningID:          4,
+			StoredMedicationID: 1,
+			WarningTimestamp:   time.Now(),
+			WarningDescription: "High Light Exposure",
+			ConditionType:      "LIGHT_EXPOSURE",
+		}
+
+		// Marshal the updated alert to JSON
+		updatedPayload, err := json.Marshal(updatedAlert)
+		a.NilError(t, err, "Error marshaling JSON request body")
+
+		// Edit the alert
+		editRequest, _ := http.NewRequest("PUT", fmt.Sprintf("/v1/alerts/%d", updatedAlert.WarningID), bytes.NewReader(updatedPayload))
+		editResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(editResponseRecorder, editRequest)
+
+		// Check for HTTP Status OK (200) after editing the alert
+		assert.Equal(t, http.StatusOK, editResponseRecorder.Code)
+
+		// Retrieve the edited alert
+		retrieveRequest, _ := http.NewRequest("GET", fmt.Sprintf("/v1/alerts/%d", updatedAlert.WarningID), nil)
+		retrieveResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(retrieveResponseRecorder, retrieveRequest)
+
+		// Check for HTTP Status OK (200) when retrieving the edited alert
+		assert.Equal(t, http.StatusOK, retrieveResponseRecorder.Code)
+
+		var retrievedAlert model.Alert
+		err = json.Unmarshal(retrieveResponseRecorder.Body.Bytes(), &retrievedAlert)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check if the retrieved alert's
+		
+		// Get all alerts after deletion
+		finalRequest, _ := http.NewRequest("GET", "/v1/alerts/4", nil)
+		finalResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(finalResponseRecorder, finalRequest)
+
+		// Check for HTTP Status OK (200) when retrieving all alerts after deletion
+		assert.Equal(t, http.StatusOK, finalResponseRecorder.Code)
+
+		var finalAlert model.Alert
+		err = json.Unmarshal(finalResponseRecorder.Body.Bytes(), &finalAlert)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, updatedAlert.WarningID, finalAlert.WarningID)
+		assert.Equal(t, updatedAlert.StoredMedicationID, finalAlert.StoredMedicationID)
+		assert.Equal(t, updatedAlert.WarningDescription, finalAlert.WarningDescription)
+		assert.Equal(t, updatedAlert.ConditionType, finalAlert.ConditionType)
+	})
+
+	t.Run("TestDeleteAlert", func(t *testing.T) {
+		// Get all alerts before deletion
+		initialRequest, _ := http.NewRequest("GET", "/v1/alerts/", nil)
+		initialResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(initialResponseRecorder, initialRequest)
+	
+		// Check for HTTP Status OK (200) when retrieving all alerts initially
+		assert.Equal(t, http.StatusOK, initialResponseRecorder.Code)
+	
+		var initialAlerts []model.Alert
+		err := json.Unmarshal(initialResponseRecorder.Body.Bytes(), &initialAlerts)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+	
+		// Check that there are initially 3 alerts in the database
+		assert.Equal(t, 2, len(initialAlerts))
+		assert.Equal(t, 3, initialAlerts[0].WarningID)
+		assert.Equal(t, 1, initialAlerts[0].StoredMedicationID)
+		assert.Equal(t, "Test Description!", initialAlerts[0].WarningDescription)
+		assert.Equal(t, "TEMPERATURE", initialAlerts[0].ConditionType)
+
+		assert.Equal(t, 4, initialAlerts[1].WarningID)
+		assert.Equal(t, 1, initialAlerts[1].StoredMedicationID)
+		assert.Equal(t, "High Light Exposure", initialAlerts[1].WarningDescription)
+		assert.Equal(t, "LIGHT_EXPOSURE", initialAlerts[1].ConditionType)
+	
+		// Delete the alert with ID 4
+		deleteRequest, _ := http.NewRequest("DELETE", "/v1/alerts/4", nil)
+		deleteResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(deleteResponseRecorder, deleteRequest)
+	
+		// Check for HTTP Status OK (200) after deleting the alert
+		assert.Equal(t, http.StatusOK, deleteResponseRecorder.Code)
+	
+		// Get all alerts after deletion
+		finalRequest, _ := http.NewRequest("GET", "/v1/alerts/", nil)
+		finalResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(finalResponseRecorder, finalRequest)
+	
+		// Check for HTTP Status OK (200) when retrieving all alerts after deletion
+		assert.Equal(t, http.StatusOK, finalResponseRecorder.Code)
+	
+		var finalAlerts []model.Alert
+		err = json.Unmarshal(finalResponseRecorder.Body.Bytes(), &finalAlerts)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+	
+		// Check that there are 2 alerts remaining in the database after deletion
+		assert.Equal(t, 1, len(finalAlerts))
+	
+		// Verify that the deleted alert is not present in the final alerts list
+		assert.Equal(t, 3, initialAlerts[0].WarningID)
+		assert.Equal(t, 1, initialAlerts[0].StoredMedicationID)
+		assert.Equal(t, "Test Description!", initialAlerts[0].WarningDescription)
+		assert.Equal(t, "TEMPERATURE", initialAlerts[0].ConditionType)
+	})
+	
+}
