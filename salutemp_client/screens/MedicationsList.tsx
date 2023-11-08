@@ -1,13 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
 import colors from '../config/colors';
-import { Medication } from '../types';
+import { Medication, Status } from '../types';
 import { GetMedications } from '../api/MedicationsApi';
-import MedicationCard from '../components/MedicationCard';
+import InformationCard from '../components/InformationCard';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../App';
 import Header from '../components/Header';
 import AddIcon from '../assets/header-icons/add.svg';
+import { MaterialIcons } from '@expo/vector-icons';
 
 function MedicationsList() {
   const { navigate } = useNavigation<StackNavigation>();
@@ -22,9 +23,25 @@ function MedicationsList() {
       <Header title="Medications" rightIcon={<AddIcon />} rightAction={() => navigate('New')} />
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.medicationsList}>
         {medicationsList &&
-          medicationsList.map((ml, index) => (
-            <MedicationCard key={index} name={ml.name} status={ml.status} photo={ml.photo} />
-          ))}
+          medicationsList.map((ml, index) => {
+            return (
+              <InformationCard key={index} status={ml.status}>
+                <TouchableHighlight style={styles.addPhoto}>
+                  <MaterialIcons
+                    style={{ backgroundColor: colors.grey }}
+                    size={20}
+                    color={colors.grey}
+                  />
+                </TouchableHighlight>
+                <View style={styles.preview}>
+                  <View>
+                    <Text style={{ fontSize: 18 }}>{ml.name}</Text>
+                    <Text style={styles.subtitle}>Status: {Status[ml.status]}</Text>
+                  </View>
+                </View>
+              </InformationCard>
+            );
+          })}
       </ScrollView>
     </View>
   );
@@ -65,6 +82,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 20,
     paddingBottom: 30
+  },
+  subtitle: {
+    fontSize: 12
+  },
+  preview: {
+    flexDirection: 'row',
+    paddingLeft: 10
+  },
+  addPhoto: {
+    backgroundColor: colors.grey,
+    borderRadius: 8,
+    height: 60,
+    width: 60,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
 
