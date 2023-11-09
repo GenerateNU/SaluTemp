@@ -1,10 +1,8 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Touchable, TouchableHighlight, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, View, TouchableHighlight, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-
-import colors from '../config/colors';
 import { useNavigation } from '@react-navigation/native';
-
+import colors from '../config/colors';
 
 interface NewMedScreenProps {
   // Define any props if necessary
@@ -13,7 +11,7 @@ interface NewMedScreenProps {
 const NewMedScreen = () => {
 
   const navigation = useNavigation();
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <TouchableHighlight>
@@ -21,7 +19,6 @@ const NewMedScreen = () => {
           <View style={styles.pill}>
             <Text>Manual</Text>
           </View>
-         
         </View>
       </TouchableHighlight>
       <TouchableHighlight style={styles.addPhoto}>

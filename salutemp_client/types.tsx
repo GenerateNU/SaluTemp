@@ -5,3 +5,16 @@ export interface Medication {
   photo?: string;
   //TODO: Add other stuff coming from API
 }
+
+export interface MedInfo {
+  nickname: string;
+  expirationDate: string;
+  notes: string;
+  maxTemp: string;
+  minTemp: string;
+  maxHumidity: string;
+  minHumidity: string;
+  maxLight: string;
+  minLight: string;
+}
+
