@@ -15,16 +15,44 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSExceptionDomains": {
+            "localhost": {
+              "NSExceptionAllowsInsecureHTTPLoads": true
+            }
+          }
+        },
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "useNextNotificationsApi": true
+    },
+    "notification": {
+      "iosDisplayInForeground": true,
+      "androidMode": "collapse"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "264bbfcc-eaa5-4edc-a76f-a4411fbf8569"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/264bbfcc-eaa5-4edc-a76f-a4411fbf8569"
     }
   }
 }
