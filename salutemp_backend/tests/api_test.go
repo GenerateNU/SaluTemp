@@ -822,3 +822,227 @@ func TestAlertAPI(t *testing.T) {
 	})
 	
 }
+
+func TestMedicationConstraintAPI(t *testing.T) {
+	db_url, exists := os.LookupEnv("DATABASE_URL")
+
+	cfg := pgx.ConnConfig{
+		User:     "user",
+		Database: "salutemp",
+		Password: "pwd",
+		Host:     "localhost",
+		Port:     5434,
+	}
+	var err error
+	if exists {
+		cfg, err = pgx.ParseConnectionString(db_url)
+
+		if err != nil {
+			panic(err)
+		}
+	}
+	conn, err := pgx.Connect(cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+
+	defer conn.Close()
+
+	m := &model.PgModel{
+		Conn: conn,
+	}
+	c := &c.PgController{
+		Model: m,
+	}
+	router := c.Serve()
+	a := assert.New(t)
+
+	t.Run("TestGetMedicationConstraint", func(t *testing.T) {
+		// Make a GET request to retrieve the medication constraint by ID 1 and type "example"
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("GET", "/v1/medicationconstraints/301/TEMPERATURE", nil)
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		var retrievedConstraint model.MedicationConstraint
+		err := json.Unmarshal(w.Body.Bytes(), &retrievedConstraint)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check if the retrieved constraint matches the expected data
+		assert.Equal(t, 301, retrievedConstraint.MedicationID)
+		assert.Equal(t, "TEMPERATURE", retrievedConstraint.ConditionType)
+		assert.Equal(t, 90.00, retrievedConstraint.MaxThreshold)
+		assert.Equal(t, 50.00, retrievedConstraint.MinThreshold)
+		assert.Equal(t, "2 Days, 2 Hours, 10 Minutes", retrievedConstraint.Duration)
+	})
+
+
+	t.Run("TestAddAndRetrieveMedicationConstraint", func(t *testing.T) {
+
+		newMedication := model.Medication{
+			MedicationID:   305,
+			MedicationName: "NewMed",
+		}
+
+		// Marshal the new medication to JSON
+		payload1, err := json.Marshal(newMedication)
+		a.NilError(t, err, "Error marshaling JSON request body")
+
+		// Add a new medication
+		w1 := httptest.NewRecorder()
+		req1, _ := http.NewRequest("POST", "/v1/addmedications", bytes.NewReader(payload1))
+		router.ServeHTTP(w1, req1)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w1.Code)
+
+		// Prepare a new medication constraint to add
+		newConstraint := model.MedicationConstraint{
+			MedicationID:  305,
+			ConditionType: "HUMIDITY",
+			MaxThreshold:  15.0,
+			MinThreshold:  7.0,
+			Duration:      "2 weeks",
+		}
+
+		// Marshal the new constraint to JSON
+		payload, err := json.Marshal(newConstraint)
+		a.NilError(t, err, "Error marshaling JSON request body")
+
+		// Add a new medication constraint
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/v1/addmedicationconstraints", bytes.NewReader(payload))
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		// Retrieve the newly added constraint
+		w = httptest.NewRecorder()
+		req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/medicationconstraints/%d/%s", newConstraint.MedicationID, newConstraint.ConditionType), nil)
+		router.ServeHTTP(w, req)
+
+		// Check for HTTP Status OK (200)
+		assert.Equal(t, http.StatusOK, w.Code)
+
+		var retrievedConstraint model.MedicationConstraint
+		err = json.Unmarshal(w.Body.Bytes(), &retrievedConstraint)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check if the retrieved constraint matches the expected data
+		assert.Equal(t, newConstraint.MedicationID, retrievedConstraint.MedicationID)
+		assert.Equal(t, newConstraint.ConditionType, retrievedConstraint.ConditionType)
+		assert.Equal(t, newConstraint.MaxThreshold, retrievedConstraint.MaxThreshold)
+		assert.Equal(t, newConstraint.MinThreshold, retrievedConstraint.MinThreshold)
+		assert.Equal(t, newConstraint.Duration, retrievedConstraint.Duration)
+	})
+
+	t.Run("TestEditAndRetrieveMedicationConstraint", func(t *testing.T) {
+		// Prepare the updated medication constraint data
+		updatedConstraint := model.MedicationConstraint{
+			MedicationID:  305,
+			ConditionType: "HUMIDITY",
+			MaxThreshold:  20.0,
+			MinThreshold:  10.0,
+			Duration:      "3 weeks",
+		}
+
+		// Marshal the updated constraint to JSON
+		updatedPayload, err := json.Marshal(updatedConstraint)
+		a.NilError(t, err, "Error marshaling JSON request body")
+
+		// Edit the medication constraint
+		editRequest, _ := http.NewRequest("PUT", fmt.Sprintf("/v1/medicationconstraints/%d/%s", updatedConstraint.MedicationID, updatedConstraint.ConditionType), bytes.NewReader(updatedPayload))
+		editResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(editResponseRecorder, editRequest)
+
+		// Check for HTTP Status OK (200) after editing the constraint
+		assert.Equal(t, http.StatusOK, editResponseRecorder.Code)
+
+		// Retrieve the edited constraint
+		retrieveRequest, _ := http.NewRequest("GET", fmt.Sprintf("/v1/medicationconstraints/%d/%s", updatedConstraint.MedicationID, updatedConstraint.ConditionType), nil)
+		retrieveResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(retrieveResponseRecorder, retrieveRequest)
+
+		// Check for HTTP Status OK (200) when retrieving the edited constraint
+		assert.Equal(t, http.StatusOK, retrieveResponseRecorder.Code)
+
+		var retrievedConstraint model.MedicationConstraint
+		err = json.Unmarshal(retrieveResponseRecorder.Body.Bytes(), &retrievedConstraint)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check if the retrieved constraint's data matches the updated data
+		assert.Equal(t, updatedConstraint.MedicationID, retrievedConstraint.MedicationID)
+		assert.Equal(t, updatedConstraint.ConditionType, retrievedConstraint.ConditionType)
+		assert.Equal(t, updatedConstraint.MaxThreshold, retrievedConstraint.MaxThreshold)
+		assert.Equal(t, updatedConstraint.MinThreshold, retrievedConstraint.MinThreshold)
+		assert.Equal(t, updatedConstraint.Duration, retrievedConstraint.Duration)
+	})
+
+	t.Run("TestDeleteMedicationConstraint", func(t *testing.T) {
+		// Get all medication constraints before deletion
+		initialRequest, _ := http.NewRequest("GET", "/v1/medicationconstraints/", nil)
+		initialResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(initialResponseRecorder, initialRequest)
+
+		// Check for HTTP Status OK (200) when retrieving all constraints initially
+		assert.Equal(t, http.StatusOK, initialResponseRecorder.Code)
+
+		var initialConstraints []model.MedicationConstraint
+		err := json.Unmarshal(initialResponseRecorder.Body.Bytes(), &initialConstraints)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check that there are initially 2 constraints in the database
+		assert.Equal(t, 2, len(initialConstraints))
+		assert.Equal(t, 301, initialConstraints[0].MedicationID)
+		assert.Equal(t, "TEMPERATURE", initialConstraints[0].ConditionType)
+		assert.Equal(t, 90.0, initialConstraints[0].MaxThreshold)
+		assert.Equal(t, 50.0, initialConstraints[0].MinThreshold)
+		assert.Equal(t, "2 Days, 2 Hours, 10 Minutes", initialConstraints[0].Duration)
+		
+		assert.Equal(t, 305, initialConstraints[1].MedicationID)
+		assert.Equal(t, "HUMIDITY", initialConstraints[1].ConditionType)
+		assert.Equal(t, 20.0, initialConstraints[1].MaxThreshold)
+		assert.Equal(t, 10.0, initialConstraints[1].MinThreshold)
+		assert.Equal(t, "3 weeks", initialConstraints[1].Duration)
+
+		// Delete the constraint with ID 2 and type "test_condition"
+		// Delete the constraint with ID 2 and type "test_condition"
+		deleteRequest, _ := http.NewRequest("DELETE", "/v1/medicationconstraints/305/HUMIDITY", nil)
+		deleteResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(deleteResponseRecorder, deleteRequest)
+
+		// Check for HTTP Status OK (200) after deleting the constraint
+		assert.Equal(t, http.StatusOK, deleteResponseRecorder.Code)
+
+		// Get all medication constraints after deletion
+		finalRequest, _ := http.NewRequest("GET", "/v1/medicationconstraints/", nil)
+		finalResponseRecorder := httptest.NewRecorder()
+		router.ServeHTTP(finalResponseRecorder, finalRequest)
+
+		// Check for HTTP Status OK (200) when retrieving all constraints after deletion
+		assert.Equal(t, http.StatusOK, finalResponseRecorder.Code)
+
+		var finalConstraints []model.MedicationConstraint
+		err = json.Unmarshal(finalResponseRecorder.Body.Bytes(), &finalConstraints)
+		a.NilError(t, err, "Error unmarshaling JSON response")
+
+		// Check that there is 1 constraint remaining in the database after deletion
+		assert.Equal(t, 1, len(finalConstraints))
+
+		// Verify that the deleted constraint is not present in the final constraints list
+		assert.Equal(t, 301, finalConstraints[0].MedicationID)
+		assert.Equal(t, "TEMPERATURE", finalConstraints[0].ConditionType)
+		assert.Equal(t, 90.0, finalConstraints[0].MaxThreshold)
+		assert.Equal(t, 50.0, finalConstraints[0].MinThreshold)
+		assert.Equal(t, "2 Days, 2 Hours, 10 Minutes", finalConstraints[0].Duration)
+	})
+
+}
+
+
+
+
