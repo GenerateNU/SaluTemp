@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, TouchableHighlight, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { GetEntryInfo } from '../api/MedicationInfoApi';
 import colors from '../config/colors';
+import { EntryInfo } from '../types';
 
 interface NewMedScreenProps {
   // Define any props if necessary
@@ -10,7 +12,7 @@ interface NewMedScreenProps {
 
 const NewMedScreen = () => {
 
-  const navigation = useNavigation();
+  const navigation = useNavigation();  
   
   return (
     <SafeAreaView style={styles.container}>

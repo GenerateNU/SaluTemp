@@ -6,7 +6,7 @@ export interface Medication {
   //TODO: Add other stuff coming from API
 }
 
-export interface MedInfo {
+export interface EntryInfo {
   nickname: string;
   expirationDate: string;
   notes: string;
