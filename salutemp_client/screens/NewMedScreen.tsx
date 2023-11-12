@@ -33,7 +33,7 @@ const NewMedScreen = () => {
         </View>
       </TouchableHighlight>
       <TouchableHighlight style={styles.addPhoto}>
-        <MaterialIcons name="add" size={40} color={colors.darkNeutral} />
+        <MaterialIcons name="add" size={40} color={colors.neutral} />
       </TouchableHighlight>
       <View style={styles.titleAndChildren}>
         <Text style={styles.title}>Medication Info</Text>

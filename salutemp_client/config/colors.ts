@@ -3,12 +3,13 @@ export default {
     secondary: "#457B9D",
     coordinatingColor: "#53819E",
     lightNeutral: "#C3D2D7",
+    neutral: "#7F7A71",
     darkNeutral: "#022B3A",
-    grey: "#D9D9D9",
-    background: "#FCF9F3",
+    grey: "#D3CEC5",
+    background: "#EFECE7",
     inactivity: "",
     errors: "#CD6161",
-    bodyText: "#FCFFE8",
+    bodyText: "#1D1D1D",
     black: "#000000",
     white: "#F4F2ED"
 }
