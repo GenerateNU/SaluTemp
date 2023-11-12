@@ -8,28 +8,10 @@ import Register from './screens/Register';
 import MedOverviewScreen from './screens/MedOverviewScreen';
 import NewMedScreen from './screens/NewMedScreen';
 import MedicationsList from './screens/MedicationsList';
-import * as Notifications from 'expo-notifications';
-import { useEffect } from 'react';
-import { registerForPushNotificationsAsync, sendTokenToBackend} from './notificationService';
-
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(token => {
-      if (token) {
-        console.log('Notification token:', token);
-      
-        sendTokenToBackend(token).then(() => {
-          console.log('Token sent to backend successfully');
-        }).catch((error: any) => {
-          console.error('Error sending token to backend:', error);
-        });
-      }
-    });
-  }, []);
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
