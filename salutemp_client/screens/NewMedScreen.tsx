@@ -26,6 +26,7 @@ const NewMedScreen = () => {
     <SafeAreaView style={styles.container}>
       <TouchableHighlight>
         <View style={styles.toggleButton}>
+          <Text>Scan</Text>
           <View style={styles.pill}>
             <Text>Manual</Text>
           </View>
@@ -128,8 +129,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
-
-
   title: {
     backgroundColor: colors.background,
     fontSize: 20,
@@ -200,8 +199,9 @@ const styles = StyleSheet.create({
   toggleButton: {
     backgroundColor: colors.lightNeutral,
     borderRadius: 30,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     padding: 10,
     height: 40,
     width: 280
