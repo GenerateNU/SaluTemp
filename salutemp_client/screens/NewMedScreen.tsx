@@ -10,7 +10,7 @@ interface NewMedScreenProps {
 
 const NewMedScreen = () => {
 
-  const navigation = useNavigation();  
+  const navigation = useNavigation();
   const [medName, setMedName] = useState('');
   const [nickname, setNickname] = useState('');
   const [date, setDate] = useState('');
@@ -21,7 +21,7 @@ const NewMedScreen = () => {
   const [maxLight, setMaxLight] = useState('');
   const [minLight, setMinLight] = useState('');
 
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <TouchableHighlight>
@@ -39,20 +39,19 @@ const NewMedScreen = () => {
         <View style={styles.columnStyle}>
           <Text>Medication Name</Text>
           <TextInput style={styles.textInputThinLong}
-          onChangeText={text => setMedName(text)}
-          value={medName}
+            onChangeText={text => setMedName(text)}
+            value={medName}
           ></TextInput>
         </View>
         <View style={styles.columns}>
           <View style={styles.columnStyle}>
             <Text>Nickname (Optional)</Text>
             <TextInput style={styles.textInputThin}
-            onChangeText={text => setNickname(text)}
-            value={nickname}></TextInput>
+              onChangeText={text => setNickname(text)}
+              value={nickname}></TextInput>
           </View>
           <View style={styles.columnStyle}>
             <Text>Expiration Date</Text>
-            // not sure if date should be left as a string, but this can be changed 
             <TextInput style={styles.textInputThin}
               placeholder="mm / dd / yy"
               onChangeText={text => setDate(text)}
@@ -72,31 +71,31 @@ const NewMedScreen = () => {
           <View style={styles.columnStyle}>
             <Text>Max Temp</Text>
             <TextInput style={styles.textInputThin}
-            onChangeText={text => setMaxTemp(text)}
-            value={maxTemp}></TextInput>
+              onChangeText={text => setMaxTemp(text)}
+              value={maxTemp}></TextInput>
             <Text>Max Humidity</Text>
             <TextInput style={styles.textInputThin}
-            onChangeText={text => setMaxHumid(text)}
-            value={maxHumid}></TextInput>
+              onChangeText={text => setMaxHumid(text)}
+              value={maxHumid}></TextInput>
             <Text>Max Light</Text>
             <TextInput style={styles.textInputThin}
-            onChangeText={text => setMaxLight(text)}
-            value={maxLight}></TextInput>
+              onChangeText={text => setMaxLight(text)}
+              value={maxLight}></TextInput>
           </View>
 
           <View style={styles.columnStyle}>
             <Text>Min Temp</Text>
             <TextInput style={styles.textInputThin}
-            onChangeText={text => setMinTemp(text)}
-            value={minTemp}></TextInput>
+              onChangeText={text => setMinTemp(text)}
+              value={minTemp}></TextInput>
             <Text>Min Humidity</Text>
             <TextInput style={styles.textInputThin}
-            onChangeText={text => setMinHumid(text)}
-            value={minHumid}></TextInput>
+              onChangeText={text => setMinHumid(text)}
+              value={minHumid}></TextInput>
             <Text>Min Light</Text>
             <TextInput style={styles.textInputThin}
-            onChangeText={text => setMinLight(text)}
-            value={minLight}></TextInput>
+              onChangeText={text => setMinLight(text)}
+              value={minLight}></TextInput>
           </View>
         </View>
       </View>
@@ -129,11 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 
-  nestedMedInfo: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 14
-  },
+
 
   title: {
     backgroundColor: colors.background,
@@ -148,11 +143,6 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
 
-  medName: {
-    fontSize: 20,
-    color: colors.bodyText,
-    marginBottom: 10,
-  },
 
   textInputThin: {
     padding: 8,
@@ -206,7 +196,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 10
   },
-  
+
   toggleButton: {
     backgroundColor: colors.lightNeutral,
     borderRadius: 30,
