@@ -26,13 +26,13 @@ func TestMedication(t *testing.T) {
 		Port:     5434,
 	}
 	var err error
-	if exists {
-		cfg, err = pgx.ParseConnectionString(db_url)
+	// if exists {
+	// 	cfg, err = pgx.ParseConnectionString(db_url)
 
-		if err != nil {
-			panic(err)
-		}
-	}
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// }
 	conn, err := pgx.Connect(cfg)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
