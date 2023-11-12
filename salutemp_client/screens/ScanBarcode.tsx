@@ -22,11 +22,11 @@ const ScanBarcodeScreen = () => {
 
             <View style={styles.cameraContainer}>
                 <View style={styles.cameraCard}>
-                    <MaterialIcons name="add" size={50} color={colors.darkNeutral} />
+                    <MaterialIcons name="add" size={50} color={colors.neutral} />
                 </View>
 
                 <TouchableHighlight>
-                    <Ionicons name="scan-circle" size={60} color={colors.lightNeutral} />
+                    <Ionicons name="scan-circle" size={60} color={colors.darkNeutral} />
                 </TouchableHighlight>
             </View>
         </SafeAreaView>

@@ -9,8 +9,9 @@ import MedOverviewScreen from './screens/MedOverviewScreen';
 import NewMedScreen from './screens/NewMedScreen';
 import MedicationsList from './screens/MedicationsList';
 import ScanBarcode from './screens/ScanBarcode';
+import ScanReviewScreen from './screens/ScanReviewScreen';
 
-export type ScreenNames = ["Home", "Login", "Register", "MedicationOverview", "New", "MedList", "Scan"] // type these manually
+export type ScreenNames = ["Home", "Login", "Register", "MedicationOverview", "New", "MedList", "Scan", "ScanReview"] // type these manually
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -61,6 +62,14 @@ export default function App() {
             headerShown: true
           }}
         />
+        <Stack.Screen
+          name="ScanReview"
+          component={ScanReviewScreen}
+          options={{
+            headerShown: true
+          }}
+        />
+    
       </Stack.Navigator>
     </NavigationContainer>
   );
