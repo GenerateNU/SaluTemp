@@ -8,64 +8,74 @@ import EditIcon from '../assets/header-icons/edit.svg';
 import colors from '../config/colors';
 import Header from '../components/Header';
 import { StackNavigation } from '../App';
+import MedOverviewPopup, { MedOverviewTypeEnum } from '../components/MedOverviewPopup';
+import { PaperProvider } from 'react-native-paper';
 
 function MedOverviewScreen() {
+  const [modalVisible, setModalVisible] = React.useState(false);
   const { goBack } = useNavigation<StackNavigation>();
   return (
-    <View style={styles.container}>
-      <Header
-        leftIcon={<LeftArrow height={24} />}
-        leftAction={() => goBack()}
-        rightIcon={<EditIcon height={24} />}
+    <PaperProvider settings={{}}>
+      <MedOverviewPopup
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        medOverviewType={MedOverviewTypeEnum.Temperature}
       />
-      <View style={styles.topShape}>
-        {/* <TouchableWithoutFeedback style={styles.navButton}>
+      <View style={styles.container}>
+        <Header
+          leftIcon={<LeftArrow height={24} />}
+          leftAction={() => goBack()}
+          rightIcon={<EditIcon height={24} />}
+        />
+
+        <View style={styles.topShape}>
+          {/* <TouchableWithoutFeedback style={styles.navButton}>
           <Text>   <Entypo name="chevron-thin-left" size={24} color="black" /></Text>
         </TouchableWithoutFeedback> */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Medication Name</Text>
-          <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>
-          <AntDesign
-            name="smileo"
-            size={180}
-            color={colors.coordinatingColor}
-            style={styles.icon}
-          />
+          <View style={styles.header}>
+            <Text style={styles.title}>Medication Name</Text>
+            <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>
+            <AntDesign
+              name="smileo"
+              size={180}
+              color={colors.coordinatingColor}
+              style={styles.icon}
+            />
+          </View>
         </View>
-      </View>
+        <View style={styles.monitorDetails}>
+          <View style={styles.card} onTouchEnd={() => setModalVisible(!modalVisible)}>
+            <Text>Temperature</Text>
+            <View style={styles.row}>
+              <Text>46°F </Text>
+              <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+            </View>
+          </View>
 
-      <View style={styles.monitorDetails}>
-        <View style={styles.card}>
-          <Text>Temperature</Text>
-          <View style={styles.row}>
-            <Text>46°F </Text>
-            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+          <View style={styles.card}>
+            <Text>Humidity</Text>
+            <View style={styles.row}>
+              <Text>95%</Text>
+              <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+            </View>
+          </View>
+
+          <View style={styles.card}>
+            <Text>Light</Text>
+            <View style={styles.row}>
+              <Text>22 lumens</Text>
+              <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+            </View>
           </View>
         </View>
 
-        <View style={styles.card}>
-          <Text>Humidity</Text>
-          <View style={styles.row}>
-            <Text>95%</Text>
-            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
-          </View>
-        </View>
+        <View style={styles.navBar}></View>
 
-        <View style={styles.card}>
-          <Text>Light</Text>
-          <View style={styles.row}>
-            <Text>22 lumens</Text>
-            <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.navBar}></View>
-
-      {/* <View style={styles.button}>
+        {/* <View style={styles.button}>
         <Text style={styles.textOnDark}>Dosage Reminder</Text>
       </View> */}
-    </View>
+      </View>
+    </PaperProvider>
   );
 }
 
