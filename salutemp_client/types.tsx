@@ -6,15 +6,3 @@ export interface Medication {
   //TODO: Add other stuff coming from API
 }
 
-export interface EntryInfo {
-  nickname: string;
-  expirationDate: string;
-  notes: string;
-  maxTemp: string;
-  minTemp: string;
-  maxHumidity: string;
-  minHumidity: string;
-  maxLight: string;
-  minLight: string;
-}
-
