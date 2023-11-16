@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS status_report;
 DROP TYPE IF EXISTS condition_type;
 DROP TABLE IF EXISTS stored_medication;
 DROP TABLE IF EXISTS medication;
+DROP TABLE IF EXISTS user_device;
 DROP TABLE IF EXISTS "user";
 
 CREATE TYPE condition_type AS ENUM ('TEMPERATURE', 'HUMIDITY', 'LIGHT_EXPOSURE');
@@ -13,7 +14,15 @@ CREATE TABLE IF NOT EXISTS "user" (
     first_name varchar NOT NULL,
     last_name varchar NOT NULL,
     email varchar NOT NULL,
+    push_notification_enabled BOOLEAN DEFAULT FALSE
     PRIMARY KEY (user_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_device (
+    user_device_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    device_id VARCHAR NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user" (user_id)
 );
 
 CREATE TABLE IF NOT EXISTS medication (
