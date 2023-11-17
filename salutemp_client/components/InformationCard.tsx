@@ -17,7 +17,7 @@ export default function InformationCard(props: InformationCardProps) {
 
   const handleTouchEnd = (event: GestureResponderEvent) => {
     if (touchStartPosition === event.nativeEvent.locationY) {
-      // this is going to need to be extracted at some point, but is good for now i think.
+      // TODO: this is going to need to be extracted at some point, but is good for now i think.
       navigate('MedicationOverview');
     }
   };

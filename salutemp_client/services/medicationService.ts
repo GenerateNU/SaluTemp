@@ -1,13 +1,40 @@
-// MEDICATION SERVICES GO HERE
+import axios from 'axios';
+import { Medication, Status } from '../types';
 
-import axios from "axios";
-import { Medication } from "../types";
+import { API_URL } from './apiLinks';
 
-import { API_URL } from "./apiLinks";
-
-export const findMedicationName = async (medication_name: String) => {
+export const findMedicationName = async (medication_name: string) => {
   const response = await axios.get(`${API_URL}/v1/medications/${medication_name}`);
   return response.data;
+};
+
+export const getUserMedications = async (id: string) => {
+  // TODO: update this with an actual api request
+  const medications: Medication[] = [
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Warning },
+    { name: 'temp', status: Status.Bad },
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Bad },
+    { name: 'temp', status: Status.Warning },
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Warning },
+    { name: 'temp', status: Status.Bad },
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Bad },
+    { name: 'temp', status: Status.Warning },
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Warning },
+    { name: 'temp', status: Status.Bad },
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Good },
+    { name: 'temp', status: Status.Bad },
+    { name: 'temp', status: Status.Warning }
+  ];
+
+  return medications;
 };
 
 // *********** THIS IS SAMPLE CODE TAKEN FROM REMO - WILL NEED TO EDIT TO FIT OUT SPECIFICATIONS

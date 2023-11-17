@@ -24,7 +24,9 @@
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "react-native-svg-transformer": "^1.1.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "axios": "^1.6.1",
+    "expo-notifications": "^0.23.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
