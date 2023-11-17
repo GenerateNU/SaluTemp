@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
 import colors from '../config/colors';
 import { Medication, Status } from '../types';
-import { getMedications } from '../services/medtracking-services';
+import { getUserMedications } from '../services/medicationService';
 import InformationCard from '../components/InformationCard';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../App';
@@ -15,7 +15,8 @@ function MedicationsList() {
   const [medicationsList, setMedicationsList] = React.useState<Medication[]>([]);
 
   React.useEffect(() => {
-    getMedications().then((ml) => setMedicationsList(ml));
+    // TODO: Do I need an ID here?
+    getUserMedications('1').then((ml) => setMedicationsList(ml));
   }, []);
 
   return (

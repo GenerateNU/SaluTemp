@@ -27,6 +27,8 @@
     "react-native-svg": "13.9.0",
     "react-native-svg-transformer": "^1.1.0",
     "react-native-web": "~0.19.6",
+    "axios": "^1.6.1",
+    "expo-notifications": "^0.23.0",
     "victory-native": "^36.6.12"
   },
   "devDependencies": {
