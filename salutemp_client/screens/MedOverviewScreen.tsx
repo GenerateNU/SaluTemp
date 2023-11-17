@@ -8,11 +8,14 @@ import EditIcon from '../assets/header-icons/edit.svg';
 import colors from '../config/colors';
 import Header from '../components/Header';
 import { StackNavigation } from '../App';
-import MedOverviewPopup, { MedOverviewTypeEnum } from '../components/MedOverviewPopup';
+import MedOverviewPopup, {
+  MedOverviewTypeEnum
+} from '../components/medication-overview-popup/MedOverviewPopup';
 import { PaperProvider } from 'react-native-paper';
 
 function MedOverviewScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalView, setModalView] = React.useState<MedOverviewTypeEnum>();
   const { goBack } = useNavigation<StackNavigation>();
   return (
     <PaperProvider settings={{}}>
@@ -44,7 +47,12 @@ function MedOverviewScreen() {
           </View>
         </View>
         <View style={styles.monitorDetails}>
-          <View style={styles.card} onTouchEnd={() => setModalVisible(!modalVisible)}>
+          <View
+            style={styles.card}
+            onTouchEnd={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
             <Text>Temperature</Text>
             <View style={styles.row}>
               <Text>46°F </Text>

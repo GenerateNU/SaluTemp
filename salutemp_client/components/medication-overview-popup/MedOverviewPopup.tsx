@@ -2,9 +2,9 @@ import React from 'react';
 import { Pressable, StyleSheet, View, Dimensions } from 'react-native';
 import { Modal, Portal, Text } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
-import colors from '../config/colors';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { Circle } from 'react-native-svg';
+import colors from '../../config/colors';
+import Graph from './Graph';
+import StatusBar from './StatusBar';
 
 interface MedOverviewPopupProps {
   modalVisible: boolean;
@@ -13,6 +13,7 @@ interface MedOverviewPopupProps {
 }
 
 export enum MedOverviewTypeEnum {
+  None,
   Temperature,
   Humidity,
   Light
@@ -52,28 +53,8 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
             alignItems: 'center'
           }}
         >
-          <AnimatedCircularProgress
-            size={300}
-            width={15}
-            fill={fill}
-            rotation={240}
-            duration={1500}
-            arcSweepAngle={240}
-            tintColor={colors.darkRed}
-            backgroundColor="white"
-            padding={20}
-            lineCap="round"
-            renderCap={({ center }) => (
-              <Circle cx={center.x} cy={center.y} r="20" fill="white" stroke="black" />
-            )}
-          >
-            {() => (
-              <View style={{ alignItems: 'center' }}>
-                <Text style={styles.numberStyle}>{fill}°</Text>
-                <Text style={styles.statusStyle}>{status}</Text>
-              </View>
-            )}
-          </AnimatedCircularProgress>
+          <StatusBar />
+          <Graph />
         </View>
       </Modal>
     </Portal>
