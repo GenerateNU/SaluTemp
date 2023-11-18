@@ -8,21 +8,23 @@ import EditIcon from '../assets/header-icons/edit.svg';
 import colors from '../config/colors';
 import Header from '../components/Header';
 import { StackNavigation } from '../App';
-import MedOverviewPopup, {
-  MedOverviewTypeEnum
-} from '../components/medication-overview-popup/MedOverviewPopup';
+import MedOverviewPopup from '../components/medication-overview-popup/MedOverviewPopup';
 import { PaperProvider } from 'react-native-paper';
+import { MedOverviewTypeEnum, Status } from '../types/medications/types';
 
 function MedOverviewScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [modalView, setModalView] = React.useState<MedOverviewTypeEnum>();
+  const [modalType, setModalType] = React.useState<MedOverviewTypeEnum>(
+    MedOverviewTypeEnum.Temperature
+  );
   const { goBack } = useNavigation<StackNavigation>();
   return (
-    <PaperProvider settings={{}}>
+    <PaperProvider>
       <MedOverviewPopup
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        medOverviewType={MedOverviewTypeEnum.Temperature}
+        medOverviewType={modalType}
+        medicationInfo={{ min: 36, max: 46, curr: 40, status: Status.Good }}
       />
       <View style={styles.container}>
         <Header
@@ -50,6 +52,7 @@ function MedOverviewScreen() {
           <View
             style={styles.card}
             onTouchEnd={() => {
+              setModalType(MedOverviewTypeEnum.Temperature);
               setModalVisible(!modalVisible);
             }}
           >
@@ -60,7 +63,13 @@ function MedOverviewScreen() {
             </View>
           </View>
 
-          <View style={styles.card}>
+          <View
+            style={styles.card}
+            onTouchEnd={() => {
+              setModalType(MedOverviewTypeEnum.Humidity);
+              setModalVisible(!modalVisible);
+            }}
+          >
             <Text>Humidity</Text>
             <View style={styles.row}>
               <Text>95%</Text>
@@ -68,7 +77,13 @@ function MedOverviewScreen() {
             </View>
           </View>
 
-          <View style={styles.card}>
+          <View
+            style={styles.card}
+            onTouchEnd={() => {
+              setModalType(MedOverviewTypeEnum.Light);
+              setModalVisible(!modalVisible);
+            }}
+          >
             <Text>Light</Text>
             <View style={styles.row}>
               <Text>22 lumens</Text>
@@ -78,10 +93,6 @@ function MedOverviewScreen() {
         </View>
 
         <View style={styles.navBar}></View>
-
-        {/* <View style={styles.button}>
-        <Text style={styles.textOnDark}>Dosage Reminder</Text>
-      </View> */}
       </View>
     </PaperProvider>
   );
@@ -90,7 +101,8 @@ function MedOverviewScreen() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    height: '100%'
   },
 
   topShape: {

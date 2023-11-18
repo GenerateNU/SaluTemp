@@ -7,7 +7,13 @@ export interface Medication {
 }
 
 export enum Status {
-  Good,
-  Bad,
-  Warning
+  Good = 'Good',
+  Bad = 'Bad',
+  Warning = 'Warning'
+}
+
+export enum MedOverviewTypeEnum {
+  Temperature = 'Temperature',
+  Humidity = 'Humidity',
+  Light = 'Light'
 }

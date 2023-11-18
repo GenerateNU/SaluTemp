@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, GestureResponderEvent } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import colors from '../config/colors';
 import { StackNavigation } from '../App';
-import { Status } from '../types';
 import RightArrow from '../assets/right-arrow.svg';
+import { getStatusColors } from '../types/medications/functions';
+import { Status } from '../types/medications/types';
 
 interface InformationCardProps {
   status: Status;
@@ -41,7 +41,8 @@ export default function InformationCard(props: InformationCardProps) {
       <View
         style={[
           {
-            backgroundColor: getStatusColors(props.status).main
+            backgroundColor: getStatusColors(props.status).main,
+            padding: 10
           },
           styles.medCard,
           styles.topCard
@@ -58,51 +59,28 @@ export default function InformationCard(props: InformationCardProps) {
   );
 }
 
-function getStatusColors(status: Status) {
-  let cardStatusColor = { main: colors.black, side: colors.black };
-  switch (status) {
-    case Status.Good: {
-      cardStatusColor = { main: colors.green, side: colors.darkGreen };
-      break;
-    }
-    case Status.Warning: {
-      cardStatusColor = { main: colors.yellow, side: colors.darkYellow };
-      break;
-    }
-    case Status.Bad: {
-      cardStatusColor = { main: colors.red, side: colors.darkRed };
-      break;
-    }
-  }
-
-  return cardStatusColor;
-}
-
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginLeft: 10,
+    display: 'flex',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center'
   },
   medCard: {
     height: 100,
-    padding: 20,
-    justifyContent: 'center',
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10
+    justifyContent: 'center'
   },
   bottomCard: {
-    width: 360,
-    borderRadius: 10,
-    right: 10,
-    zIndex: 0
+    width: 15,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10
   },
   topCard: {
     width: '90%',
-    zIndex: 1,
-    position: 'absolute'
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10
   },
   cardContentContainer: {
     display: 'flex',

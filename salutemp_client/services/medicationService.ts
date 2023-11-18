@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { Medication, Status } from '../types';
 
 import { API_URL } from './apiLinks';
+import { Medication, Status } from '../types/medications/types';
 
 export const findMedicationName = async (medication_name: string) => {
   const response = await axios.get(`${API_URL}/v1/medications/${medication_name}`);
