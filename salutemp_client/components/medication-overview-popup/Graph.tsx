@@ -11,18 +11,15 @@ import {
 import colors from '../../config/colors';
 import { getMedOverviewTypeSymbol } from '../../types/medications/functions';
 import { MedOverviewTypeEnum } from '../../types/medications/types';
-const data = [
-  { hour: 36, temp: 37 },
-  { hour: 24, temp: 39 },
-  { hour: 18, temp: 44 },
-  { hour: 12, temp: 41 },
-  { hour: 6, temp: 45 },
-  { hour: 0, temp: 39 }
-];
-interface MedOverviewPopupGraphProps {
+
+interface GraphProps {
   type: MedOverviewTypeEnum;
+  min: number;
+  max: number;
+  data: { time: number; point: number }[];
 }
-export default function MedOverviewPopupGraph(props: MedOverviewPopupGraphProps) {
+
+export default function Graph(props: GraphProps) {
   const { width, height } = Dimensions.get('window');
   return (
     <View
@@ -58,7 +55,7 @@ export default function MedOverviewPopupGraph(props: MedOverviewPopupGraphProps)
         <VictoryAxis
           dependentAxis
           tickCount={1}
-          tickValues={[36]}
+          tickValues={[props.min]}
           style={{
             grid: {
               stroke: '#1D1D1D',
@@ -71,7 +68,7 @@ export default function MedOverviewPopupGraph(props: MedOverviewPopupGraphProps)
         <VictoryAxis
           dependentAxis
           tickCount={1}
-          tickValues={[41]}
+          tickValues={[props.max - (props.max - props.min) / 2]}
           tickFormat={(t) => ''}
           style={{
             grid: {
@@ -83,24 +80,24 @@ export default function MedOverviewPopupGraph(props: MedOverviewPopupGraphProps)
         <VictoryAxis
           dependentAxis
           tickCount={1}
-          tickValues={[46]}
+          tickValues={[props.max]}
           style={{ tickLabels: { fontSize: width / 25 } }}
           tickFormat={(t) => `${t}${getMedOverviewTypeSymbol(props.type)}`}
         />
-        <VictoryGroup domain={{ x: [36, 0], y: [36, 46] }}>
+        <VictoryGroup domain={{ x: [props.min, 0], y: [props.min, props.max] }}>
           <VictoryLine
             interpolation="linear"
             style={{
               data: { stroke: '#1D1D1D' }
             }}
-            data={data}
-            y="temp"
-            x="hour"
+            data={props.data}
+            y="point"
+            x="time"
           />
           <VictoryScatter
-            y="temp"
-            x="hour"
-            data={data.filter((d) => d.hour === 12 || d.hour === 24)}
+            y="point"
+            x="time"
+            data={props.data.filter((d) => d.time === 12 || d.time === 24)}
             size={width / 30}
             style={{
               data: {
@@ -111,7 +108,7 @@ export default function MedOverviewPopupGraph(props: MedOverviewPopupGraphProps)
                 fontSize: width / 40
               }
             }}
-            labels={({ datum }: any) => `${datum.temp}${getMedOverviewTypeSymbol(props.type)}`}
+            labels={({ datum }: any) => `${datum.point}${getMedOverviewTypeSymbol(props.type)}`}
             labelComponent={
               <VictoryLabel
                 dy={width / 80}

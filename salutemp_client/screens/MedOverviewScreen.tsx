@@ -24,7 +24,7 @@ function MedOverviewScreen() {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         medOverviewType={modalType}
-        medicationInfo={{ min: 36, max: 46, curr: 40, status: Status.Good }}
+        medicationInfo={{ curr: 40, status: Status.Bad, id: 1 }}
       />
       <View style={styles.container}>
         <Header

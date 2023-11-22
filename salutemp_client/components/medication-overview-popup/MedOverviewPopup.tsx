@@ -6,12 +6,13 @@ import Graph from './Graph';
 import StatusBar from './StatusBar';
 import { getStatusColors } from '../../types/medications/functions';
 import { Status, MedOverviewTypeEnum } from '../../types/medications/types';
+import { getMedicationStatus } from '../../services/medicationService';
 interface MedicationInfo {
   status: Status;
-  min: number;
-  max: number;
   curr: number;
+  id: number;
 }
+
 interface MedOverviewPopupProps {
   modalVisible: boolean;
   setModalVisible: (input: boolean) => void;
@@ -19,9 +20,21 @@ interface MedOverviewPopupProps {
   medicationInfo: MedicationInfo;
 }
 
+export interface MedicationPositionStates {
+  min: number;
+  max: number;
+  data: { time: number; point: number }[];
+}
+
 export default function MedOverviewPopup(props: MedOverviewPopupProps) {
   const hideModal = () => props.setModalVisible(false);
   const { width } = Dimensions.get('window');
+  const [graph, setGraph] = React.useState<MedicationPositionStates | null>(null);
+
+  React.useEffect(() => {
+    getMedicationStatus(props.medicationInfo.id).then((status) => setGraph(status));
+  }, [props.medOverviewType]);
+
   return (
     <Portal>
       <Modal
@@ -56,14 +69,18 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
             alignItems: 'center'
           }}
         >
-          <StatusBar
-            type={props.medOverviewType}
-            min={props.medicationInfo.min}
-            max={props.medicationInfo.max}
-            curr={props.medicationInfo.curr}
-            status={props.medicationInfo.status}
-          />
-          <Graph type={props.medOverviewType} />
+          {graph && (
+            <StatusBar
+              type={props.medOverviewType}
+              min={graph.min}
+              max={graph.max}
+              curr={props.medicationInfo.curr}
+              status={props.medicationInfo.status}
+            />
+          )}
+          {graph && (
+            <Graph type={props.medOverviewType} min={graph.min} max={graph.max} data={graph.data} />
+          )}
         </View>
       </Modal>
     </Portal>

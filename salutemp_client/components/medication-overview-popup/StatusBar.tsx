@@ -20,18 +20,18 @@ export default function StatusBar(props: StatusBarProps) {
   return (
     <View style={{ flex: 1, paddingBottom: 10 }}>
       <AnimatedCircularProgress
-        size={width / 1.5}
+        size={width / 1.7}
         width={width / 30}
         fill={fill}
         rotation={240}
         duration={1000}
         arcSweepAngle={240}
-        tintColor={getStatusColors(props.status).main}
+        tintColor={getStatusColors(props.status).side}
         backgroundColor="white"
         padding={20}
         lineCap="round"
         renderCap={({ center }) => (
-          <Circle cx={center.x} cy={center.y} r={width / 30} fill="white" stroke="black" />
+          <Circle cx={center.x} cy={center.y} r={width / 25} fill="#022B3A" stroke="black" />
         )}
       >
         {() => (
