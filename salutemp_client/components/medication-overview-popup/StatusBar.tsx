@@ -37,23 +37,45 @@ export default function StatusBar(props: StatusBarProps) {
         {() => (
           <>
             <View style={{ alignItems: 'center' }}>
-              <Text style={[styles.numberStyle, { fontSize: width / 8 }]}>
-                {props.curr}
-                {getMedOverviewTypeSymbol(props.type)}
-              </Text>
+              <View
+                style={[
+                  {
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }
+                ]}
+              >
+                <Text style={[styles.numberStyle, { fontSize: width / 8 }]}>{props.curr}</Text>
+                {props.type !== MedOverviewTypeEnum.Humidity ? (
+                  <Text style={[{ fontSize: width / 9 }]}>
+                    {getMedOverviewTypeSymbol(props.type)}
+                  </Text>
+                ) : (
+                  <Text
+                    style={[{ fontSize: width / 25, marginBottom: 'auto', marginTop: width / 50 }]}
+                  >
+                    %
+                  </Text>
+                )}
+              </View>
               <Text style={[styles.numberStyle, { fontSize: width / 14 }]}>{props.status}</Text>
             </View>
           </>
         )}
       </AnimatedCircularProgress>
-      <View style={{ display: 'flex', flexDirection: 'row', top: -width / 6 }}>
-        <Text style={[styles.minMaxStyle, { paddingRight: width / 6, fontSize: width / 25 }]}>
+      <View style={{ display: 'flex', flexDirection: 'row', top: -width / 6.25 }}>
+        <Text style={[styles.minMaxStyle, { paddingRight: width / 6, fontSize: width / 27 }]}>
           {props.min}
-          {getMedOverviewTypeSymbol(props.type)}
+          {props.type !== MedOverviewTypeEnum.Light
+            ? getMedOverviewTypeSymbol(props.type)
+            : ' Lumens'}
         </Text>
-        <Text style={[styles.minMaxStyle, { fontSize: width / 25 }]}>
+        <Text style={[styles.minMaxStyle, { fontSize: width / 27 }]}>
           {props.max}
-          {getMedOverviewTypeSymbol(props.type)}
+          {props.type !== MedOverviewTypeEnum.Light
+            ? getMedOverviewTypeSymbol(props.type)
+            : ' Lumens'}
         </Text>
       </View>
     </View>
@@ -86,7 +108,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   numberStyle: {
-    fontSize: 68,
     fontWeight: '500'
   },
   statusStyle: {

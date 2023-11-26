@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, View, Dimensions, PixelRatio } from 'react-native';
+import { Pressable, StyleSheet, View, Dimensions } from 'react-native';
 import { Modal, Portal, Text } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 import Graph from './Graph';
