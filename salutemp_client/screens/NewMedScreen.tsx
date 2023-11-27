@@ -1,21 +1,21 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Image, TouchableHighlight, TextInput, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-
 import colors from '../config/colors';
+import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
-
-
-interface NewMedScreenProps {
-  // Define any props if necessary
-}
+import LeftArrow from '../assets/header-icons/left-arrow.svg';
+import { StackNavigation } from '../App';
 
 const NewMedScreen = () => {
-
-  const navigation = useNavigation();
-
+  const { goBack } = useNavigation<StackNavigation>();
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <Header
+        title="Add New Medication"
+        leftIcon={<LeftArrow height={24} />}
+        leftAction={() => goBack()}
+      />
       <View style={styles.titleAndChildren}>
         <Text style={styles.title}>Medication Info</Text>
         <View style={styles.medInfo}>
@@ -64,17 +64,21 @@ const NewMedScreen = () => {
           <Text style={styles.titleLight}>Confirm</Text>
         </View>
       </TouchableHighlight>
-    </SafeAreaView>
+    </View>
   );
-}
-
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 20,
     backgroundColor: colors.background,
     flexDirection: 'column',
+    width: '100%',
+    height: '100%'
+  },
+
+  add: {
+    textAlign: 'left'
   },
 
   addPhoto: {
@@ -104,19 +108,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     fontSize: 20,
     fontWeight: '500',
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   titleLight: {
     fontSize: 20,
     fontWeight: '400',
-    color: colors.white,
-  },
-
-  medName: {
-    fontSize: 20,
-    color: colors.bodyText,
-    marginBottom: 10,
+    color: colors.white
   },
 
   textInputThin: {
@@ -125,7 +123,7 @@ const styles = StyleSheet.create({
     width: 160,
     fontSize: 14,
     backgroundColor: colors.grey,
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   textInputWide: {
@@ -135,10 +133,11 @@ const styles = StyleSheet.create({
     height: 80,
     fontSize: 14,
     backgroundColor: colors.grey,
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   titleAndChildren: {
+    paddingTop: 3,
     alignSelf: 'center',
     gap: 14
   },
@@ -162,7 +161,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 10
   }
-
 });
 
 export default NewMedScreen;
