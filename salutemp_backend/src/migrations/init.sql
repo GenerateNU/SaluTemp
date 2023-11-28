@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS user_device;
 DROP TABLE IF EXISTS "user";
 
 CREATE TYPE condition_type AS ENUM ('TEMPERATURE', 'HUMIDITY', 'LIGHT_EXPOSURE');
+CREATE TYPE weekday as ENUM ('SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY');
 
 CREATE TABLE IF NOT EXISTS "user" (
     user_id varchar NOT NULL UNIQUE,
@@ -78,6 +79,14 @@ CREATE TABLE IF NOT EXISTS medication_constraint (
     duration varchar, /*Not sure if we should store this as a time object.*/
     PRIMARY KEY (stored_medication_id, condition_type),
     FOREIGN KEY (stored_medication_id) REFERENCES stored_medication (stored_medication_id)
+);
+
+CREATE TABLE IF NOT EXISTS dosage (
+    stored_medication_id integer NOT NULL UNIQUE,
+    day weekday integer NOT NULL,
+    dose_time timestamp NOT NULL,
+    dose_amount VARCHAR NOT NULL,
+    notes VARCHAR
 );
 
 -- populate
