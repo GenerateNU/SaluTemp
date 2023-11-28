@@ -1,5 +1,24 @@
-import colors from '../../config/colors';
-import { MedOverviewTypeEnum, Status } from './types';
+import colors from '../config/colors';
+
+export interface Medication {
+  // not sure how any of these are stored in the backend so probably will need to be changed.
+  name: string;
+  status: Status;
+  photo?: string;
+  //TODO: Add other stuff coming from API
+}
+
+export enum Status {
+  Good = 'Good',
+  Bad = 'Bad',
+  Warning = 'Warning'
+}
+
+export enum MedOverviewTypeEnum {
+  Temperature = 'Temperature',
+  Humidity = 'Humidity',
+  Light = 'Light'
+}
 
 export function getStatusColors(status: Status) {
   let cardStatusColor = { main: colors.black, side: colors.black };
@@ -19,15 +38,4 @@ export function getStatusColors(status: Status) {
   }
 
   return cardStatusColor;
-}
-
-export function getMedOverviewTypeSymbol(type: MedOverviewTypeEnum) {
-  switch (type) {
-    case MedOverviewTypeEnum.Temperature:
-      return '°';
-    case MedOverviewTypeEnum.Humidity:
-      return '%';
-    case MedOverviewTypeEnum.Light:
-      return 'ᴸ';
-  }
 }

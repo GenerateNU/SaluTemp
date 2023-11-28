@@ -8,7 +8,7 @@ import { StackNavigation } from '../App';
 import Header from '../components/Header';
 import AddIcon from '../assets/header-icons/add.svg';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Medication, Status } from '../types/medications/types';
+import { Medication, Status } from '../types/medicationTypes';
 
 function MedicationsList() {
   const { navigate } = useNavigation<StackNavigation>();

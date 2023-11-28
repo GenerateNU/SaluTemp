@@ -10,7 +10,7 @@ import Header from '../components/Header';
 import { StackNavigation } from '../App';
 import MedOverviewPopup from '../components/medication-overview-popup/MedOverviewPopup';
 import { PaperProvider } from 'react-native-paper';
-import { MedOverviewTypeEnum, Status } from '../types/medications/types';
+import { MedOverviewTypeEnum, Status } from '../types/medicationTypes';
 
 function MedOverviewScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);

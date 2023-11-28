@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { API_URL } from './apiLinks';
-import { Medication, Status } from '../types/medications/types';
+import { Medication, Status } from '../types/medicationTypes';
 import { MedicationPositionStates } from '../components/medication-overview-popup/MedOverviewPopup';
 
 export const findMedicationName = async (medication_name: string) => {

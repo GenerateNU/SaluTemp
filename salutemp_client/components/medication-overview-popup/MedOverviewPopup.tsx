@@ -4,8 +4,7 @@ import { Modal, Portal, Text } from 'react-native-paper';
 import { Feather } from '@expo/vector-icons';
 import Graph from './Graph';
 import StatusBar from './StatusBar';
-import { getStatusColors } from '../../types/medications/functions';
-import { Status, MedOverviewTypeEnum } from '../../types/medications/types';
+import { Status, MedOverviewTypeEnum, getStatusColors } from '../../types/medicationTypes';
 import { getMedicationStatus } from '../../services/medicationService';
 interface MedicationInfo {
   status: Status;
@@ -85,6 +84,17 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
       </Modal>
     </Portal>
   );
+}
+
+export function getMedOverviewTypeSymbol(type: MedOverviewTypeEnum) {
+  switch (type) {
+    case MedOverviewTypeEnum.Temperature:
+      return '°';
+    case MedOverviewTypeEnum.Humidity:
+      return '%';
+    case MedOverviewTypeEnum.Light:
+      return 'ᴸ';
+  }
 }
 
 const styles = StyleSheet.create({

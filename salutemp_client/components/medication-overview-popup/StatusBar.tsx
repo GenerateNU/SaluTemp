@@ -2,8 +2,8 @@ import React from 'react';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { Circle } from 'react-native-svg';
-import { getStatusColors, getMedOverviewTypeSymbol } from '../../types/medications/functions';
-import { MedOverviewTypeEnum, Status } from '../../types/medications/types';
+import { MedOverviewTypeEnum, Status, getStatusColors } from '../../types/medicationTypes';
+import { getMedOverviewTypeSymbol } from './MedOverviewPopup';
 
 interface StatusBarProps {
   type: MedOverviewTypeEnum;
@@ -17,6 +17,7 @@ export default function StatusBar(props: StatusBarProps) {
   const { width } = Dimensions.get('window');
 
   const fill = Math.round(((props.curr - props.min) / (props.max - props.min)) * 100);
+
   return (
     <View style={{ flex: 1, paddingBottom: 10 }}>
       <AnimatedCircularProgress
@@ -47,17 +48,20 @@ export default function StatusBar(props: StatusBarProps) {
                 ]}
               >
                 <Text style={[styles.numberStyle, { fontSize: width / 8 }]}>{props.curr}</Text>
-                {props.type !== MedOverviewTypeEnum.Humidity ? (
-                  <Text style={[{ fontSize: width / 9 }]}>
-                    {getMedOverviewTypeSymbol(props.type)}
-                  </Text>
-                ) : (
-                  <Text
-                    style={[{ fontSize: width / 25, marginBottom: 'auto', marginTop: width / 50 }]}
-                  >
-                    %
-                  </Text>
-                )}
+                <Text
+                  style={
+                    props.type !== MedOverviewTypeEnum.Humidity
+                      ? { fontSize: width / 9, fontWeight: '500' }
+                      : {
+                          fontSize: width / 25,
+                          marginBottom: 'auto',
+                          marginTop: width / 50,
+                          fontWeight: '800'
+                        }
+                  }
+                >
+                  {getMedOverviewTypeSymbol(props.type)}
+                </Text>
               </View>
               <Text style={[styles.numberStyle, { fontSize: width / 14 }]}>{props.status}</Text>
             </View>

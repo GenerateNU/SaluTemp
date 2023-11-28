@@ -3,8 +3,7 @@ import { StyleSheet, View, GestureResponderEvent } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../App';
 import RightArrow from '../assets/right-arrow.svg';
-import { getStatusColors } from '../types/medications/functions';
-import { Status } from '../types/medications/types';
+import { Status, getStatusColors } from '../types/medicationTypes';
 
 interface InformationCardProps {
   status: Status;
