@@ -55,4 +55,6 @@ func startNotificationTicker() {
 
 func buildNotificationBody(pool *pgx.Conn, userId int) (body string) {
 	GetAllStoredMedsFromDBByUser(pool, userId)
+
+	//TODO: Take all stored medications and build a notif for each that is ready to send a reminder.
 }
