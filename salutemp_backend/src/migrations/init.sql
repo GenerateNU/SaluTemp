@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS dosage;
+DROP TYPE IF EXISTS weekday;
 DROP TABLE IF EXISTS medication_constraint;
 DROP TABLE IF EXISTS alert;
 DROP TABLE IF EXISTS status_report;
@@ -82,11 +84,12 @@ CREATE TABLE IF NOT EXISTS medication_constraint (
 );
 
 CREATE TABLE IF NOT EXISTS dosage (
-    stored_medication_id integer NOT NULL UNIQUE,
-    day weekday integer NOT NULL,
+    stored_medication_id integer NOT NULL,
+    day weekday NOT NULL,
     dose_time timestamp NOT NULL,
     dose_amount VARCHAR NOT NULL,
-    notes VARCHAR
+    notes VARCHAR,
+    PRIMARY KEY (stored_medication_id, day, dose_time)
 );
 
 -- populate
