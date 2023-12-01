@@ -3,11 +3,14 @@ import { StyleSheet, Text, View } from 'react-native';
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import Login from './screens/Login';
+import Email from './screens/Email';
 import Register from './screens/Register';
 import MedOverviewScreen from './screens/MedOverviewScreen';
 import NewMedScreen from './screens/NewMedScreen';
 import MedicationsList from './screens/MedicationsList';
+import EmailAndPassword from './screens/EmailAndPassword';
+import Name from './screens/Name';
+import Password from './screens/Password'
 
 const Stack = createNativeStackNavigator();
 
@@ -16,10 +19,31 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen 
-          name='Login' 
-          component={Login} 
+          name='Email' 
+          component={Email} 
           options={{
-            title: 'Login'
+            title: 'Email'
+          }}
+        />
+        <Stack.Screen 
+          name='EmailAndPassword' 
+          component={EmailAndPassword} 
+          options={{
+            title: 'Email and Password'
+          }}
+        />
+        <Stack.Screen 
+          name='Name' 
+          component={Name} 
+          options={{
+            title: 'Name'
+          }}
+        />
+        <Stack.Screen 
+          name='Password' 
+          component={Password} 
+          options={{
+            title: 'Password'
           }}
         />
         <Stack.Screen
