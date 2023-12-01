@@ -1,7 +1,6 @@
 import React from 'react';
-import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, SafeAreaView, Text, View, TouchableWithoutFeedback } from 'react-native';
-
+import { StyleSheet, SafeAreaView, Text, View, Image } from 'react-native';
+import SVG from '../assets/statusGood.svg';
 import colors from '../config/colors';
 import MonitorInfoCard from '../components/MonitorInfoCard';
 
@@ -13,13 +12,10 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topShape}>
-        {/* <TouchableWithoutFeedback style={styles.navButton}>
-          <Text>   <Entypo name="chevron-thin-left" size={24} color="black" /></Text>
-        </TouchableWithoutFeedback> */}
         <View style={styles.header}>
           <Text style={styles.title}>Medication Name</Text>
           <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>
-          <AntDesign name="smileo" size={180} color={colors.coordinatingColor} style={styles.icon} />
+          <Image source={SVG} style={styles.svgs}/>
         </View>
       </View>
 
@@ -32,10 +28,6 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
       <View style={styles.navBar}>
 
       </View>
-
-      {/* <View style={styles.button}>
-        <Text style={styles.textOnDark}>Dosage Reminder</Text>
-      </View> */}
     </SafeAreaView>
   );
 }
@@ -47,7 +39,7 @@ const styles = StyleSheet.create({
   },
 
   topShape: {
-    backgroundColor: colors.lightNeutral,
+    backgroundColor: colors.darkNeutral,
     height: 350,
     width: 'auto',
     borderBottomLeftRadius: 200,
@@ -75,12 +67,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: '500',
-    color: colors.black,
-  },
-
-  icon: {
-    marginTop: 30,
-    marginBottom: 30,
+    color: colors.background,
   },
 
   monitorDetails: {
@@ -105,7 +92,8 @@ const styles = StyleSheet.create({
 
   subHeadingTwo: {
     fontSize: 12,
-    color: colors.black,
+    color: colors.background,
+    marginBottom: 30
   },
 
   card: {
@@ -138,12 +126,17 @@ const styles = StyleSheet.create({
   },
 
   navBar: {
-    backgroundColor: colors.coordinatingColor,
+    backgroundColor: colors.darkNeutral,
     height: 80,
     width: 'auto',
     borderTopLeftRadius: 160,
     borderTopRightRadius: 160,
     marginTop: 30
+  },
+
+  svgs: {
+    height: 180,
+    width: 180
   }
 });
 
