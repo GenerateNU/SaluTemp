@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { Medication, Status } from '../types';
 
 import { API_URL } from './apiLinks';
+import { Medication, Status } from '../types/medicationTypes';
+import { MedicationPositionStates } from '../components/medication-overview-popup/MedOverviewPopup';
 
 export const findMedicationName = async (medication_name: string) => {
   const response = await axios.get(`${API_URL}/v1/medications/${medication_name}`);
@@ -35,6 +36,24 @@ export const getUserMedications = async (id: string) => {
   ];
 
   return medications;
+};
+
+export const getMedicationStatus = async (medId: number) => {
+  // TODO: update this with an actual api request
+  const medicationStatus: MedicationPositionStates = {
+    max: 46,
+    min: 36,
+    data: [
+      { time: 36, point: 37 },
+      { time: 24, point: 39 },
+      { time: 18, point: 44 },
+      { time: 12, point: 41 },
+      { time: 6, point: 45 },
+      { time: 0, point: 39 }
+    ]
+  };
+
+  return medicationStatus;
 };
 
 // *********** THIS IS SAMPLE CODE TAKEN FROM REMO - WILL NEED TO EDIT TO FIT OUT SPECIFICATIONS

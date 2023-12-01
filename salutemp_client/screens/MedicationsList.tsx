@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
 import colors from '../config/colors';
-import { Medication, Status } from '../types';
 import { getUserMedications } from '../services/medicationService';
 import InformationCard from '../components/InformationCard';
 import { useNavigation } from '@react-navigation/native';
@@ -9,6 +8,7 @@ import { StackNavigation } from '../App';
 import Header from '../components/Header';
 import AddIcon from '../assets/header-icons/add.svg';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Medication, Status } from '../types/medicationTypes';
 
 function MedicationsList() {
   const { navigate } = useNavigation<StackNavigation>();
