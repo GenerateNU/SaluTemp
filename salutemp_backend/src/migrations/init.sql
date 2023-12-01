@@ -65,9 +65,50 @@ CREATE TABLE IF NOT EXISTS medication_constraint (
 );
 
 -- populate
-INSERT INTO "user" VALUES (200, 'John', 'Doe', 'johndoe@gmail.com');
-INSERT INTO medication VALUES (301, 'TestMed');
-INSERT INTO stored_medication VALUES (1, 301, 200, 70, 20, 20);
-INSERT INTO alert VALUES (3, 1, current_timestamp, 'Test Description!', 'TEMPERATURE');
-INSERT INTO status_report VALUES (current_timestamp, 1, 70, 20, 20);
-INSERT INTO medication_constraint VALUES (301, 'TEMPERATURE', 90, 50, '2 Days, 2 Hours, 10 Minutes');
+-- Add users
+INSERT INTO "user" VALUES 
+  (201, 'Alice', 'Smith', 'alice.smith@gmail.com'),
+  (202, 'Bob', 'Johnson', 'bob.johnson@gmail.com'),
+  (203, 'Eva', 'Williams', 'eva.williams@gmail.com'),
+  (204, 'Michael', 'Davis', 'michael.davis@gmail.com'),
+  (205, 'Sophia', 'Miller', 'sophia.miller@gmail.com');
+
+-- Add medications
+INSERT INTO medication VALUES 
+  (302, 'MedicationA'),
+  (303, 'MedicationB'),
+  (304, 'MedicationC'),
+  (305, 'MedicationD'),
+  (306, 'MedicationE');
+
+-- Add stored medications
+INSERT INTO stored_medication VALUES 
+  (2, 302, 201, 68, 25, 30),
+  (3, 303, 202, 72, 22, 28),
+  (4, 304, 203, 70, 20, 20),
+  (5, 305, 204, 75, 18, 25),
+  (6, 306, 205, 71, 23, 22);
+
+-- Add alerts
+INSERT INTO alert VALUES 
+  (4, 2, current_timestamp, 'Low temperature alert!', 'TEMPERATURE'),
+  (5, 3, current_timestamp, 'High humidity alert!', 'HUMIDITY'),
+  (6, 4, current_timestamp, 'Light exposure alert!', 'LIGHT_EXPOSURE'),
+  (7, 5, current_timestamp, 'Temperature and humidity alert!', 'TEMPERATURE'),
+  (8, 6, current_timestamp, 'Light exposure alert!', 'LIGHT_EXPOSURE');
+
+-- Add status reports
+INSERT INTO status_report VALUES 
+  (current_timestamp, 2, 68, 25, 30),
+  (current_timestamp, 3, 72, 22, 28),
+  (current_timestamp, 4, 70, 20, 20),
+  (current_timestamp, 5, 75, 18, 25),
+  (current_timestamp, 6, 71, 23, 22);
+
+-- Add medication constraints
+INSERT INTO medication_constraint VALUES 
+  (302, 'TEMPERATURE', 80, 50, '1 Day, 4 Hours'),
+  (303, 'HUMIDITY', 30, 10, '12 Hours'),
+  (304, 'LIGHT_EXPOSURE', 40, 10, '1 Day'),
+  (305, 'TEMPERATURE', 85, 55, '1 Day, 6 Hours'),
+  (306, 'HUMIDITY', 35, 15, '18 Hours');
