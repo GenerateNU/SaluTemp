@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Text, View, Image, Dimensions } from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, Image, Dimensions, ScrollView, TextInput } from 'react-native';
 import statusGood from '../assets/statusGood.svg';
 import union from '../assets/union.svg';
 import colors from '../config/colors';
@@ -15,20 +15,23 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
       <View style={styles.topShape}>
         <View style={styles.header}>
           <Text style={styles.title}>Medication Name</Text>
-          <Image source={union} style={styles.union}/>
-          <Image source={statusGood} style={styles.statusSymbol}/>
+          <Image source={union} style={styles.union} />
+          <Image source={statusGood} style={styles.statusSymbol} />
           <Text style={styles.subHeadingTwo}>Last used date & time</Text>
           <Text style={styles.subHeadingTwo}>Expires on date</Text>
           <Text style={styles.subHeadingTwo}>Lot #</Text>
         </View>
       </View>
 
-      <View style={styles.monitorDetails}>
-
-        <MonitorInfoCard category='Temperature' value='60°'/>
-        <MonitorInfoCard category='Humidity' value='95%'/>
-        <MonitorInfoCard category='Light' value='22 Lumens'/>
-      </View>
+      <ScrollView>
+        <View style={styles.monitorDetails}>
+          <MonitorInfoCard category='Temperature' value='60°' />
+          <MonitorInfoCard category='Humidity' value='95%' />
+          <MonitorInfoCard category='Light' value='22 Lumens' />
+          <Text>Notes</Text>
+          <TextInput style={styles.textInput}></TextInput>
+        </View>
+      </ScrollView>
 
       <View style={styles.navBar}>
 
@@ -149,6 +152,16 @@ const styles = StyleSheet.create({
     top: 80,
     height: 305.9,
     width: Dimensions.get("window").width,
+  },
+
+  textInput: {
+    padding: 8,
+    borderRadius: 20,
+    width: 280,
+    height: 80,
+    fontSize: 14,
+    backgroundColor: colors.grey,
+    color: colors.darkNeutral,
   }
 
 });
