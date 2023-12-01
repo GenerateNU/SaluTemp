@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Text, View, Image } from 'react-native';
-import SVG from '../assets/statusGood.svg';
+import { StyleSheet, SafeAreaView, Text, View, Image, Dimensions } from 'react-native';
+import statusGood from '../assets/statusGood.svg';
+import union from '../assets/union.svg';
 import colors from '../config/colors';
 import MonitorInfoCard from '../components/MonitorInfoCard';
 
@@ -14,12 +15,16 @@ function MedOverviewScreen(props: MedOverviewScreenProps) {
       <View style={styles.topShape}>
         <View style={styles.header}>
           <Text style={styles.title}>Medication Name</Text>
-          <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>
-          <Image source={SVG} style={styles.svgs}/>
+          <Image source={union} style={styles.union}/>
+          <Image source={statusGood} style={styles.statusSymbol}/>
+          <Text style={styles.subHeadingTwo}>Last used date & time</Text>
+          <Text style={styles.subHeadingTwo}>Expires on date</Text>
+          <Text style={styles.subHeadingTwo}>Lot #</Text>
         </View>
       </View>
 
       <View style={styles.monitorDetails}>
+
         <MonitorInfoCard category='Temperature' value='60°'/>
         <MonitorInfoCard category='Humidity' value='95%'/>
         <MonitorInfoCard category='Light' value='22 Lumens'/>
@@ -36,15 +41,13 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flexDirection: 'column',
+    height: Dimensions.get("window").height
   },
 
   topShape: {
     backgroundColor: colors.darkNeutral,
-    height: 350,
-    width: 'auto',
-    borderBottomLeftRadius: 200,
-    borderBottomRightRadius: 200,
-    marginBottom: 20
+    height: 230,
+    width: Dimensions.get("window").width,
   },
 
   navButton: {
@@ -74,6 +77,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 20,
     gap: 20,
+    marginTop: 180
   },
 
   subHeadingOne: {
@@ -93,7 +97,6 @@ const styles = StyleSheet.create({
   subHeadingTwo: {
     fontSize: 12,
     color: colors.background,
-    marginBottom: 30
   },
 
   card: {
@@ -134,10 +137,20 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
 
-  svgs: {
+  statusSymbol: {
+    position: 'absolute',
+    top: 150,
     height: 180,
     width: 180
+  },
+
+  union: {
+    position: 'absolute',
+    top: 80,
+    height: 305.9,
+    width: Dimensions.get("window").width,
   }
+
 });
 
 export default MedOverviewScreen;
