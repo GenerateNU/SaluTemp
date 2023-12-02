@@ -535,6 +535,26 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
 	return constraints, rows.Err()
 }
 
+func GetAllStoredMedConstraintsFromDB(pool *pgx.Conn, storedMedicationId int) ([]MedicationConstraint, error) {
+	rows, err := pool.Query(fmt.Sprintf("SELECT stored_medication_id, condition_type, max_threshold, min_threshold, duration FROM medication_constraint WHERE stored_medication_id = %d;"))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var constraints []MedicationConstraint
+	for rows.Next() {
+		var constraint MedicationConstraint
+		err := rows.Scan(&constraint.StoredMedicationID, &constraint.ConditionType, &constraint.MaxThreshold, &constraint.MinThreshold, &constraint.Duration)
+		if err != nil {
+			return nil, err
+		}
+		constraints = append(constraints, constraint)
+	}
+
+	return constraints, rows.Err()
+}
+
 // Get a User by Email
 func UserByEmail(pool *pgx.Conn, user_email string) (*User, error) {
 	user := &User{
