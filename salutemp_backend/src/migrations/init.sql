@@ -16,6 +16,14 @@ CREATE TABLE IF NOT EXISTS "user" (
     PRIMARY KEY (user_id)
 );
 
+CREATE TABLE IF NOT EXISTS expo_notification_token (
+    expo_notification_token_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    device_token VARCHAR NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user" (user_id)
+);
+
+
 CREATE TABLE IF NOT EXISTS medication (
     medication_id integer NOT NULL UNIQUE,
     medication_name varchar NOT NULL,
