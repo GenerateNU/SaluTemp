@@ -13,7 +13,19 @@ import ReminderIcon from './assets/footer-icons/reminder.svg';
 import HomeIcon from './assets/footer-icons/home.svg';
 import BluetoothIcon from './assets/footer-icons/bluetooth.svg';
 
-export type ScreenNames = ['Home', 'Login', 'Register', 'MedicationOverview', 'New', 'MedList']; // type these manually
+import ScanBarcode from './screens/ScanBarcode';
+import ScanReviewScreen from './screens/ScanReviewScreen';
+
+export type ScreenNames = [
+  'Home',
+  'Login',
+  'Register',
+  'MedicationOverview',
+  'New',
+  'MedList',
+  'Scan',
+  'ScanReview'
+]; // type these manually
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
@@ -35,6 +47,20 @@ export default function App() {
           component={Register}
           options={{
             title: 'Register'
+          }}
+        />
+        <Stack.Screen
+          name="Scan"
+          component={ScanBarcode}
+          options={{
+            headerShown: true
+          }}
+        />
+        <Stack.Screen
+          name="ScanReview"
+          component={ScanReviewScreen}
+          options={{
+            headerShown: true
           }}
         />
         <Stack.Screen name="MedList" options={{ headerShown: false }} component={Tabs} />

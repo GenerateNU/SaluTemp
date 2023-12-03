@@ -1,16 +1,18 @@
 import React from 'react';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, ScrollView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LeftArrow from '../assets/header-icons/left-arrow.svg';
 import EditIcon from '../assets/header-icons/edit.svg';
 
+import StatusGood from '../assets/statusGood.svg';
+import Union from '../assets/union.svg';
 import colors from '../config/colors';
 import Header from '../components/Header';
 import { StackNavigation } from '../App';
 import MedOverviewPopup from '../components/medication-overview-popup/MedOverviewPopup';
 import { PaperProvider } from 'react-native-paper';
 import { MedOverviewTypeEnum, Status } from '../types/medicationTypes';
+import MonitorInfoCard from '../components/MonitorInfoCard';
 
 function MedOverviewScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
@@ -32,67 +34,25 @@ function MedOverviewScreen() {
           leftAction={() => goBack()}
           rightIcon={<EditIcon height={24} />}
         />
-
-        <View style={styles.topShape}>
-          {/* <TouchableWithoutFeedback style={styles.navButton}>
-          <Text>   <Entypo name="chevron-thin-left" size={24} color="black" /></Text>
-        </TouchableWithoutFeedback> */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Medication Name</Text>
-            <Text style={styles.subHeadingTwo}>Last used date & time, Expires on date, Lot #</Text>
-            <AntDesign
-              name="smileo"
-              size={180}
-              color={colors.coordinatingColor}
-              style={styles.icon}
-            />
-          </View>
-        </View>
-        <View style={styles.monitorDetails}>
-          <View
-            style={styles.card}
-            onTouchEnd={() => {
-              setModalType(MedOverviewTypeEnum.Temperature);
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <Text>Temperature</Text>
-            <View style={styles.row}>
-              <Text>46°F </Text>
-              <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
+        <ScrollView>
+          <View style={styles.topShape}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Medication Name</Text>
+              <Union style={styles.union} />
+              <StatusGood style={styles.statusSymbol} />
+              <Text style={styles.subHeadingTwo}>Last used date & time</Text>
+              <Text style={styles.subHeadingTwo}>Expires on date</Text>
+              <Text style={styles.subHeadingTwo}>Lot #</Text>
             </View>
           </View>
-
-          <View
-            style={styles.card}
-            onTouchEnd={() => {
-              setModalType(MedOverviewTypeEnum.Humidity);
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <Text>Humidity</Text>
-            <View style={styles.row}>
-              <Text>95%</Text>
-              <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
-            </View>
+          <View style={styles.monitorDetails}>
+            <MonitorInfoCard category="Temperature" value="60°" />
+            <MonitorInfoCard category="Humidity" value="95%" />
+            <MonitorInfoCard category="Light" value="22 Lumens" />
+            <Text>Notes</Text>
+            <TextInput style={styles.textInput}></TextInput>
           </View>
-
-          <View
-            style={styles.card}
-            onTouchEnd={() => {
-              setModalType(MedOverviewTypeEnum.Light);
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <Text>Light</Text>
-            <View style={styles.row}>
-              <Text>22 lumens</Text>
-              <MaterialIcons name="keyboard-arrow-right" size={24} color="black" />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.navBar}></View>
+        </ScrollView>
       </View>
     </PaperProvider>
   );
@@ -106,12 +66,10 @@ const styles = StyleSheet.create({
   },
 
   topShape: {
-    backgroundColor: colors.lightNeutral,
-    height: 350,
-    width: 'auto',
-    borderBottomLeftRadius: 200,
-    borderBottomRightRadius: 200,
-    marginBottom: 20
+    backgroundColor: colors.darkNeutral,
+    height: 230,
+    width: Dimensions.get('window').width,
+    zIndex: 20
   },
 
   navButton: {
@@ -139,13 +97,16 @@ const styles = StyleSheet.create({
 
   icon: {
     marginTop: 30,
-    marginBottom: 30
+    marginBottom: 30,
+    color: colors.background
   },
 
   monitorDetails: {
     alignSelf: 'center',
     padding: 20,
-    gap: 20
+    gap: 20,
+    top: 100,
+    paddingBottom: 120
   },
 
   subHeadingOne: {
@@ -164,7 +125,7 @@ const styles = StyleSheet.create({
 
   subHeadingTwo: {
     fontSize: 12,
-    color: colors.black
+    color: colors.background
   },
 
   card: {
@@ -197,7 +158,7 @@ const styles = StyleSheet.create({
   },
 
   navBar: {
-    backgroundColor: colors.coordinatingColor,
+    backgroundColor: colors.darkNeutral,
     height: 80,
     width: 'auto',
     borderTopLeftRadius: 160,
@@ -205,8 +166,28 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
 
-  add: {
-    textAlign: 'left'
+  statusSymbol: {
+    position: 'absolute',
+    top: 140,
+    height: 180,
+    width: 180
+  },
+
+  union: {
+    position: 'absolute',
+    top: 80,
+    height: 305.9,
+    width: Dimensions.get('window').width
+  },
+
+  textInput: {
+    padding: 8,
+    borderRadius: 20,
+    width: 280,
+    height: 80,
+    fontSize: 14,
+    backgroundColor: colors.grey,
+    color: colors.darkNeutral
   }
 });
 
