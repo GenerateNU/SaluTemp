@@ -473,27 +473,6 @@ func GetAllStatusReportsFromDB(pool *pgx.Conn) ([]StatusReport, error) {
 	return reports, rows.Err()
 }
 
-// GetAllStatusReportsFromDB retrieves all status report records.
-func GetAllStatusReportsFromDB(pool *pgx.Conn) ([]StatusReport, error) {
-	rows, err := pool.Query(`SELECT event_time, stored_medication_id, temperature, humidity, light FROM status_report;`)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var reports []StatusReport
-	for rows.Next() {
-		var report StatusReport
-		err := rows.Scan(&report.EventTime, &report.StoredMedicationID, &report.Temperature, &report.Humidity, &report.Light)
-		if err != nil {
-			return nil, err
-		}
-		reports = append(reports, report)
-	}
-
-	return reports, rows.Err()
-}
-
 // CRUD functions for the medication_constraint
 // WriteMedConstraintToDb inserts a new medication_constraint record into the database.
 func WriteMedConstraintToDb(pool *pgx.Conn, constraint MedicationConstraint) (MedicationConstraint, error) {

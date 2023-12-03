@@ -3,7 +3,17 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { Circle } from 'react-native-svg';
 import { MedOverviewTypeEnum, Status, getStatusColors } from '../../types/medicationTypes';
-import { getMedOverviewTypeSymbol } from './MedOverviewPopup';
+
+export function getMedOverviewTypeSymbol(type: MedOverviewTypeEnum) {
+  switch (type) {
+    case MedOverviewTypeEnum.Temperature:
+      return '°';
+    case MedOverviewTypeEnum.Humidity:
+      return '%';
+    case MedOverviewTypeEnum.Light:
+      return 'ᴸ';
+  }
+}
 
 interface StatusBarProps {
   type: MedOverviewTypeEnum;

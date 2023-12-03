@@ -10,7 +10,17 @@ import {
 } from 'victory-native';
 import colors from '../../config/colors';
 import { MedOverviewTypeEnum } from '../../types/medicationTypes';
-import { getMedOverviewTypeSymbol } from './MedOverviewPopup';
+
+export function getMedOverviewTypeSymbol(type: MedOverviewTypeEnum) {
+  switch (type) {
+    case MedOverviewTypeEnum.Temperature:
+      return '°';
+    case MedOverviewTypeEnum.Humidity:
+      return '%';
+    case MedOverviewTypeEnum.Light:
+      return 'ᴸ';
+  }
+}
 
 interface GraphProps {
   type: MedOverviewTypeEnum;
