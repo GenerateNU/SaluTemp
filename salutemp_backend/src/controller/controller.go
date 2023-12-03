@@ -518,7 +518,6 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, constraint)
 	})
 	
-	
 	r.GET("/v1/medicationconstraints/", func(c *gin.Context) {
 		constraints, err := pg.AllMedicationConstraints()
 	
@@ -593,6 +592,38 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Medication constraint updated successfully",
 		})
+
+		r.GET("/v1/allusermedicationsstatus/:userid/:conditiontype", func(c *gin.Context) {
+			userid := c.Param("userid")
+			conditiontype := c.Param("conditiontype")
+
+			switch conditiontype {
+				case "temperature":
+					constraints, err := pg.GetAllUserStoredMedicationsTemperature(userid)
+					if err != nil {
+						c.JSON(http.StatusInternalServerError, "Oops")
+						return
+					}
+				
+					c.JSON(http.StatusOK, constraints)
+				case "humidity":
+					constraints, err := pg.GetAllUserStoredMedicationsHumidity(userid)
+					if err != nil {
+						c.JSON(http.StatusInternalServerError, "Oops")
+						return
+					}
+				
+					c.JSON(http.StatusOK, constraints)
+				case "light":
+					constraints, err := pg.GetAllUserStoredMedicationsLight(userid)
+					if err != nil {
+						c.JSON(http.StatusInternalServerError, "Oops")
+						return
+					}
+				
+					c.JSON(http.StatusOK, constraints)
+			}
+		})	
 	})	
 
 	return r;

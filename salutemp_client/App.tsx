@@ -14,7 +14,7 @@ import HomeIcon from './assets/footer-icons/home.svg';
 import BluetoothIcon from './assets/footer-icons/bluetooth.svg';
 
 export type ScreenNames = ['Home', 'Login', 'Register', 'MedicationOverview', 'New', 'MedList']; // type these manually
-export type RootStackParamList = Record<ScreenNames[number], undefined>;
+export type RootStackParamList = Record<ScreenNames[number], any>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

@@ -1,4 +1,5 @@
 package model
+
 import "time"
 
 type User struct {
@@ -44,4 +45,37 @@ type MedicationConstraint struct {
     MaxThreshold  float64 `json:"max_threshold"`
     MinThreshold  float64 `json:"min_threshold"`
     Duration      string  `json:"duration"` 
+}
+
+type StoredMedicationWithConstraintTemperature struct {
+    StoredMedicationID int     `json:"stored_medication_id"`
+    MedicationID       int     `json:"medication_id"`
+    MedicationName     string `json:"medication_name"`
+    CurrentTemperature float64 `json:"current_temperature"`
+    ConditionType      string  `json:"condition_type"` 
+    MaxThreshold       float64 `json:"max_threshold"`
+    MinThreshold       float64 `json:"min_threshold"`
+    Duration           string  `json:"duration"` 
+}
+
+type StoredMedicationWithConstraintLight struct {
+    StoredMedicationID int     `json:"stored_medication_id"`
+    MedicationID       int     `json:"medication_id"`
+    MedicationName     string `json:"medication_name"`
+    CurrentLight       float64 `json:"current_light"`
+    ConditionType      string  `json:"condition_type"` 
+    MaxThreshold       float64 `json:"max_threshold"`
+    MinThreshold       float64 `json:"min_threshold"`
+    Duration           string  `json:"duration"` 
+}
+
+type StoredMedicationWithConstraintHumidity struct {
+    StoredMedicationID int     `json:"stored_medication_id"`
+    MedicationID       int     `json:"medication_id"`
+    MedicationName     string `json:"medication_name"`
+    CurrentHumidity    float64 `json:"current_humidity"`
+    ConditionType      string  `json:"condition_type"` 
+    MaxThreshold       float64 `json:"max_threshold"`
+    MinThreshold       float64 `json:"min_threshold"`
+    Duration           string  `json:"duration"` 
 }

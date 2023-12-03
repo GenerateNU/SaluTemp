@@ -1,11 +1,12 @@
 package model
 
 import (
-    "github.com/jackc/pgx"
-    "errors"
-    "time"
-    "strconv"
-    "fmt"
+	"errors"
+	"fmt"
+	"strconv"
+	"time"
+
+	"github.com/jackc/pgx"
 )
 
 /*
@@ -17,7 +18,7 @@ import (
  * Update: update a record in the table
  * DeleteFromDB: delete a record from the table by ID
  * GetAllFromDB: retrieve all records from the table
-*/
+ */
 
 // CRUD functions for the users table.
 // WriteUserToDb inserts a new user record into the database.
@@ -261,6 +262,72 @@ func GetAllStoredMeds(pool *pgx.Conn) ([]StoredMedication, error) {
     return meds, nil
 }
 
+// GetAllUserStoredMedsFromDB retrieves all stored medication records for a given user.
+func GetAllUserStoredMedicationsTemperature(pool *pgx.Conn, userID string) ([]StoredMedicationWithConstraintTemperature, error) {
+    temperatureQuery := "SELECT stored_medication_id, medication_id, current_temperature FROM stored_medication o JOIN medication_constraint c ON o.medication_id = c.medication_id JOIN medication m ON m.medication_id = o.medication_id WHERE o.user_id = $1 AND c.condition_type = $2";
+
+    rows, err := pool.Query(temperatureQuery, userID, "humidity")
+
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var meds []StoredMedicationWithConstraintTemperature
+    for rows.Next() {
+        var med StoredMedicationWithConstraintTemperature
+        if err := rows.Scan(&med.StoredMedicationID, &med.MedicationID, &med.CurrentTemperature, &med.ConditionType, &med.MaxThreshold, &med.MinThreshold, &med.Duration); err != nil {
+            return nil, err
+        }
+        meds = append(meds, med)
+    }
+    return meds, nil
+}
+
+// GetAllUserStoredMedsFromDB retrieves all stored medication records for a given user.
+func GetAllUserStoredMedicationsHumidity(pool *pgx.Conn, userID string) ([]StoredMedicationWithConstraintHumidity, error) {
+    humidityQuery := "SELECT stored_medication_id, medication_id, current_temperature FROM stored_medication o JOIN medication_constraint c ON o.medication_id = c.medication_id JOIN medication m ON m.medication_id = o.medication_id WHERE o.user_id = $1 AND c.condition_type = $2";
+
+    rows, err := pool.Query(humidityQuery, userID, "humidity")
+
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var meds []StoredMedicationWithConstraintHumidity
+    for rows.Next() {
+        var med StoredMedicationWithConstraintHumidity
+        if err := rows.Scan(&med.StoredMedicationID, &med.MedicationID, &med.CurrentHumidity, &med.ConditionType, &med.MaxThreshold, &med.MinThreshold, &med.Duration); err != nil {
+            return nil, err
+        }
+        meds = append(meds, med)
+    }
+    return meds, nil
+}
+
+// GetAllUserStoredMedsFromDB retrieves all stored medication records for a given user.
+func GetAllUserStoredMedicationsLight(pool *pgx.Conn, userID string) ([]StoredMedicationWithConstraintLight, error) {
+    lightQuery := "SELECT stored_medication_id, medication_id, current_temperature FROM stored_medication o JOIN medication_constraint c ON o.medication_id = c.medication_id JOIN medication m ON m.medication_id = o.medication_id WHERE o.user_id = $1 AND c.condition_type = $2";
+
+    rows, err := pool.Query(lightQuery, userID, "light")
+
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var meds []StoredMedicationWithConstraintLight
+    for rows.Next() {
+        var med StoredMedicationWithConstraintLight
+        if err := rows.Scan(&med.StoredMedicationID, &med.MedicationID, &med.CurrentLight, &med.ConditionType, &med.MaxThreshold, &med.MinThreshold, &med.Duration); err != nil {
+            return nil, err
+        }
+        meds = append(meds, med)
+    }
+    return meds, nil
+}
+
 // CRUD functions for the alert table
 // WriteAlertToDb inserts a new alert record into the database.
 func WriteAlertToDb(pool *pgx.Conn, alert Alert) (Alert, error) {
@@ -406,6 +473,27 @@ func GetAllStatusReportsFromDB(pool *pgx.Conn) ([]StatusReport, error) {
 	return reports, rows.Err()
 }
 
+// GetAllStatusReportsFromDB retrieves all status report records.
+func GetAllStatusReportsFromDB(pool *pgx.Conn) ([]StatusReport, error) {
+	rows, err := pool.Query(`SELECT event_time, stored_medication_id, temperature, humidity, light FROM status_report;`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var reports []StatusReport
+	for rows.Next() {
+		var report StatusReport
+		err := rows.Scan(&report.EventTime, &report.StoredMedicationID, &report.Temperature, &report.Humidity, &report.Light)
+		if err != nil {
+			return nil, err
+		}
+		reports = append(reports, report)
+	}
+
+	return reports, rows.Err()
+}
+
 // CRUD functions for the medication_constraint
 // WriteMedConstraintToDb inserts a new medication_constraint record into the database.
 func WriteMedConstraintToDb(pool *pgx.Conn, constraint MedicationConstraint) (MedicationConstraint, error) {
@@ -474,5 +562,4 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
 
     return constraints, rows.Err()
 }
-
 

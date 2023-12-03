@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/jackc/pgx"
 	"time"
+
+	"github.com/jackc/pgx"
 )
 
 type PgModel struct {
@@ -45,6 +46,10 @@ type Model interface {
     AddMedicationConstraint(MedicationConstraint) (MedicationConstraint,error)
     DeleteMedicationConstraint(int, string) error
     EditMedicationConstraint(MedicationConstraint) error
+
+	GetAllUserStoredMedicationsLight(string) ([]StoredMedicationWithConstraintLight, error)
+	GetAllUserStoredMedicationsHumidity(string) ([]StoredMedicationWithConstraintHumidity, error)
+	GetAllUserStoredMedicationsTemperature(string) ([]StoredMedicationWithConstraintTemperature, error)
 }
 
 func (m *PgModel) Medication(id int) Medication {
@@ -317,3 +322,32 @@ func (m *PgModel) EditMedicationConstraint(constraint MedicationConstraint) erro
     return err
 }
 
+func (m *PgModel) GetAllUserStoredMedicationsHumidity(id string) ([]StoredMedicationWithConstraintHumidity,error) {
+	med, err := GetAllUserStoredMedicationsHumidity(m.Conn, id)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return med,err
+}
+
+func (m *PgModel) GetAllUserStoredMedicationsLight(id string) ([]StoredMedicationWithConstraintLight,error) {
+	med, err := GetAllUserStoredMedicationsLight(m.Conn, id)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return med,err
+}
+
+func (m *PgModel) GetAllUserStoredMedicationsTemperature(id string) ([]StoredMedicationWithConstraintTemperature,error) {
+	med, err := GetAllUserStoredMedicationsTemperature(m.Conn, id)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return med,err
+}
