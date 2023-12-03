@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, View, TouchableHighlight, TextInput } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
+import LeftArrow from '../assets/header-icons/left-arrow.svg';
+import { StackNavigation } from '../App';
 import colors from '../config/colors';
 
 interface NewMedScreenProps {
@@ -9,8 +12,7 @@ interface NewMedScreenProps {
 }
 
 const NewMedScreen = () => {
-
-  const navigation = useNavigation();
+  const { goBack } = useNavigation<StackNavigation>();
   const [medName, setMedName] = useState('');
   const [nickname, setNickname] = useState('');
   const [date, setDate] = useState('');
@@ -21,9 +23,13 @@ const NewMedScreen = () => {
   const [maxLight, setMaxLight] = useState('');
   const [minLight, setMinLight] = useState('');
 
-
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <Header
+        title="Add New Medication"
+        leftIcon={<LeftArrow height={24} />}
+        leftAction={() => goBack()}
+      />
       <TouchableHighlight>
         <View style={styles.toggleButton}>
           <Text>Scan</Text>
@@ -39,24 +45,29 @@ const NewMedScreen = () => {
         <Text style={styles.title}>Medication Info</Text>
         <View style={styles.columnStyle}>
           <Text>Medication Name</Text>
-          <TextInput style={styles.textInputThinLong}
-            onChangeText={text => setMedName(text)}
+          <TextInput
+            style={styles.textInputThinLong}
+            onChangeText={(text) => setMedName(text)}
             value={medName}
           ></TextInput>
         </View>
         <View style={styles.columns}>
           <View style={styles.columnStyle}>
             <Text>Nickname (Optional)</Text>
-            <TextInput style={styles.textInputThin}
-              onChangeText={text => setNickname(text)}
-              value={nickname}></TextInput>
+            <TextInput
+              style={styles.textInputThin}
+              onChangeText={(text) => setNickname(text)}
+              value={nickname}
+            ></TextInput>
           </View>
           <View style={styles.columnStyle}>
             <Text>Expiration Date</Text>
-            <TextInput style={styles.textInputThin}
+            <TextInput
+              style={styles.textInputThin}
               placeholder="mm / dd / yy"
-              onChangeText={text => setDate(text)}
-              value={date}></TextInput>
+              onChangeText={(text) => setDate(text)}
+              value={date}
+            ></TextInput>
           </View>
         </View>
       </View>
@@ -71,32 +82,44 @@ const NewMedScreen = () => {
         <View style={styles.columns}>
           <View style={styles.columnStyle}>
             <Text>Max Temp</Text>
-            <TextInput style={styles.textInputThin}
-              onChangeText={text => setMaxTemp(text)}
-              value={maxTemp}></TextInput>
+            <TextInput
+              style={styles.textInputThin}
+              onChangeText={(text) => setMaxTemp(text)}
+              value={maxTemp}
+            ></TextInput>
             <Text>Max Humidity</Text>
-            <TextInput style={styles.textInputThin}
-              onChangeText={text => setMaxHumid(text)}
-              value={maxHumid}></TextInput>
+            <TextInput
+              style={styles.textInputThin}
+              onChangeText={(text) => setMaxHumid(text)}
+              value={maxHumid}
+            ></TextInput>
             <Text>Max Light</Text>
-            <TextInput style={styles.textInputThin}
-              onChangeText={text => setMaxLight(text)}
-              value={maxLight}></TextInput>
+            <TextInput
+              style={styles.textInputThin}
+              onChangeText={(text) => setMaxLight(text)}
+              value={maxLight}
+            ></TextInput>
           </View>
 
           <View style={styles.columnStyle}>
             <Text>Min Temp</Text>
-            <TextInput style={styles.textInputThin}
-              onChangeText={text => setMinTemp(text)}
-              value={minTemp}></TextInput>
+            <TextInput
+              style={styles.textInputThin}
+              onChangeText={(text) => setMinTemp(text)}
+              value={minTemp}
+            ></TextInput>
             <Text>Min Humidity</Text>
-            <TextInput style={styles.textInputThin}
-              onChangeText={text => setMinHumid(text)}
-              value={minHumid}></TextInput>
+            <TextInput
+              style={styles.textInputThin}
+              onChangeText={(text) => setMinHumid(text)}
+              value={minHumid}
+            ></TextInput>
             <Text>Min Light</Text>
-            <TextInput style={styles.textInputThin}
-              onChangeText={text => setMinLight(text)}
-              value={minLight}></TextInput>
+            <TextInput
+              style={styles.textInputThin}
+              onChangeText={(text) => setMinLight(text)}
+              value={minLight}
+            ></TextInput>
           </View>
         </View>
       </View>
@@ -106,18 +129,22 @@ const NewMedScreen = () => {
           <Text style={styles.titleLight}>Confirm</Text>
         </View>
       </TouchableHighlight>
-    </SafeAreaView>
+    </View>
   );
-}
-
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 20,
     backgroundColor: colors.background,
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%',
+    height: '100%'
+  },
+
+  add: {
+    textAlign: 'left'
   },
 
   addPhoto: {
@@ -133,15 +160,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     fontSize: 20,
     fontWeight: '500',
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   titleLight: {
     fontSize: 20,
     fontWeight: '400',
-    color: colors.white,
+    color: colors.white
   },
 
+  medName: {
+    fontSize: 20,
+    color: colors.bodyText,
+    marginBottom: 10
+  },
 
   textInputThin: {
     padding: 8,
@@ -149,7 +181,7 @@ const styles = StyleSheet.create({
     width: 160,
     fontSize: 14,
     backgroundColor: colors.grey,
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   textInputThinLong: {
@@ -158,7 +190,7 @@ const styles = StyleSheet.create({
     width: 330,
     fontSize: 14,
     backgroundColor: colors.grey,
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   textInputWide: {
@@ -168,10 +200,11 @@ const styles = StyleSheet.create({
     height: 80,
     fontSize: 14,
     backgroundColor: colors.grey,
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   titleAndChildren: {
+    paddingTop: 3,
     alignSelf: 'center',
     gap: 14
   },
@@ -216,7 +249,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   }
-
 });
 
 export default NewMedScreen;

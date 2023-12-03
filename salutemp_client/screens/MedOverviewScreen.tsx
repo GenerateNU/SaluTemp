@@ -1,42 +1,76 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Text, View, Image, Dimensions, ScrollView, TextInput } from 'react-native';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import {
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  ScrollView,
+  TextInput
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import LeftArrow from '../assets/header-icons/left-arrow.svg';
+import EditIcon from '../assets/header-icons/edit.svg';
+
 import statusGood from '../assets/statusGood.svg';
 import union from '../assets/union.svg';
 import colors from '../config/colors';
+import Header from '../components/Header';
+import { StackNavigation } from '../App';
+import MedOverviewPopup from '../components/medication-overview-popup/MedOverviewPopup';
+import { PaperProvider } from 'react-native-paper';
+import { MedOverviewTypeEnum, Status } from '../types/medicationTypes';
 import MonitorInfoCard from '../components/MonitorInfoCard';
 
-interface MedOverviewScreenProps {
-  // Define any props if necessary
-}
-
-function MedOverviewScreen(props: MedOverviewScreenProps) {
+function MedOverviewScreen() {
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalType, setModalType] = React.useState<MedOverviewTypeEnum>(
+    MedOverviewTypeEnum.Temperature
+  );
+  const { goBack } = useNavigation<StackNavigation>();
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topShape}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Medication Name</Text>
-          <Image source={union} style={styles.union} />
-          <Image source={statusGood} style={styles.statusSymbol} />
-          <Text style={styles.subHeadingTwo}>Last used date & time</Text>
-          <Text style={styles.subHeadingTwo}>Expires on date</Text>
-          <Text style={styles.subHeadingTwo}>Lot #</Text>
+    <PaperProvider>
+      <MedOverviewPopup
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        medOverviewType={modalType}
+        medicationInfo={{ curr: 40, status: Status.Bad, id: 1 }}
+      />
+      <View style={styles.container}>
+        <Header
+          leftIcon={<LeftArrow height={24} />}
+          leftAction={() => goBack()}
+          rightIcon={<EditIcon height={24} />}
+        />
+
+        <View style={styles.topShape}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Medication Name</Text>
+            <Image source={union} style={styles.union} />
+            <Image source={statusGood} style={styles.statusSymbol} />
+            <Text style={styles.subHeadingTwo}>Last used date & time</Text>
+            <Text style={styles.subHeadingTwo}>Expires on date</Text>
+            <Text style={styles.subHeadingTwo}>Lot #</Text>
+          </View>
         </View>
+
+        <ScrollView>
+          <View style={styles.monitorDetails}>
+            <MonitorInfoCard category="Temperature" value="60°" />
+            <MonitorInfoCard category="Humidity" value="95%" />
+            <MonitorInfoCard category="Light" value="22 Lumens" />
+            <Text>Notes</Text>
+            <TextInput style={styles.textInput}></TextInput>
+          </View>
+        </ScrollView>
+
+        <View style={styles.navBar}></View>
       </View>
 
-      <ScrollView>
-        <View style={styles.monitorDetails}>
-          <MonitorInfoCard category='Temperature' value='60°' />
-          <MonitorInfoCard category='Humidity' value='95%' />
-          <MonitorInfoCard category='Light' value='22 Lumens' />
-          <Text>Notes</Text>
-          <TextInput style={styles.textInput}></TextInput>
-        </View>
-      </ScrollView>
-
-      <View style={styles.navBar}>
-
-      </View>
-    </SafeAreaView>
+      <View style={styles.navBar}></View>
+    </PaperProvider>
   );
 }
 
@@ -44,36 +78,42 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.background,
     flexDirection: 'column',
-    height: Dimensions.get("window").height
+    height: '100%'
   },
 
   topShape: {
     backgroundColor: colors.darkNeutral,
     height: 230,
-    width: Dimensions.get("window").width,
+    width: Dimensions.get('window').width
   },
 
   navButton: {
     alignSelf: 'baseline',
-    marginLeft: 10,
+    marginLeft: 10
   },
 
   header: {
     marginTop: 10,
     alignItems: 'center',
     alignContent: 'center',
-    gap: 10,
+    gap: 10
   },
 
   dosage: {
     alignItems: 'center',
-    alignContent: 'center',
+    alignContent: 'center'
   },
 
   title: {
     fontSize: 30,
     fontWeight: '500',
-    color: colors.background,
+    color: colors.black
+  },
+
+  icon: {
+    marginTop: 30,
+    marginBottom: 30,
+    color: colors.background
   },
 
   monitorDetails: {
@@ -84,7 +124,7 @@ const styles = StyleSheet.create({
   },
 
   subHeadingOne: {
-    fontSize: 20,
+    fontSize: 20
   },
 
   button: {
@@ -94,12 +134,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkNeutral,
     borderRadius: 20,
     height: 60,
-    width: 310,
+    width: 310
   },
 
   subHeadingTwo: {
     fontSize: 12,
-    color: colors.background,
+    color: colors.background
   },
 
   card: {
@@ -109,7 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grey,
     borderRadius: 20,
     height: 70,
-    width: 280,
+    width: 280
   },
 
   colorTab: {
@@ -128,7 +168,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     color: colors.lightNeutral,
-    lineHeight: 17,
+    lineHeight: 17
   },
 
   navBar: {
@@ -151,7 +191,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 80,
     height: 305.9,
-    width: Dimensions.get("window").width,
+    width: Dimensions.get('window').width
   },
 
   textInput: {
@@ -161,9 +201,8 @@ const styles = StyleSheet.create({
     height: 80,
     fontSize: 14,
     backgroundColor: colors.grey,
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   }
-
 });
 
 export default MedOverviewScreen;
