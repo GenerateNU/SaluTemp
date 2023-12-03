@@ -472,7 +472,7 @@ func GetAllStatusReportsFromDB(pool *pgx.Conn) ([]StatusReport, error) {
 // WriteMedConstraintToDb inserts a new medication_constraint record into the database.
 func WriteMedConstraintToDb(pool *pgx.Conn, constraint MedicationConstraint) (MedicationConstraint, error) {
     var insertedConstraint MedicationConstraint
-    err := pool.QueryRow("INSERT INTO medication_constraint (medication_id, condition_type, max_threshold, min_threshold, duration) VALUES ($1, $2, $3, $4, $5) RETURNING medication_id;",
+    err := pool.QueryRow("INSERT INTO medication_constraint (stored_medication_id, condition_type, max_threshold, min_threshold, duration) VALUES ($1, $2, $3, $4, $5) RETURNING stored_medication_id;",
         constraint.StoredMedicationID, constraint.ConditionType, constraint.MaxThreshold, constraint.MinThreshold, constraint.Duration).Scan(&insertedConstraint.StoredMedicationID)
     if err != nil {
         return MedicationConstraint{}, err
@@ -481,10 +481,10 @@ func WriteMedConstraintToDb(pool *pgx.Conn, constraint MedicationConstraint) (Me
 }
 
 // GetMedConstraintFromDB retrieves a medication_constraint record from the database by medication_id and condition_type.
-func GetMedConstraintFromDB(pool *pgx.Conn, medicationID int, conditionType string) (MedicationConstraint, error) {
-    constraint := MedicationConstraint{StoredMedicationID: medicationID, ConditionType: conditionType}
-    query := "SELECT medication_id, condition_type, max_threshold, min_threshold, duration FROM medication_constraint WHERE medication_id = $1 AND condition_type = $2;"
-    err := pool.QueryRow(query, medicationID, conditionType).Scan(&constraint.StoredMedicationID, &constraint.ConditionType, &constraint.MaxThreshold, &constraint.MinThreshold, &constraint.Duration)
+func GetMedConstraintFromDB(pool *pgx.Conn, stored_medication_id int, conditionType string) (MedicationConstraint, error) {
+    constraint := MedicationConstraint{StoredMedicationID: stored_medication_id, ConditionType: conditionType}
+    query := "SELECT stored_medication_id, condition_type, max_threshold, min_threshold, duration FROM medication_constraint WHERE stored_medication_id = $1 AND condition_type = $2;"
+    err := pool.QueryRow(query, stored_medication_id, conditionType).Scan(&constraint.StoredMedicationID, &constraint.ConditionType, &constraint.MaxThreshold, &constraint.MinThreshold, &constraint.Duration)
     if err != nil {
         return MedicationConstraint{}, err
     }
@@ -493,7 +493,7 @@ func GetMedConstraintFromDB(pool *pgx.Conn, medicationID int, conditionType stri
 
 // UpdateMedConstraint updates a medication_constraint record in the database.
 func UpdateMedConstraint(pool *pgx.Conn, constraint MedicationConstraint) error {
-    commandTag, err := pool.Exec("UPDATE medication_constraint SET max_threshold = $1, min_threshold = $2, duration = $3 WHERE medication_id = $4 AND condition_type = $5;",
+    commandTag, err := pool.Exec("UPDATE stored_medication_id SET max_threshold = $1, min_threshold = $2, duration = $3 WHERE stored_medication_id = $4 AND condition_type = $5;",
         constraint.MaxThreshold, constraint.MinThreshold, constraint.Duration, constraint.StoredMedicationID, constraint.ConditionType)
     if err != nil {
         return err
@@ -505,8 +505,8 @@ func UpdateMedConstraint(pool *pgx.Conn, constraint MedicationConstraint) error 
 }
 
 // DeleteMedConstraintFromDB deletes a medication_constraint record from the database.
-func DeleteMedConstraintFromDB(pool *pgx.Conn, medicationID int, conditionType string) error {
-    commandTag, err := pool.Exec("DELETE FROM medication_constraint WHERE medication_id = $1 AND condition_type = $2;", medicationID, conditionType)
+func DeleteMedConstraintFromDB(pool *pgx.Conn, stored_medication_id int, conditionType string) error {
+    commandTag, err := pool.Exec("DELETE FROM medication_constraint WHERE stored_medication_id = $1 AND condition_type = $2;", stored_medication_id, conditionType)
     if err != nil {
         return err
     }
@@ -518,7 +518,7 @@ func DeleteMedConstraintFromDB(pool *pgx.Conn, medicationID int, conditionType s
 
 // GetAllMedConstraintsFromDB retrieves all medication_constraint records from the database.
 func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) {
-    rows, err := pool.Query("SELECT medication_id, condition_type, max_threshold, min_threshold, duration FROM medication_constraint;")
+    rows, err := pool.Query("SELECT stored_medication_id, condition_type, max_threshold, min_threshold, duration FROM medication_constraint;")
     if err != nil {
         return nil, err
     }

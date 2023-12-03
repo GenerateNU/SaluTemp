@@ -75,51 +75,68 @@ CREATE TABLE IF NOT EXISTS medication_constraint (
 
 -- populate
 -- Add users
-INSERT INTO "user" VALUES 
-  (201, 'Alice', 'Smith', 'alice.smith@gmail.com'),
-  (202, 'Bob', 'Johnson', 'bob.johnson@gmail.com'),
-  (203, 'Eva', 'Williams', 'eva.williams@gmail.com'),
-  (204, 'Michael', 'Davis', 'michael.davis@gmail.com'),
-  (205, 'Sophia', 'Miller', 'sophia.miller@gmail.com');
+-- Insert sample data into "user" table
+INSERT INTO "user" (user_id, first_name, last_name, email, push_notification_enabled)
+VALUES
+  (1, 'John', 'Doe', 'john.doe@example.com', true),
+  (2, 'Jane', 'Smith', 'jane.smith@example.com', false),
+  (3, 'Bob', 'Johnson', 'bob.johnson@example.com', true),
+  (4, 'Alice', 'Williams', 'alice.williams@example.com', false),
+  (5, 'Charlie', 'Brown', 'charlie.brown@example.com', true);
 
--- Add medications
-INSERT INTO medication VALUES 
-  (302, 'MedicationA'),
-  (303, 'MedicationB'),
-  (304, 'MedicationC'),
-  (305, 'MedicationD'),
-  (306, 'MedicationE');
+-- Insert sample data into "user_device" table
+INSERT INTO user_device (user_device_id, user_id, device_id)
+VALUES
+  (1, 1, 'device_1'),
+  (2, 2, 'device_2'),
+  (3, 3, 'device_3'),
+  (4, 4, 'device_4'),
+  (5, 5, 'device_5');
 
--- Add stored medications
-INSERT INTO stored_medication VALUES 
-  (2, 302, 201, 68, 25, 30),
-  (3, 303, 202, 72, 22, 28),
-  (4, 304, 203, 70, 20, 20),
-  (5, 305, 204, 75, 18, 25),
-  (6, 306, 205, 71, 23, 22);
+-- Insert sample data into "medication" table
+INSERT INTO medication (medication_id, medication_name)
+VALUES
+  (1, 'Medication A'),
+  (2, 'Medication B'),
+  (3, 'Medication C'),
+  (4, 'Medication D'),
+  (5, 'Medication E');
 
--- Add alerts
-INSERT INTO alert VALUES 
-  (4, 2, current_timestamp, 'Low temperature alert!', 'TEMPERATURE'),
-  (5, 3, current_timestamp, 'High humidity alert!', 'HUMIDITY'),
-  (9, 3, current_timestamp, 'Light exposure alert!', 'LIGHT_EXPOSURE'),
-  (6, 4, current_timestamp, 'Light exposure alert!', 'LIGHT_EXPOSURE'),
-  (7, 5, current_timestamp, 'Temperature and humidity alert!', 'TEMPERATURE'),
-  (8, 6, current_timestamp, 'Light exposure alert!', 'LIGHT_EXPOSURE');
+-- Insert sample data into "stored_medication" table
+INSERT INTO stored_medication (stored_medication_id, medication_id, user_id, current_temperature, current_humidity, current_light)
+VALUES
+  (1, 1, 1, 25.5, 50.0, 300),
+  (2, 2, 2, 22.0, 40.0, 200),
+  (3, 3, 3, 26.5, 60.0, 400),
+  (4, 4, 4, 23.0, 45.0, 250),
+  (5, 5, 5, 24.5, 55.0, 350);
 
--- Add status reports
-INSERT INTO status_report VALUES 
-  (current_timestamp, 2, 68, 25, 30),
-  (current_timestamp, 3, 72, 22, 28),
-  (current_timestamp, 4, 70, 20, 20),
-  (current_timestamp, 5, 75, 18, 25),
-  (current_timestamp, 6, 71, 23, 22);
+-- Insert sample data into "alert" table
+INSERT INTO alert (warning_id, stored_medication_id, warning_timestamp, warning_description, condition_type)
+VALUES
+  (1, 1, '2023-01-01 08:00:00', 'High Temperature', 'TEMPERATURE'),
+  (2, 2, '2023-01-02 10:30:00', 'Low Humidity', 'HUMIDITY'),
+  (3, 3, '2023-01-03 12:45:00', 'High Light Exposure', 'LIGHT_EXPOSURE'),
+  (4, 4, '2023-01-04 14:15:00', 'Low Temperature', 'TEMPERATURE'),
+  (5, 5, '2023-01-05 16:30:00', 'High Humidity', 'HUMIDITY'),
+  (6, 3, '2023-01-03 12:45:00', 'High Humidity', 'HUMIDITY');
 
--- Add medication constraints
-INSERT INTO medication_constraint VALUES 
-  (2, 'TEMPERATURE', 80, 50, '1 Day, 4 Hours'),
-  (3, 'HUMIDITY', 30, 10, '12 Hours'),
-  (3, 'LIGHT_EXPOSURE', 30, 10, '12 Hours'),
-  (4, 'LIGHT_EXPOSURE', 40, 10, '1 Day'),
-  (5, 'TEMPERATURE', 85, 55, '1 Day, 6 Hours'),
-  (6, 'HUMIDITY', 35, 15, '18 Hours');
+-- Insert sample data into "status_report" table
+INSERT INTO status_report (event_time, stored_medication_id, temperature, humidity, light)
+VALUES
+  ('2023-01-01 08:00:00', 1, 25.0, 49.0, 290),
+  ('2023-01-02 10:30:00', 2, 21.5, 38.0, 180),
+  ('2023-01-03 12:45:00', 3, 26.0, 58.0, 380),
+  ('2023-01-04 14:15:00', 4, 22.5, 44.0, 240),
+  ('2023-01-05 16:30:00', 5, 24.0, 53.0, 330);
+
+-- Insert sample data into "medication_constraint" table
+INSERT INTO medication_constraint (stored_medication_id, condition_type, max_threshold, min_threshold, duration)
+VALUES
+  (1, 'TEMPERATURE', 30.0, 20.0, '1 day'),
+  (2, 'HUMIDITY', 45.0, 30.0, '2 days'),
+  (3, 'LIGHT_EXPOSURE', 500.0, 300.0, '3 days'),
+  (4, 'TEMPERATURE', 28.0, 18.0, '1 day'),
+  (5, 'HUMIDITY', 50.0, 35.0, '2 days'),
+  (3, 'TEMPERATURE', 50.0, 35.0, '2 days');
+

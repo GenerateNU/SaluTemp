@@ -567,7 +567,6 @@ r.PUT("/v1/userdevices/:id", func(c *gin.Context) {
 		c.JSON(http.StatusOK, "Condition event deleted successfully")
 	})
 	
-//controller
 r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
     eventTimeParam := c.Param("eventtime")
     storedMedicationIDParam := c.Param("storedmedicationid")
@@ -630,7 +629,7 @@ r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
 	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
-			return
+			panic(err)
 		}
 	
 		c.JSON(http.StatusOK, constraints)
