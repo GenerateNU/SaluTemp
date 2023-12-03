@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet, Image, Dimensions, Text } from 'react-native';
+import { View, TextInput, Button, Alert, StyleSheet, Image, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { FIREBASE_AUTH } from '../firebaseConfig';
 import { signInWithEmailAndPassword, onAuthStateChanged, User, } from 'firebase/auth';
 import { useNavigation, StackActions, useRoute } from '@react-navigation/native';
@@ -48,6 +48,10 @@ const EmailAndPassword = () => {
     }
   };
 
+    const forgotPassword = () => {
+      navigation.navigate("ForgotPassword", {email: email});
+    };
+
   if (user)
   {
     navigation.dispatch(StackActions.replace('MedList', {user: user.uid}));
@@ -75,6 +79,11 @@ const EmailAndPassword = () => {
           secureTextEntry={true}
           value={password}
           onChangeText={(text) => setPassword(text)}/>
+        <View style={styles.button2}>
+          <TouchableOpacity onPress={forgotPassword} style={styles.button2}>
+            <Text style={styles.fp}>Forgot your password?</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.button}>
           <Button 
             title="Login" 
@@ -125,12 +134,23 @@ const styles = StyleSheet.create({
         width: '80%',
         margin: 10,
     },
+    button2: {
+        backgroundColor:'#fff',
+        borderRadius: 10,
+        width: '80%',
+        marginBottom: 5,
+        alignItems:'flex-start'
+    },
     text: {
       fontSize: 20,
       color: colors.darkNeutral,
       fontWeight: "700",
       margin: 10,
       marginBottom: 75
+    },
+    fp: {
+      fontSize:12,
+      color: colors.darkNeutral,
     }
   });
 

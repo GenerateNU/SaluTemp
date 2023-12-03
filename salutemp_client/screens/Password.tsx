@@ -12,7 +12,7 @@ const Password = () => {
   const route = useRoute();
 
 
-  const name = useState(route.params?.name);
+  const [name, setName] = useState(route.params?.name);
   const [password, setPassword] = useState('');
   const [user, setUser] = useState<User | null>(null);
 
@@ -47,6 +47,9 @@ const Password = () => {
       </View>
       <Text style={styles.text}>
         Welcome, {name}
+      </Text>
+      <Text style={styles.text2}>
+        Enter a password for your profile.
       </Text>
       <TextInput
         style={styles.input}
@@ -108,7 +111,13 @@ const styles = StyleSheet.create({
       color: colors.darkNeutral,
       fontWeight: "700",
       margin: 10,
-      marginBottom: 75
+    },
+    text2: {
+        fontSize: 15,
+        color: colors.darkNeutral,
+        fontWeight: "400",
+        margin: 10,
+        marginBottom: 75
     }
   });
 

@@ -1,44 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet, Image, Dimensions, Text } from 'react-native';
 import { FIREBASE_APP, FIREBASE_AUTH } from '../firebaseConfig';
-import { signInWithEmailAndPassword, onAuthStateChanged, User } from 'firebase/auth';
+import { signInWithEmailAndPassword, onAuthStateChanged, User, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigation, StackActions } from '@react-navigation/native';
 import colors from "../config/colors"
 
-const Email = () => {
+const ForgotPassword = () => {
 
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
-  // const [user, setUser] = useState<User | null>(null);
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-  //     if (user) {
-  //       setUser(user);
-  //       console.log('signed in');
-  //     } else {
-  //       setUser(null);
-  //       console.log('signed out');
-  //     }
-  //   });
-
-  //   return unsubscribe;
-  // }, []);
-
-  // const handleLogin = async () => {
-  //   try {
-  //     await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-  //   } catch (error : any) {
-  //       Alert.alert(error.message);
-  //   }
-  // };
-
-  const handleContinue = async () => {
+  const handleContinue = () => {
     if (email != "")
     {
-      navigation.navigate("EmailAndPassword", {email: email});
-      // navigation.navigate("Name", {email: email});
+        sendPasswordResetEmail(FIREBASE_AUTH, email);
+        navigation.navigate("Email");
     }
     else
     {
@@ -54,7 +31,7 @@ const Email = () => {
           style={styles.image}/>
       </View>
       <Text style={styles.text}>
-        Log In or Sign Up
+        Forgot Password
       </Text>
       <TextInput
         style={styles.input}
@@ -63,7 +40,7 @@ const Email = () => {
         onChangeText={(text) => setEmail(text)}/>
       <View style={styles.button}>
         <Button 
-          title="Continue" 
+          title="Reset Password" 
           onPress={handleContinue} 
           color='#fff'/>
       </View>
@@ -119,4 +96,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default Email;
+export default ForgotPassword;

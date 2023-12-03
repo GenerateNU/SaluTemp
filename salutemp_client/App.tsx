@@ -11,6 +11,7 @@ import MedicationsList from './screens/MedicationsList';
 import EmailAndPassword from './screens/EmailAndPassword';
 import Name from './screens/Name';
 import Password from './screens/Password'
+import ForgotPassword from './screens/ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +30,7 @@ export default function App() {
           name='EmailAndPassword' 
           component={EmailAndPassword} 
           options={{
-            title: 'Email and Password'
+            title: 'Login'
           }}
         />
         <Stack.Screen 
@@ -44,6 +45,13 @@ export default function App() {
           component={Password} 
           options={{
             title: 'Password'
+          }}
+        />
+        <Stack.Screen 
+          name='ForgotPassword' 
+          component={ForgotPassword} 
+          options={{
+            title: 'Forgot Password'
           }}
         />
         <Stack.Screen
