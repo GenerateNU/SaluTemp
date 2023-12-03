@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     first_name varchar NOT NULL,
     last_name varchar NOT NULL,
     email varchar NOT NULL,
-    push_notification_enabled BOOLEAN DEFAULT FALSE
+    push_notification_enabled BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (user_id)
 );
 
@@ -64,13 +64,13 @@ CREATE TABLE IF NOT EXISTS status_report (
 );
 
 CREATE TABLE IF NOT EXISTS medication_constraint (
-    medication_id integer NOT NULL UNIQUE,
+    stored_medication_id integer NOT NULL,
     condition_type condition_type NOT NULL,
     max_threshold float,
     min_threshold float,
     duration varchar, /*Not sure if we should store this as a time object.*/
-    PRIMARY KEY (medication_id, condition_type),
-    FOREIGN KEY (medication_id) REFERENCES medication (medication_id)
+    PRIMARY KEY (stored_medication_id, condition_type),
+    FOREIGN KEY (stored_medication_id) REFERENCES stored_medication (stored_medication_id)
 );
 
 -- populate
@@ -102,6 +102,7 @@ INSERT INTO stored_medication VALUES
 INSERT INTO alert VALUES 
   (4, 2, current_timestamp, 'Low temperature alert!', 'TEMPERATURE'),
   (5, 3, current_timestamp, 'High humidity alert!', 'HUMIDITY'),
+  (9, 3, current_timestamp, 'Light exposure alert!', 'LIGHT_EXPOSURE'),
   (6, 4, current_timestamp, 'Light exposure alert!', 'LIGHT_EXPOSURE'),
   (7, 5, current_timestamp, 'Temperature and humidity alert!', 'TEMPERATURE'),
   (8, 6, current_timestamp, 'Light exposure alert!', 'LIGHT_EXPOSURE');
@@ -116,8 +117,9 @@ INSERT INTO status_report VALUES
 
 -- Add medication constraints
 INSERT INTO medication_constraint VALUES 
-  (302, 'TEMPERATURE', 80, 50, '1 Day, 4 Hours'),
-  (303, 'HUMIDITY', 30, 10, '12 Hours'),
-  (304, 'LIGHT_EXPOSURE', 40, 10, '1 Day'),
-  (305, 'TEMPERATURE', 85, 55, '1 Day, 6 Hours'),
-  (306, 'HUMIDITY', 35, 15, '18 Hours');
+  (2, 'TEMPERATURE', 80, 50, '1 Day, 4 Hours'),
+  (3, 'HUMIDITY', 30, 10, '12 Hours'),
+  (3, 'LIGHT_EXPOSURE', 30, 10, '12 Hours'),
+  (4, 'LIGHT_EXPOSURE', 40, 10, '1 Day'),
+  (5, 'TEMPERATURE', 85, 55, '1 Day, 6 Hours'),
+  (6, 'HUMIDITY', 35, 15, '18 Hours');

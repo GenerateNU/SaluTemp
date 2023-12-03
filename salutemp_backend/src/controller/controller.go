@@ -38,6 +38,7 @@ func (pg *PgController) Serve() *gin.Engine {
 		meds, err := pg.AllMedications()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
+			return
 		}
 		c.JSON(http.StatusOK, meds)
 	})
@@ -130,6 +131,7 @@ func (pg *PgController) Serve() *gin.Engine {
         patients, err := pg.AllUsers()
         if err != nil {
             c.JSON(http.StatusInternalServerError, "Oops")
+			return
         }
         c.JSON(http.StatusOK, patients)
     })
@@ -193,7 +195,7 @@ func (pg *PgController) Serve() *gin.Engine {
 			return
 		}
 	
-		user.UserID = int(intID)
+		user.UserID= int(intID)
 	
 		err = pg.EditUser(user)
 	
@@ -204,6 +206,98 @@ func (pg *PgController) Serve() *gin.Engine {
 
 		c.JSON(http.StatusOK, "User edited successfully")
 	})
+
+	//user devices
+	// user device routes
+
+r.GET("/v1/userdevices/:id", func(c *gin.Context) {
+    id := c.Param("id")
+    intID, err := strconv.Atoi(id)
+
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid ID")
+        return
+    }
+    c.JSON(http.StatusOK, pg.UserDevice(int(intID)))
+})
+
+r.GET("/v1/userdevices/", func(c *gin.Context) {
+    userDevices, err := pg.AllUserDevices()
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, "Oops")
+        return
+    }
+    c.JSON(http.StatusOK, userDevices)
+})
+
+r.POST("/v1/adduserdevices", func(c *gin.Context) {
+    var userDevice model.UserDevice
+
+    if err := c.BindJSON(&userDevice); err != nil {
+        c.JSON(http.StatusBadRequest, "Failed to unmarshal user device")
+        return
+    }
+
+    insertedUserDevice, err := pg.AddUserDevice(userDevice)
+
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Failed to add a user device")
+        panic(err)
+    }
+
+    c.JSON(http.StatusOK, insertedUserDevice)
+})
+
+r.DELETE("/v1/userdevices/:id", func(c *gin.Context) {
+    id := c.Param("id")
+    intID, err := strconv.Atoi(id)
+
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid ID")
+        return
+    }
+
+    err = pg.DeleteUserDevice(int(intID))
+
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, "Failed to delete user device")
+        return
+    }
+
+    c.JSON(http.StatusOK, "User device deleted successfully")
+})
+
+
+r.PUT("/v1/userdevices/:id", func(c *gin.Context) {
+    var userDevice model.UserDevice
+
+    if err := c.BindJSON(&userDevice); err != nil {
+        c.JSON(http.StatusBadRequest, "Failed to unmarshal user device")
+        return
+    }
+
+    id := c.Param("id")
+    intID, err := strconv.Atoi(id)
+
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid ID")
+        return
+    }
+
+    userDevice.UserDeviceID = int(intID)
+
+    err = pg.EditUserDevice(userDevice)
+
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, "Failed to edit user device")
+        return
+    }
+
+    c.JSON(http.StatusOK, "User device edited successfully")
+})
+
+   
+
 
 	//stored medication routes
 
@@ -473,30 +567,42 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, "Condition event deleted successfully")
 	})
 	
-	// r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
-	// 	eventTime := c.Param("eventtime")
-	// 	storedMedicationIDStr := c.Param("storedmedicationid")
-	// 	storedMedicationID, err := strconv.Atoi(storedMedicationIDStr)
-	// 	if err != nil {
-	// 		c.JSON(http.StatusBadRequest, "Invalid event time or stored medication ID")
-	// 		return
-	// 	}
-	
-	// 	var event model.StatusReport
-	// 	if err := c.BindJSON(&event); err != nil {
-	// 		c.JSON(http.StatusBadRequest, "Failed to unmarshal status report")
-	// 		return
-	// 	}
-	
-	// 	// Call the function to edit the status report in the database using eventTime and storedMedicationID
-	// 	err = pg.EditStatusReport(eventTime, storedMedicationID, event)
-	// 	if err != nil {
-	// 		c.JSON(http.StatusInternalServerError, "Failed to edit status report")
-	// 		return
-	// 	}
-	
-	// 	c.JSON(http.StatusOK, "Status report edited successfully")
-	// })
+//controller
+r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
+    eventTimeParam := c.Param("eventtime")
+    storedMedicationIDParam := c.Param("storedmedicationid")
+
+    eventTime, err := time.Parse(time.RFC3339, eventTimeParam)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid event time format")
+        return
+    }
+
+    storedMedicationID, err := strconv.Atoi(storedMedicationIDParam)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid stored medication ID")
+        return
+    }
+
+    var event model.StatusReport
+    if err := c.BindJSON(&event); err != nil {
+        c.JSON(http.StatusBadRequest, "Failed to unmarshal status report")
+        return
+    }
+
+    event.EventTime = eventTime
+    event.StoredMedicationID = storedMedicationID
+
+    // Call the function to edit the status report in the database using eventTime and storedMedicationID
+    err = pg.EditStatusReport(event)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, "Failed to edit status report")
+        return
+    }
+
+    c.JSON(http.StatusOK, "Status report edited successfully")
+})
+
 	
 	
 	r.GET("/v1/medicationconstraints/:medicationid/:conditiontype", func(c *gin.Context) {

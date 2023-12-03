@@ -19,12 +19,11 @@ import (
  * GetAllFromDB: retrieve all records from the table
 */
 
-// CRUD functions for the users table.
 // WriteUserToDb inserts a new user record into the database.
 func WriteUserToDb(pool *pgx.Conn, user User) (User, error) {
     var insertedUser User
-    err := pool.QueryRow("INSERT INTO \"user\" (user_id, first_name, last_name, email) VALUES ($1, $2, $3, $4) RETURNING user_id;",
-        user.UserID, user.FirstName, user.LastName, user.Email).Scan(&insertedUser.UserID)
+    err := pool.QueryRow("INSERT INTO \"user\" (user_id, first_name, last_name, email, push_notification_enabled) VALUES ($1, $2, $3, $4, $5) RETURNING user_id;",
+        user.UserID, user.FirstName, user.LastName, user.Email, user.PushNotificationEnabled).Scan(&insertedUser.UserID)
     if err != nil {
         return User{}, err
     }
@@ -34,8 +33,8 @@ func WriteUserToDb(pool *pgx.Conn, user User) (User, error) {
 // GetUserFromDB retrieves a user record from the database by user ID.
 func GetUserFromDB(pool *pgx.Conn, userID int) (User, error) {
     user := User{UserID: userID}
-    query := fmt.Sprintf("SELECT user_id, first_name, last_name, email FROM \"user\" WHERE user_id = $1;")
-    err := pool.QueryRow(query, userID).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email)
+    query := fmt.Sprintf("SELECT user_id, first_name, last_name, email, push_notification_enabled FROM \"user\" WHERE user_id = $1;")
+    err := pool.QueryRow(query, userID).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email, &user.PushNotificationEnabled)
     if err != nil {
         return User{}, err
     }
@@ -44,7 +43,8 @@ func GetUserFromDB(pool *pgx.Conn, userID int) (User, error) {
 
 // UpdateUser updates a user record in the database.
 func UpdateUser(pool *pgx.Conn, user User) error {
-    commandTag, err := pool.Exec("UPDATE \"user\" SET first_name = $1, last_name = $2, email = $3 WHERE user_id = $4;", user.FirstName, user.LastName, user.Email, user.UserID)
+    commandTag, err := pool.Exec("UPDATE \"user\" SET first_name = $1, last_name = $2, email = $3, push_notification_enabled = $4 WHERE user_id = $5;",
+        user.FirstName, user.LastName, user.Email, user.PushNotificationEnabled, user.UserID)
     if err != nil {
         return err
     }
@@ -68,7 +68,7 @@ func DeleteUserFromDB(pool *pgx.Conn, userID int) error {
 
 // GetAllUsersFromDB retrieves all user records from the database.
 func GetAllUsersFromDB(pool *pgx.Conn) ([]User, error) {
-    rows, err := pool.Query("SELECT user_id, first_name, last_name, email FROM \"user\";")
+    rows, err := pool.Query("SELECT user_id, first_name, last_name, email, push_notification_enabled FROM \"user\";")
     if err != nil {
         return nil, err
     }
@@ -77,7 +77,7 @@ func GetAllUsersFromDB(pool *pgx.Conn) ([]User, error) {
     var users []User
     for rows.Next() {
         var user User
-        err := rows.Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email)
+        err := rows.Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email, &user.PushNotificationEnabled)
         if err != nil {
             return nil, err
         }
@@ -88,6 +88,68 @@ func GetAllUsersFromDB(pool *pgx.Conn) ([]User, error) {
 }
 
 
+// CRUD functions for the user_device table.
+// WriteUserDeviceToDb inserts a new user device record into the database.
+func WriteUserDeviceToDb(pool *pgx.Conn, userDevice UserDevice) (UserDevice, error) {
+    var insertedUserDevice UserDevice
+    err := pool.QueryRow("INSERT INTO user_device (user_id, device_id) VALUES ($1, $2) RETURNING user_device_id;",
+        userDevice.UserID, userDevice.DeviceID).Scan(&insertedUserDevice.UserDeviceID)
+    if err != nil {
+        return UserDevice{}, err
+    }
+    return insertedUserDevice, nil
+}
+
+// GetUserDeviceFromDB retrieves a user device record from the database by user device ID.
+func GetUserDeviceFromDB(pool *pgx.Conn, userDeviceID int) (UserDevice, error) {
+    userDevice := UserDevice{UserDeviceID: userDeviceID}
+    query := fmt.Sprintf("SELECT user_device_id, user_id, device_id FROM user_device WHERE user_device_id = $1;")
+    err := pool.QueryRow(query, userDeviceID).Scan(&userDevice.UserDeviceID, &userDevice.UserID, &userDevice.DeviceID)
+    if err != nil {
+        return UserDevice{}, err
+    }
+    return userDevice, nil
+}
+
+// UpdateUserDevice updates a user device record in the database.
+func UpdateUserDevice(pool *pgx.Conn, userDevice UserDevice) error {
+    _, err := pool.Exec("UPDATE user_device SET user_id = $1, device_id = $2 WHERE user_device_id = $3;",
+        userDevice.UserID, userDevice.DeviceID, userDevice.UserDeviceID)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+// DeleteUserDeviceFromDB deletes a user device record from the database.
+func DeleteUserDeviceFromDB(pool *pgx.Conn, userDeviceID int) error {
+    _, err := pool.Exec("DELETE FROM user_device WHERE user_device_id = $1;", userDeviceID)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+// GetAllUserDevicesFromDB retrieves all user device records from the database.
+func GetAllUserDevicesFromDB(pool *pgx.Conn) ([]UserDevice, error) {
+    rows, err := pool.Query("SELECT user_device_id, user_id, device_id FROM user_device;")
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    var userDevices []UserDevice
+    for rows.Next() {
+        var userDevice UserDevice
+        err := rows.Scan(&userDevice.UserDeviceID, &userDevice.UserID, &userDevice.DeviceID)
+        if err != nil {
+            return nil, err
+        }
+        userDevices = append(userDevices, userDevice)
+    }
+
+    return userDevices, rows.Err()
+}
 
 
 //Crud functions for med table
@@ -411,7 +473,7 @@ func GetAllStatusReportsFromDB(pool *pgx.Conn) ([]StatusReport, error) {
 func WriteMedConstraintToDb(pool *pgx.Conn, constraint MedicationConstraint) (MedicationConstraint, error) {
     var insertedConstraint MedicationConstraint
     err := pool.QueryRow("INSERT INTO medication_constraint (medication_id, condition_type, max_threshold, min_threshold, duration) VALUES ($1, $2, $3, $4, $5) RETURNING medication_id;",
-        constraint.MedicationID, constraint.ConditionType, constraint.MaxThreshold, constraint.MinThreshold, constraint.Duration).Scan(&insertedConstraint.MedicationID)
+        constraint.StoredMedicationID, constraint.ConditionType, constraint.MaxThreshold, constraint.MinThreshold, constraint.Duration).Scan(&insertedConstraint.StoredMedicationID)
     if err != nil {
         return MedicationConstraint{}, err
     }
@@ -420,9 +482,9 @@ func WriteMedConstraintToDb(pool *pgx.Conn, constraint MedicationConstraint) (Me
 
 // GetMedConstraintFromDB retrieves a medication_constraint record from the database by medication_id and condition_type.
 func GetMedConstraintFromDB(pool *pgx.Conn, medicationID int, conditionType string) (MedicationConstraint, error) {
-    constraint := MedicationConstraint{MedicationID: medicationID, ConditionType: conditionType}
+    constraint := MedicationConstraint{StoredMedicationID: medicationID, ConditionType: conditionType}
     query := "SELECT medication_id, condition_type, max_threshold, min_threshold, duration FROM medication_constraint WHERE medication_id = $1 AND condition_type = $2;"
-    err := pool.QueryRow(query, medicationID, conditionType).Scan(&constraint.MedicationID, &constraint.ConditionType, &constraint.MaxThreshold, &constraint.MinThreshold, &constraint.Duration)
+    err := pool.QueryRow(query, medicationID, conditionType).Scan(&constraint.StoredMedicationID, &constraint.ConditionType, &constraint.MaxThreshold, &constraint.MinThreshold, &constraint.Duration)
     if err != nil {
         return MedicationConstraint{}, err
     }
@@ -432,7 +494,7 @@ func GetMedConstraintFromDB(pool *pgx.Conn, medicationID int, conditionType stri
 // UpdateMedConstraint updates a medication_constraint record in the database.
 func UpdateMedConstraint(pool *pgx.Conn, constraint MedicationConstraint) error {
     commandTag, err := pool.Exec("UPDATE medication_constraint SET max_threshold = $1, min_threshold = $2, duration = $3 WHERE medication_id = $4 AND condition_type = $5;",
-        constraint.MaxThreshold, constraint.MinThreshold, constraint.Duration, constraint.MedicationID, constraint.ConditionType)
+        constraint.MaxThreshold, constraint.MinThreshold, constraint.Duration, constraint.StoredMedicationID, constraint.ConditionType)
     if err != nil {
         return err
     }
@@ -465,7 +527,7 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
     var constraints []MedicationConstraint
     for rows.Next() {
         var constraint MedicationConstraint
-        err := rows.Scan(&constraint.MedicationID, &constraint.ConditionType, &constraint.MaxThreshold, &constraint.MinThreshold, &constraint.Duration)
+        err := rows.Scan(&constraint.StoredMedicationID, &constraint.ConditionType, &constraint.MaxThreshold, &constraint.MinThreshold, &constraint.Duration)
         if err != nil {
             return nil, err
         }
