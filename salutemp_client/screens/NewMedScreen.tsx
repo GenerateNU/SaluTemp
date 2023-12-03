@@ -7,10 +7,6 @@ import LeftArrow from '../assets/header-icons/left-arrow.svg';
 import { StackNavigation } from '../App';
 import colors from '../config/colors';
 
-interface NewMedScreenProps {
-  // Define any props if necessary
-}
-
 const NewMedScreen = () => {
   const { goBack } = useNavigation<StackNavigation>();
   const [medName, setMedName] = useState('');

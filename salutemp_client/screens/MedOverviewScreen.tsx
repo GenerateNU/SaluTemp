@@ -1,21 +1,11 @@
 import React from 'react';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  View,
-  Image,
-  Dimensions,
-  ScrollView,
-  TextInput
-} from 'react-native';
+import { StyleSheet, Text, View, Dimensions, ScrollView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LeftArrow from '../assets/header-icons/left-arrow.svg';
 import EditIcon from '../assets/header-icons/edit.svg';
 
-import statusGood from '../assets/statusGood.svg';
-import union from '../assets/union.svg';
+import StatusGood from '../assets/statusGood.svg';
+import Union from '../assets/union.svg';
 import colors from '../config/colors';
 import Header from '../components/Header';
 import { StackNavigation } from '../App';
@@ -44,19 +34,17 @@ function MedOverviewScreen() {
           leftAction={() => goBack()}
           rightIcon={<EditIcon height={24} />}
         />
-
-        <View style={styles.topShape}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Medication Name</Text>
-            <Image source={union} style={styles.union} />
-            <Image source={statusGood} style={styles.statusSymbol} />
-            <Text style={styles.subHeadingTwo}>Last used date & time</Text>
-            <Text style={styles.subHeadingTwo}>Expires on date</Text>
-            <Text style={styles.subHeadingTwo}>Lot #</Text>
-          </View>
-        </View>
-
         <ScrollView>
+          <View style={styles.topShape}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Medication Name</Text>
+              <Union style={styles.union} />
+              <StatusGood style={styles.statusSymbol} />
+              <Text style={styles.subHeadingTwo}>Last used date & time</Text>
+              <Text style={styles.subHeadingTwo}>Expires on date</Text>
+              <Text style={styles.subHeadingTwo}>Lot #</Text>
+            </View>
+          </View>
           <View style={styles.monitorDetails}>
             <MonitorInfoCard category="Temperature" value="60°" />
             <MonitorInfoCard category="Humidity" value="95%" />
@@ -65,11 +53,7 @@ function MedOverviewScreen() {
             <TextInput style={styles.textInput}></TextInput>
           </View>
         </ScrollView>
-
-        <View style={styles.navBar}></View>
       </View>
-
-      <View style={styles.navBar}></View>
     </PaperProvider>
   );
 }
@@ -84,7 +68,8 @@ const styles = StyleSheet.create({
   topShape: {
     backgroundColor: colors.darkNeutral,
     height: 230,
-    width: Dimensions.get('window').width
+    width: Dimensions.get('window').width,
+    zIndex: 20
   },
 
   navButton: {
@@ -120,7 +105,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 20,
     gap: 20,
-    marginTop: 180
+    top: 100,
+    paddingBottom: 120
   },
 
   subHeadingOne: {
@@ -182,7 +168,7 @@ const styles = StyleSheet.create({
 
   statusSymbol: {
     position: 'absolute',
-    top: 150,
+    top: 140,
     height: 180,
     width: 180
   },
