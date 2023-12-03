@@ -536,7 +536,7 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
 }
 
 func GetAllStoredMedConstraintsFromDB(pool *pgx.Conn, storedMedicationId int) ([]MedicationConstraint, error) {
-	rows, err := pool.Query(fmt.Sprintf("SELECT stored_medication_id, condition_type, max_threshold, min_threshold, duration FROM medication_constraint WHERE stored_medication_id = %d;"))
+	rows, err := pool.Query(fmt.Sprintf("SELECT stored_medication_id, condition_type, max_threshold, min_threshold, duration FROM medication_constraint WHERE stored_medication_id = %d;", storedMedicationId))
 	if err != nil {
 		return nil, err
 	}

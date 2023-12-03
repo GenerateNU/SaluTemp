@@ -3,40 +3,16 @@ package model
 import (
 	"fmt"
 	"math/rand"
-	"os"
 	"time"
 
 	"github.com/jackc/pgx"
 )
 
-func saveStatusReportTicker() {
-	ticker := time.NewTicker(30 * time.Second)
+func SaveStatusReportTicker(conn *pgx.Conn) {
+	ticker := time.NewTicker(5 * time.Second)
 	done := make(chan bool)
 
 	userId := 1
-
-	db_url, exists := os.LookupEnv("DATABASE_URL")
-
-	cfg := pgx.ConnConfig{
-		User:     "user",
-		Database: "salutemp",
-		Password: "pwd",
-		Host:     "localhost",
-		Port:     5434,
-	}
-	var err error
-	if exists {
-		cfg, err = pgx.ParseConnectionString(db_url)
-
-		if err != nil {
-			panic(err)
-		}
-	}
-	conn, err := pgx.Connect(cfg)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
-	}
 
 	defer conn.Close()
 
@@ -52,10 +28,12 @@ func saveStatusReportTicker() {
 	}()
 }
 
-func saveStatusReport(pool *pgx.Conn, userId int, t time.Time) {
-	storedMedications, err := GetAllStoredMedsFromDBByUser(pool, userId)
+// Saves status report and sends push notification if conditions are not ideal
+func saveStatusReport(conn *pgx.Conn, userId int, t time.Time) {
+
+	storedMedications, err := GetAllStoredMedsFromDBByUser(conn, userId)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error when getting stored medicaitons: %v", err)
 		return
 	}
 
@@ -73,11 +51,11 @@ func saveStatusReport(pool *pgx.Conn, userId int, t time.Time) {
 			Light:              currentLight,
 		}
 
-		WriteStatusReportToDb(pool, report)
+		WriteStatusReportToDb(conn, report)
 
-		constraints, err := GetAllStoredMedConstraintsFromDB(pool, storedMedication.StoredMedicationID)
+		constraints, err := GetAllStoredMedConstraintsFromDB(conn, storedMedication.StoredMedicationID)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Printf("Error when getting stored medicaiton constraints: %v, medication: %v", err, storedMedication.StoredMedicationID)
 			return
 		}
 
@@ -85,9 +63,25 @@ func saveStatusReport(pool *pgx.Conn, userId int, t time.Time) {
 			switch conditionType := constraint.ConditionType; conditionType {
 			case "TEMPERATURE":
 				if currentTemperature > constraint.MaxThreshold {
-					fmt.Printf("Temperature threshold exceeded for medication %d", storedMedication.StoredMedicationID)
+					fmt.Printf("Temperature upper threshold exceeded for medication %v", storedMedication.StoredMedicationID)
+				}
+				if currentTemperature < constraint.MinThreshold {
+					fmt.Printf("Temperature lower threshold exceeded for medication %v", storedMedication.StoredMedicationID)
+				}
+			case "HUMIDITY":
+				if currentHumidity > constraint.MaxThreshold {
+					fmt.Printf("Humidity upper threshold exceeded for medication %v", storedMedication.StoredMedicationID)
+				}
+				if currentHumidity < constraint.MinThreshold {
+					fmt.Printf("Humidity lower threshold exceeded for medication %v", storedMedication.StoredMedicationID)
+				}
+			case "LIGHT_EXPOSURE":
+				if currentLight > constraint.MaxThreshold {
+					fmt.Printf("Light upper threshold exceeded for medication %v", storedMedication.StoredMedicationID)
 				}
 			}
 		}
+
+		//TODO: Handle duration logic, we want to track if the conditions have been bad for a certain amount of time.
 	}
 }
