@@ -22,6 +22,12 @@ type Model interface {
 	DeleteUser(int) error
 	EditUser(User) error
 
+	UserDevice(int) UserDevice
+    AllUserDevices() ([]UserDevice, error)
+    AddUserDevice(UserDevice) (UserDevice, error)
+    DeleteUserDevice(int) error
+    EditUserDevice(UserDevice) error
+
 	StoredMedication(int) (StoredMedication,error)
 	AllStoredMedications() ([]StoredMedication, error)
 	AddStoredMedication(StoredMedication) (StoredMedication, error)
@@ -130,6 +136,47 @@ func (m *PgModel) AllUsers() ([]User, error) {
 	}
 	return user, nil
 }
+
+//user devices
+func (m *PgModel) UserDevice(id int) UserDevice {
+    userDevice, err := GetUserDeviceFromDB(m.Conn, id)
+
+    if err != nil {
+        panic(err)
+    }
+
+    return userDevice
+}
+
+func (m *PgModel) AddUserDevice(userDevice UserDevice) (UserDevice, error) {
+    u, err := WriteUserDeviceToDb(m.Conn, userDevice)
+
+    if err != nil {
+        return UserDevice{}, err
+    }
+
+    return u, nil
+}
+
+func (m *PgModel) DeleteUserDevice(id int) error {
+    err := DeleteUserDeviceFromDB(m.Conn, id)
+    return err
+}
+
+func (m *PgModel) EditUserDevice(userDevice UserDevice) error {
+    err := UpdateUserDevice(m.Conn, userDevice)
+    return err
+}
+
+func (m *PgModel) AllUserDevices() ([]UserDevice, error) {
+    userDevices, err := GetAllUserDevicesFromDB(m.Conn)
+
+    if err != nil {
+        return []UserDevice{}, err
+    }
+    return userDevices, nil
+}
+
 
 
 //stored medications
