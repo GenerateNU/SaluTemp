@@ -4,17 +4,13 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
-
-	"github.com/jackc/pgx"
 )
 
-func SaveStatusReportTicker(conn *pgx.Conn) {
+func SaveStatusReportTicker(m *PgModel) {
 	ticker := time.NewTicker(5 * time.Second)
 	done := make(chan bool)
 
 	userId := 1
-
-	defer conn.Close()
 
 	go func() {
 		for {
@@ -22,16 +18,17 @@ func SaveStatusReportTicker(conn *pgx.Conn) {
 			case <-done:
 				return
 			case t := <-ticker.C:
-				saveStatusReport(conn, userId, t)
+				saveStatusReport(m, userId, t)
 			}
 		}
 	}()
 }
 
 // Saves status report and sends push notification if conditions are not ideal
-func saveStatusReport(conn *pgx.Conn, userId int, t time.Time) {
+func saveStatusReport(m *PgModel, userId int, t time.Time) {
 
-	storedMedications, err := GetAllStoredMedsFromDBByUser(conn, userId)
+	storedMedications, err := m.GetAllStoredMedsFromDBByUser(userId)
+
 	if err != nil {
 		fmt.Printf("Error when getting stored medicaitons: %v", err)
 		return
@@ -51,9 +48,9 @@ func saveStatusReport(conn *pgx.Conn, userId int, t time.Time) {
 			Light:              currentLight,
 		}
 
-		WriteStatusReportToDb(conn, report)
+		m.AddStatusReport(report)
 
-		constraints, err := GetAllStoredMedConstraintsFromDB(conn, storedMedication.StoredMedicationID)
+		constraints, err := m.AllMedicationConstraintsByStoredMedication(storedMedication.StoredMedicationID)
 		if err != nil {
 			fmt.Printf("Error when getting stored medicaiton constraints: %v, medication: %v", err, storedMedication.StoredMedicationID)
 			return

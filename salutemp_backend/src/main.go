@@ -43,7 +43,7 @@ func main() {
 		Model: m,
 	}
 
-	model.SaveStatusReportTicker(conn)
+	model.SaveStatusReportTicker(m)
 
 	c.Serve().Run(":8080")
 }
