@@ -1,21 +1,15 @@
 import React from 'react';
-<<<<<<< HEAD
-import { StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
-=======
-import { StyleSheet, SafeAreaView, Text, View, Button, TouchableHighlight } from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, Button, TouchableHighlight, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, StackActions } from '@react-navigation/native';
 
->>>>>>> 53b591f (removed files)
 import colors from '../config/colors';
 import { Medication, Status } from '../types';
 import { getUserMedications } from '../services/medicationService';
 import InformationCard from '../components/InformationCard';
-import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../App';
 import Header from '../components/Header';
 import AddIcon from '../assets/header-icons/add.svg';
-import { MaterialIcons } from '@expo/vector-icons';
 
 function MedicationsList() {
   const { navigate } = useNavigation<StackNavigation>();
