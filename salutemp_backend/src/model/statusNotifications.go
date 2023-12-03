@@ -7,10 +7,10 @@ import (
 )
 
 func SaveStatusReportTicker(m *PgModel) {
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(30 * time.Second)
 	done := make(chan bool)
 
-	userId := 1
+	userId := 201
 
 	go func() {
 		for {
@@ -36,7 +36,7 @@ func saveStatusReport(m *PgModel, userId int, t time.Time) {
 
 	for _, storedMedication := range storedMedications {
 		//TODO: When bluetooth is implemented, we want to use real data. For now, mocking the status report data.
-		currentTemperature := float64(rand.Intn(10) + 65)
+		currentTemperature := float64(rand.Intn(32) + 50)
 		currentHumidity := float64(rand.Intn(10) + 20)
 		currentLight := float64(rand.Intn(10))
 
