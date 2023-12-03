@@ -1,12 +1,24 @@
 package model
 import "time"
 
+
 type User struct {
-    UserID    int    `json:"user_id"`
-    FirstName string `json:"first_name"`
-    LastName  string `json:"last_name"`
-    Email     string `json:"email"`
+    UserID                 int    `json:"user_id"`
+    FirstName              string `json:"first_name"`
+    LastName               string `json:"last_name"`
+    Email                  string `json:"email"`
+    PushNotificationEnabled bool   `json:"push_notification_enabled"`
 }
+
+
+
+
+type UserDevice struct {
+    UserDeviceID int    `json:"user_device_id"`
+    UserID       int    `json:"user_id"`
+    DeviceID     string `json:"device_id"`
+}
+
 
 type Medication struct {
     MedicationID   int    `json:"medication_id"`
@@ -39,7 +51,7 @@ type StatusReport struct {
 }
 
 type MedicationConstraint struct {
-    MedicationID  int     `json:"medication_id"`
+    StoredMedicationID  int     `json:"medication_id"`
     ConditionType string  `json:"condition_type"` 
     MaxThreshold  float64 `json:"max_threshold"`
     MinThreshold  float64 `json:"min_threshold"`

@@ -1,115 +1,111 @@
 import React from 'react';
+<<<<<<< HEAD
+import { StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
+=======
 import { StyleSheet, SafeAreaView, Text, View, Button, TouchableHighlight } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, StackActions } from '@react-navigation/native';
 
-
+>>>>>>> 53b591f (removed files)
 import colors from '../config/colors';
+import { Medication, Status } from '../types';
+import { getUserMedications } from '../services/medicationService';
+import InformationCard from '../components/InformationCard';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigation } from '../App';
+import Header from '../components/Header';
+import AddIcon from '../assets/header-icons/add.svg';
+import { MaterialIcons } from '@expo/vector-icons';
 
-interface MedicationListProps {
-    // Define any props if necessary
-}
+function MedicationsList() {
+  const { navigate } = useNavigation<StackNavigation>();
+  const [medicationsList, setMedicationsList] = React.useState<Medication[]>([]);
 
-function MedicationsList(props: MedicationListProps) {
-    const navigation = useNavigation();
+  React.useEffect(() => {
+    // TODO: Do I need an ID here?
+    getUserMedications('1').then((ml) => setMedicationsList(ml));
+  }, []);
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Medications</Text>
-
-            <View style={styles.medCard} onTouchEnd={() => navigation.navigate("MedicationOverview")}>
+  return (
+    <View style={styles.container}>
+      <Header title="Medications" rightIcon={<AddIcon />} rightAction={() => navigate('New')} />
+      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.medicationsList}>
+        {medicationsList &&
+          medicationsList.map((ml, index) => {
+            return (
+              <InformationCard key={index} status={ml.status}>
+                <TouchableHighlight style={styles.addPhoto}>
+                  <MaterialIcons
+                    style={{ backgroundColor: colors.grey }}
+                    size={20}
+                    color={colors.grey}
+                  />
+                </TouchableHighlight>
                 <View style={styles.preview}>
-                    <TouchableHighlight style={styles.addPhoto}>
-                        <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
-                    </TouchableHighlight>
-                    <View>
-                        <Text>Name</Text>
-                        <Text style={styles.subtitle}>Status Check</Text>
-                    </View>
+                  <View style={{ gap: 5 }}>
+                    <Text style={{ fontSize: 18 }}>{ml.name}</Text>
+                    <Text style={styles.subtitle}>Status: {Status[ml.status]}</Text>
+                  </View>
                 </View>
-            </View>
-
-            <View style={styles.medCard} onTouchEnd={() => navigation.navigate("New")}>
-                <View style={styles.preview}>
-                    <TouchableHighlight style={styles.addPhoto}>
-                        <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
-                    </TouchableHighlight>
-                    <View>
-                        <Text>Name</Text>
-                        <Text style={styles.subtitle}>Status Check</Text>
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.medCard}>
-                <View style={styles.preview}>
-                    <TouchableHighlight style={styles.addPhoto}>
-                        <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
-                    </TouchableHighlight>
-                    <View>
-                        <Text>Name</Text>
-                        <Text style={styles.subtitle}>Status Check</Text>
-                    </View>
-                </View>
-            </View>
-
-            <View style={styles.medCard}>
-                <View style={styles.preview}>
-                    <TouchableHighlight style={styles.addPhoto}>
-                        <MaterialIcons name="add" size={20} color={colors.darkNeutral} />
-                    </TouchableHighlight>
-                    <View>
-                        <Text>Name</Text>
-                        <Text style={styles.subtitle}>Status Check</Text>
-                    </View>
-                </View>
-            </View>
-        </SafeAreaView>
-    );
+              </InformationCard>
+            );
+          })}
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: colors.background,
-        alignSelf: 'center',
-        flexDirection: 'column',
-        gap: 20
-    },
-
-    title: {
-        fontSize: 20,
-        fontWeight: '500',
-        color: colors.darkNeutral,
-    },
-
-    subtitle: {
-        fontSize: 12
-    },
-
-    medCard: {
-        backgroundColor: colors.lightNeutral,
-        borderRadius: 10,
-        height: 100,
-        width: 360,
-        padding: 20,
-        alignItems: 'flex-start',
-        justifyContent: 'center'
-    },
-
-    preview: {
-        flexDirection: 'row',
-        gap: 16
-    },
-
-    addPhoto: {
-        backgroundColor: colors.coordinatingColor,
-        borderRadius: 8,
-        height: 60,
-        width: 60,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-
+  container: {
+    backgroundColor: colors.background,
+    width: '100%',
+    height: '100%'
+  },
+  title: {
+    fontSize: 20,
+    flex: 2,
+    fontWeight: '500',
+    color: colors.white,
+    textAlign: 'right'
+  },
+  add: {
+    textAlign: 'right'
+  },
+  scrollContainer: {
+    backgroundColor: colors.background,
+    paddingTop: 20,
+    width: '100%'
+  },
+  topNavContainer: {
+    width: '100%',
+    backgroundColor: colors.darkNeutral,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 10
+  },
+  medicationsList: {
+    display: 'flex',
+    marginHorizontal: 'auto',
+    alignItems: 'center',
+    gap: 20,
+    paddingBottom: 30
+  },
+  subtitle: {
+    fontSize: 12
+  },
+  preview: {
+    flexDirection: 'row',
+    paddingLeft: 10
+  },
+  addPhoto: {
+    backgroundColor: colors.grey,
+    borderRadius: 8,
+    height: 60,
+    width: 60,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 });
 
 export default MedicationsList;
