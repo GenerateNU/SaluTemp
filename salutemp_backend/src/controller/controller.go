@@ -595,5 +595,25 @@ func (pg *PgController) Serve() *gin.Engine {
 		})
 	})	
 
+	r.GET("/v1/allusermedicationswithconstraint/:userId/:conditiontype", func(c *gin.Context) {
+		userId := c.Param("userId")
+		uId, err := strconv.Atoi(userId)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, "Invalid medication ID")
+			return
+		}
+		
+		conditionType := c.Param("conditiontype")
+		
+		constraint, err := pg.GetAllUserMedicationsWithConstraint(uId, conditionType)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Oops")
+			return
+		}
+		
+		c.JSON(http.StatusOK, constraint)
+	})
+
 	return r;
 }
