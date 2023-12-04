@@ -1,4 +1,5 @@
 package model
+
 import "time"
 
 
@@ -56,4 +57,14 @@ type MedicationConstraint struct {
     MaxThreshold  float64 `json:"max_threshold"`
     MinThreshold  float64 `json:"min_threshold"`
     Duration      string  `json:"duration"` 
+}
+
+type StoredMedicationWithConstraint struct {
+    StoredMedicationID int     `json:"stored_medication_id"`
+    MedicationID       int     `json:"medication_id"`
+    MedicationName     string  `json:"medication_name"`
+    Current            float64 `json:"current_"`
+    MaxThreshold       float64 `json:"max_threshold"`
+    MinThreshold       float64 `json:"min_threshold"`
+    Duration           string  `json:"duration"` 
 }

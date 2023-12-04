@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/jackc/pgx"
 	"time"
+
+	"github.com/jackc/pgx"
 )
 
 type PgModel struct {
@@ -51,6 +52,8 @@ type Model interface {
     AddMedicationConstraint(MedicationConstraint) (MedicationConstraint,error)
     DeleteMedicationConstraint(int, string) error
     EditMedicationConstraint(MedicationConstraint) error
+
+    GetAllUserMedicationsWithConstraint(userId int, constraint string) ([]StoredMedicationWithConstraint, error)
 }
 
 func (m *PgModel) Medication(id int) Medication {
@@ -364,3 +367,53 @@ func (m *PgModel) EditMedicationConstraint(constraint MedicationConstraint) erro
     return err
 }
 
+func (m *PgModel) GetAllUserMedicationsWithConstraint(userId int, constraint string) ([]StoredMedicationWithConstraint, error){
+	meds, err := GetAllStoredMedsFromDB(m.Conn)
+
+	if err != nil {
+		return []StoredMedicationWithConstraint{}, err
+	}
+
+	var userStoredMedsWithConstraint []StoredMedicationWithConstraint
+
+	for _, med := range meds {
+		if(med.UserID == userId) {
+			medName, err := GetMedFromDB(m.Conn, med.MedicationID)
+
+			if err != nil {
+				return []StoredMedicationWithConstraint{}, err
+			}
+
+			tempConstraint, err := GetMedConstraintFromDB(m.Conn, med.MedicationID, constraint)
+
+			if err != nil {
+				return []StoredMedicationWithConstraint{}, err
+			}
+
+			var current float64
+			switch (constraint) {
+			case "temperature":
+				current = med.CurrentTemperature
+				break;
+			case "light":
+				current = med.CurrentLight
+				break
+			case "humidity":
+				current = med.CurrentHumidity
+			}
+
+			var userStoredMedWithConstraint StoredMedicationWithConstraint = StoredMedicationWithConstraint {
+					MedicationID: med.MedicationID, 
+					MedicationName: medName.MedicationName, 
+					StoredMedicationID: med.StoredMedicationID,
+					Current: current, 
+					MaxThreshold: tempConstraint.MaxThreshold, 
+					MinThreshold: tempConstraint.MinThreshold, 
+					Duration: tempConstraint.Duration  }
+
+			userStoredMedsWithConstraint = append(userStoredMedsWithConstraint, userStoredMedWithConstraint)
+		}
+	}
+
+	return userStoredMedsWithConstraint, nil
+}
