@@ -68,3 +68,9 @@ type StoredMedicationWithConstraint struct {
     MinThreshold       float64 `json:"min_threshold"`
     Duration           string  `json:"duration"` 
 }
+
+type ExpoNotificationToken struct {
+	ExpoNotificationTokenID int    `json:"expo_notification_token_id"`
+	UserID                  int    `json:"user_id"`
+	DeviceToken             string `json:"device_token"`
+}

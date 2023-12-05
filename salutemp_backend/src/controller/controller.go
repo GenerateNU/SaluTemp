@@ -720,5 +720,101 @@ r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
 		c.JSON(http.StatusOK, constraint)
 	})
 
+
+	// expo_notification_token routes
+
+	r.GET("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
+		userID := c.Param("user_id")
+		intUserID, err := strconv.Atoi(userID)
+	
+		if err != nil {
+			c.JSON(http.StatusBadRequest, "Invalid User ID")
+			return
+		}
+	
+		token, err := pg.ExpoNotificationToken(intUserID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Failed to retrieve Expo notification token")
+			return
+		}
+	
+		c.JSON(http.StatusOK, token)
+	})
+	
+
+r.GET("/v1/expo_notification_tokens/", func(c *gin.Context) {
+	tokens, err := pg.AllExpoNotificationTokens()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Oops")
+		return
+	}
+	c.JSON(http.StatusOK, tokens)
+})
+
+r.POST("/v1/add_expo_notification_token", func(c *gin.Context) {
+	var token model.ExpoNotificationToken
+
+	if err := c.BindJSON(&token); err != nil {
+		c.JSON(http.StatusBadRequest, "Failed to unmarshal expo_notification_token")
+		return
+	}
+
+	insertedToken, err := pg.AddExpoNotificationToken(token)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "Failed to add an expo_notification_token")
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, insertedToken)
+})
+
+r.DELETE("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
+	userID := c.Param("user_id")
+	intUserID, err := strconv.Atoi(userID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "Invalid User ID")
+		return
+	}
+
+	err = pg.DeleteExpoNotificationToken(intUserID)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Failed to delete expo_notification_token")
+		return
+	}
+
+	c.JSON(http.StatusOK, "Expo Notification Token deleted successfully")
+})
+
+r.PUT("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
+	var token model.ExpoNotificationToken
+
+	if err := c.BindJSON(&token); err != nil {
+		c.JSON(http.StatusBadRequest, "Failed to unmarshal expo_notification_token")
+		return
+	}
+
+	userID := c.Param("user_id")
+	intUserID, err := strconv.Atoi(userID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "Invalid User ID")
+		return
+	}
+
+	token.UserID = intUserID
+
+	err = pg.EditExpoNotificationToken(token)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Failed to edit expo_notification_token")
+		return
+	}
+
+	c.JSON(http.StatusOK, "Expo Notification Token edited successfully")
+})
+
 	return r;
 }
