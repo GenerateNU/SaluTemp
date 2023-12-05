@@ -4,6 +4,7 @@ import (
 	"time"
 	"fmt"
 	"github.com/jackc/pgx"
+	"strings"
 )
 
 type PgModel struct {
@@ -398,7 +399,7 @@ func (m *PgModel) GetAllUserMedicationsWithConstraint(userId int, constraint str
 
 			fmt.Println(med.MedicationID, " ",constraint, " COCONESTARING")
 
-			tempConstraint, err := GetMedConstraintFromDB(m.Conn, med.MedicationID, constraint)
+			tempConstraint, err := GetMedConstraintFromDB(m.Conn, med.MedicationID, strings.ToUpper(constraint))
 			if err != nil {
 				fmt.Println("Error getting medication constraint:", err)
 				
