@@ -54,6 +54,7 @@ type Model interface {
     AddMedicationConstraint(MedicationConstraint) (MedicationConstraint,error)
     DeleteMedicationConstraint(int, string) error
     EditMedicationConstraint(MedicationConstraint) error
+	AllMedicationConstraintsByStoredMedication(storedMedicationId int) (medConstraints []MedicationConstraint, err error)
 
 	ExpoNotificationToken(string) (ExpoNotificationToken, error)
 	AddExpoNotificationToken(ExpoNotificationToken) (ExpoNotificationToken, error)
@@ -249,6 +250,36 @@ func (m *PgModel) AllStoredMedications() ([]StoredMedication, error) {
 	return meds, nil
 }
 
+
+func (m *PgModel) AllMedicationConstraintsByStoredMedication(storedMedicationId int) (medConstraints []MedicationConstraint, err error) {
+	constraints, err := GetAllMedConstraintsFromDB(m.Conn)
+
+	for _, constraint := range constraints {
+		if constraint.StoredMedicationID == storedMedicationId {
+			medConstraints = append(medConstraints, constraint)
+		}
+	}
+
+	if err != nil {
+		return []MedicationConstraint{}, err
+	}
+	return medConstraints, err
+}
+
+func (m *PgModel) GetAllStoredMedsFromDBByUser(userId string) (userMeds []StoredMedication, err error) {
+	meds, err := GetAllStoredMedsFromDB(m.Conn)
+
+	for _, med := range meds {
+		if med.UserID == userId {
+			userMeds = append(userMeds, med)
+		}
+	}
+
+	if err != nil {
+		return []StoredMedication{}, err
+	}
+	return userMeds, err
+}
 
 //alert routes
 

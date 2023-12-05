@@ -737,6 +737,19 @@ r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
 	})
 
 
+	r.GET("/v1/medicationconstraints/storedmedication/:storedmedication", func(c *gin.Context) {
+		storedMedication := c.Param("storedmedication")
+		storedMedicationId, err := strconv.Atoi(storedMedication)
+		constraints, err := pg.AllMedicationConstraintsByStoredMedication(storedMedicationId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Oops")
+			return
+		}
+		c.JSON(http.StatusOK, constraints)
+	})
+	
+
+
 	// expo_notification_token routes
 
 	r.GET("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
