@@ -26,7 +26,7 @@ export type ScreenNames = [
   'Scan',
   'ScanReview'
 ]; // type these manually
-export type RootStackParamList = Record<ScreenNames[number], undefined>;
+export type RootStackParamList = Record<ScreenNames[number], any>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

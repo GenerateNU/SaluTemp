@@ -347,10 +347,8 @@ func (m *PgModel) GetAllUserMedicationsWithConstraint(userId int, constraint str
 			switch (constraint) {
 			case "temperature":
 				current = med.CurrentTemperature
-				break;
-			case "light":
+			case "light_exposure":
 				current = med.CurrentLight
-				break
 			case "humidity":
 				current = med.CurrentHumidity
 			}

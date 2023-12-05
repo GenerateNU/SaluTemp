@@ -1,29 +1,27 @@
 import React from 'react';
 import { StyleSheet, View, GestureResponderEvent } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigation } from '../App';
 import RightArrow from '../assets/right-arrow.svg';
 import { Status, getStatusColors } from '../types/medicationTypes';
 
 interface InformationCardProps {
   status: Status;
   children: JSX.Element[];
+  cardTouchAction: () => any;
 }
 
 export default function InformationCard(props: InformationCardProps) {
-  const { navigate } = useNavigation<StackNavigation>();
   const [touchStartPosition, setTouchStartPosition] = React.useState<number>();
 
-  const handleTouchEnd = (event: GestureResponderEvent) => {
-    if (touchStartPosition === event.nativeEvent.locationY) {
-      // TODO: this is going to need to be extracted at some point, but is good for now i think.
-      navigate('MedicationOverview');
-    }
-  };
-
+  // handle scrolling
   const handleTouchStart = (event: GestureResponderEvent) => {
     const position = event.nativeEvent.locationY;
     setTouchStartPosition(position);
+  };
+
+  const handleTouchEnd = (event: GestureResponderEvent) => {
+    if (touchStartPosition === event.nativeEvent.locationY) {
+      props.cardTouchAction();
+    }
   };
 
   return (

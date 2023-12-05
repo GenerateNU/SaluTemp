@@ -10,6 +10,7 @@ import AddIcon from '../assets/header-icons/add.svg';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Status } from '../types/medicationTypes';
 import { StoredMedicationWithConstraint } from '../types';
+import { FIREBASE_AUTH } from '../firebaseConfig';
 
 interface MedicationStatus {
   medicationId: number;
@@ -30,6 +31,7 @@ function MedicationsList() {
   const [medicationStatus, setMedicationStatus] = React.useState<MedicationStatus[]>([]);
 
   React.useEffect(() => {
+    //const userId = FIREBASE_AUTH.currentUser?.uid;
     const userId = 1;
     getAllUserMedicationsWithConstraint(userId, 'temperature').then((ml) =>
       setMedicationsTemperatureList(ml)
@@ -37,7 +39,7 @@ function MedicationsList() {
     getAllUserMedicationsWithConstraint(userId, 'humidity').then((ml) =>
       setMedicationsLightList(ml)
     );
-    getAllUserMedicationsWithConstraint(userId, 'light').then((ml) =>
+    getAllUserMedicationsWithConstraint(userId, 'light_exposure').then((ml) =>
       setMedicationsHumidityList(ml)
     );
 
@@ -76,6 +78,7 @@ function MedicationsList() {
     return Status.Good;
   };
 
+  // TODO: FIND ERROR HANDLING
   return (
     <View style={styles.container}>
       <Header title="Medications" rightIcon={<AddIcon />} rightAction={() => navigate('New')} />
@@ -90,6 +93,17 @@ function MedicationsList() {
                 status={
                   medicationStatus.find((ms) => ms.medicationId === mt.medication_id)?.status ??
                   Status.Bad
+                }
+                cardTouchAction={() =>
+                  navigate('MedicationOverview', {
+                    medicationHumidityStatus: medicationsHumidityList.find(
+                      (mh) => mh.medication_id === mt.medication_id
+                    )!,
+                    medicationTemperatureStatus: mt,
+                    medicationLightStatus: medicationsLightList.find(
+                      (ml) => ml.medication_id === mt.medication_id
+                    )!
+                  })
                 }
               >
                 <TouchableHighlight style={styles.addPhoto}>

@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, Dimensions, ScrollView, TextInput } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import LeftArrow from '../assets/header-icons/left-arrow.svg';
 import EditIcon from '../assets/header-icons/edit.svg';
 
 import StatusGood from '../assets/statusGood.svg';
-import Union from '../assets/union.svg';
+import Union from '../assets/Union.svg';
 import colors from '../config/colors';
 import Header from '../components/Header';
 import { StackNavigation } from '../App';
@@ -14,12 +14,16 @@ import { PaperProvider } from 'react-native-paper';
 import { MedOverviewTypeEnum, Status } from '../types/medicationTypes';
 import MonitorInfoCard from '../components/MonitorInfoCard';
 
+// TODO: REMOVE HARDCODED STUFF
 function MedOverviewScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalType, setModalType] = React.useState<MedOverviewTypeEnum>(
     MedOverviewTypeEnum.Temperature
   );
-  const { goBack } = useNavigation<StackNavigation>();
+
+  const { goBack, navigate } = useNavigation<StackNavigation>();
+  const route = useRoute();
+
   return (
     <PaperProvider>
       <MedOverviewPopup
@@ -40,7 +44,6 @@ function MedOverviewScreen() {
               <Text style={styles.title}>Medication Name</Text>
               <Union style={styles.union} />
               <StatusGood style={styles.statusSymbol} />
-              <Text style={styles.subHeadingTwo}>Last used date & time</Text>
               <Text style={styles.subHeadingTwo}>Expires on date</Text>
               <Text style={styles.subHeadingTwo}>Lot #</Text>
             </View>
