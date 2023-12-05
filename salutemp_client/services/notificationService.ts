@@ -1,11 +1,10 @@
-import * as Notifications from 'expo-notifications';
+import * as Notification from 'expo-notifications';
 
-import { API_URL } from './apiLinks'; 
-
-import * as Notification from "expo-notifications";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 import express from 'express';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const app = express();
 const port = 8000;
@@ -45,3 +44,15 @@ async function registerForPushNotificationsAsync() /*: Promise<string | null> */
 
 	return token;
 }
+
+const Notifications = () => {
+	const route = useRoute();
+	const navigation = useNavigation();
+	const [expoPushToken, setExpoPushToken] = useState("");
+
+	useEffect(() => {
+		registerForPushNotificationsAsync().then((token) => setExpoPushToken(token!));
+	}
+)}
+
+export default Notifications;
