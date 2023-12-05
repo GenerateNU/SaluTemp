@@ -17,8 +17,8 @@ type Model interface {
 	AddMedication(Medication) (Medication, error)
 	DeleteMedication(int) error
 	EditMedication(Medication) error
-	GetUserByEmail(string) error
-
+	GetUserByEmail(email string) (*User, error)
+	
 	User(string) User
 	AllUsers() ([]User, error)
 	AddUser(User) (User, error)
@@ -100,10 +100,18 @@ func (m *PgModel) EditMedication(med Medication) (error) {
 	return err
 }
 
-func (m *PgModel) GetUserByEmail(email string) error {
-	err := UserByEmail(m.Conn, email)
-	return err
+func (m *PgModel) GetUserByEmail(email string) (*User, error) {
+    user, err := UserByEmail(m.Conn, email)
+    if err != nil {
+        // Handle the error, log it, or return it based on your application's requirements.
+        return nil, err
+    }
+    
+    // Do something with the retrieved user, if needed.
+
+    return user, nil
 }
+
 
 func (m *PgModel) AllMedications() ([]Medication, error) {
 	meds, err := GetAllMedsFromDB(m.Conn)

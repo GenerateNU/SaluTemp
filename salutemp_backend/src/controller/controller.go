@@ -66,18 +66,7 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, insertedMed)
 	})
 
-	r.GET("v1/userexists/:email", func(c *gin.Context) {
-		email := c.Param("email")
-
-		err := pg.GetUserByEmail(email)
-
-		if err != nil {
-			c.JSON(http.StatusNotFound, "Something went wrong when finding this user")
-		}
-
-		c.JSON(http.StatusOK, "This user was found")
-	})
-
+	
 	r.DELETE("/v1/medications/:medID", func(c *gin.Context) {
 		id := c.Param("medID")
 		intID, err := strconv.Atoi(id)
@@ -128,6 +117,27 @@ func (pg *PgController) Serve() *gin.Engine {
 
 	//user routes
 
+
+	r.GET("v1/userexists/:email", func(c *gin.Context) {
+		email := c.Param("email")
+	
+		// Retrieve the user.
+		user, err := pg.GetUserByEmail(email)
+		if err != nil {
+			// Handle the error, log it, or return an appropriate response.
+			c.JSON(http.StatusNotFound, gin.H{"error": "Something went wrong when finding this user"})
+			return
+		}
+	
+		if user != nil {
+			c.JSON(http.StatusOK, gin.H{"message": "This user was found", "user": user})
+		} else {
+			c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		}
+	})
+	
+
+	
 	r.GET("/v1/users/:id", func(c *gin.Context) {
         id := c.Param("id")
         _, err := strconv.Atoi(id)

@@ -538,19 +538,25 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
 }
 
 // Get a User by Email
-func UserByEmail(pool *pgx.Conn, user_email string) error {
-	user := User{
-		Email: user_email,
-	}
+func UserByEmail(pool *pgx.Conn, user_email string) (*User, error) {
+    user := &User{
+        Email: user_email,
+    }
 
-	err := pool.QueryRow(fmt.Sprintf("SELECT user_id, first_name, last_name FROM user where email = '%s';", user_email)).Scan(&user.UserID, &user.FirstName, &user.LastName)
+    query := "SELECT user_id, first_name, last_name FROM \"user\" WHERE email = $1;"
+    err := pool.QueryRow(query, user_email).Scan(&user.UserID, &user.FirstName, &user.LastName)
 
-	if err != nil {
-		return err
-	}
+    if err != nil {
+        if err == pgx.ErrNoRows {
+            // Return an empty user if no rows are found
+            return nil, nil
+        }
+        return nil, err
+    }
 
-	return nil
+    return user, nil
 }
+
 
 
 // CRUD functions for the expo_notification_token table.
