@@ -347,7 +347,7 @@ r.PUT("/v1/userdevices/:id", func(c *gin.Context) {
 	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
-			return
+			panic(err)
 		}
 	
 		c.JSON(http.StatusOK, storedMedications)
@@ -724,16 +724,10 @@ r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
 
 	r.GET("/v1/allusermedicationswithconstraint/:userId/:conditiontype", func(c *gin.Context) {
 		userId := c.Param("userId")
-		uId, err := strconv.Atoi(userId)
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "Invalid medication ID")
-			return
-		}
-		
 		conditionType := c.Param("conditiontype")
 		
-		constraint, err := pg.GetAllUserMedicationsWithConstraint(uId, conditionType)
+		constraint, err := pg.GetAllUserMedicationsWithConstraint(userId, conditionType)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
 			return
@@ -747,14 +741,8 @@ r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
 
 	r.GET("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
 		userID := c.Param("user_id")
-		intUserID, err := strconv.Atoi(userID)
 	
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "Invalid User ID")
-			return
-		}
-	
-		token, err := pg.ExpoNotificationToken(intUserID)
+		token, err := pg.ExpoNotificationToken(userID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Failed to retrieve Expo notification token")
 			return
@@ -793,14 +781,10 @@ r.POST("/v1/add_expo_notification_token", func(c *gin.Context) {
 
 r.DELETE("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
 	userID := c.Param("user_id")
-	intUserID, err := strconv.Atoi(userID)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, "Invalid User ID")
-		return
-	}
+	
 
-	err = pg.DeleteExpoNotificationToken(intUserID)
+	err := pg.DeleteExpoNotificationToken(userID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Failed to delete expo_notification_token")
@@ -819,16 +803,10 @@ r.PUT("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
 	}
 
 	userID := c.Param("user_id")
-	intUserID, err := strconv.Atoi(userID)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, "Invalid User ID")
-		return
-	}
+	token.UserID = userID
 
-	token.UserID = intUserID
-
-	err = pg.EditExpoNotificationToken(token)
+	err := pg.EditExpoNotificationToken(token)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, "Failed to edit expo_notification_token")

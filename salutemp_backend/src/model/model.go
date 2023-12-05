@@ -55,13 +55,13 @@ type Model interface {
     DeleteMedicationConstraint(int, string) error
     EditMedicationConstraint(MedicationConstraint) error
 
-	ExpoNotificationToken(int) (ExpoNotificationToken, error)
+	ExpoNotificationToken(string) (ExpoNotificationToken, error)
 	AddExpoNotificationToken(ExpoNotificationToken) (ExpoNotificationToken, error)
-	DeleteExpoNotificationToken(int) error
+	DeleteExpoNotificationToken(string) error
 	EditExpoNotificationToken(ExpoNotificationToken) error
 	AllExpoNotificationTokens() ([]ExpoNotificationToken, error)
 
-    GetAllUserMedicationsWithConstraint(userId int, constraint string) ([]StoredMedicationWithConstraint, error)
+    GetAllUserMedicationsWithConstraint(userId string, constraint string) ([]StoredMedicationWithConstraint, error)
 }
 
 func (m *PgModel) Medication(id int) Medication {
@@ -388,7 +388,7 @@ func (m *PgModel) EditMedicationConstraint(constraint MedicationConstraint) erro
     return err
 }
 
-func (m *PgModel) GetAllUserMedicationsWithConstraint(userId int, constraint string) ([]StoredMedicationWithConstraint, error) {
+func (m *PgModel) GetAllUserMedicationsWithConstraint(userId string, constraint string) ([]StoredMedicationWithConstraint, error) {
 	meds, err := GetAllStoredMedsFromDB(m.Conn)
 	fmt.Println("hey")
 
@@ -461,7 +461,7 @@ func (m *PgModel) GetAllUserMedicationsWithConstraint(userId int, constraint str
 
 
 
-func (m *PgModel) ExpoNotificationToken(userID int) (ExpoNotificationToken, error) {
+func (m *PgModel) ExpoNotificationToken(userID string) (ExpoNotificationToken, error) {
 	token, err := GetExpoNotificationTokenFromDB(m.Conn, userID)
 
 	if err != nil {
@@ -481,7 +481,7 @@ func (m *PgModel) AddExpoNotificationToken(token ExpoNotificationToken) (ExpoNot
 	return insertedToken, nil
 }
 
-func (m *PgModel) DeleteExpoNotificationToken(userID int) error {
+func (m *PgModel) DeleteExpoNotificationToken(userID string) error {
 	err := DeleteExpoNotificationTokenFromDB(m.Conn, userID)
 	return err
 }

@@ -15,7 +15,7 @@ type User struct {
 
 type UserDevice struct {
     UserDeviceID int    `json:"user_device_id"`
-    UserID       int    `json:"user_id"`
+    UserID       string    `json:"user_id"`
     DeviceID     string `json:"device_id"`
 }
 
@@ -28,7 +28,7 @@ type Medication struct {
 type StoredMedication struct {
     StoredMedicationID int     `json:"stored_medication_id"`
     MedicationID       int     `json:"medication_id"`
-    UserID             int     `json:"user_id"`
+    UserID             string     `json:"user_id"`
     CurrentTemperature float64 `json:"current_temperature"`
     CurrentHumidity    float64 `json:"current_humidity"`
     CurrentLight       float64 `json:"current_light"`
@@ -70,6 +70,6 @@ type StoredMedicationWithConstraint struct {
 
 type ExpoNotificationToken struct {
 	ExpoNotificationTokenID int    `json:"expo_notification_token_id"`
-	UserID                  int    `json:"user_id"`
+	UserID                  string    `json:"user_id"`
 	DeviceToken             string `json:"device_token"`
 }

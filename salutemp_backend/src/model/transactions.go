@@ -573,7 +573,7 @@ func WriteExpoNotificationTokenToDb(pool *pgx.Conn, token ExpoNotificationToken)
 }
 
 // GetExpoNotificationTokenFromDB retrieves an expo_notification_token record from the database by user ID.
-func GetExpoNotificationTokenFromDB(pool *pgx.Conn, userID int) (ExpoNotificationToken, error) {
+func GetExpoNotificationTokenFromDB(pool *pgx.Conn, userID string) (ExpoNotificationToken, error) {
 	token := ExpoNotificationToken{UserID: userID}
 	query := fmt.Sprintf("SELECT expo_notification_token_id, user_id, device_token FROM expo_notification_token WHERE user_id = $1;")
 	err := pool.QueryRow(query, userID).Scan(&token.ExpoNotificationTokenID, &token.UserID, &token.DeviceToken)
@@ -597,7 +597,7 @@ func UpdateExpoNotificationToken(pool *pgx.Conn, token ExpoNotificationToken) er
 }
 
 // DeleteExpoNotificationTokenFromDB deletes an expo_notification_token record from the database.
-func DeleteExpoNotificationTokenFromDB(pool *pgx.Conn, userID int) error {
+func DeleteExpoNotificationTokenFromDB(pool *pgx.Conn, userID string) error {
 	commandTag, err := pool.Exec("DELETE FROM expo_notification_token WHERE user_id = $1;", userID)
 	if err != nil {
 		return err
