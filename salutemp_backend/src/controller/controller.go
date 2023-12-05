@@ -130,12 +130,12 @@ func (pg *PgController) Serve() *gin.Engine {
 
 	r.GET("/v1/users/:id", func(c *gin.Context) {
         id := c.Param("id")
-        // intID, err := strconv.Atoi(id)
+        _, err := strconv.Atoi(id)
 
-        // if err != nil {
-        //     c.JSON(http.StatusBadRequest, "Invalid ID")
-        //     return
-        // }
+        if err != nil {
+            c.JSON(http.StatusBadRequest, "Invalid ID")
+            return
+        }
         c.JSON(http.StatusOK, pg.User(id))
     })
 
