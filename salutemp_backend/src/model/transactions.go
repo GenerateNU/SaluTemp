@@ -31,7 +31,7 @@ func WriteUserToDb(pool *pgx.Conn, user User) (User, error) {
 }
 
 // GetUserFromDB retrieves a user record from the database by user ID.
-func GetUserFromDB(pool *pgx.Conn, userID int) (User, error) {
+func GetUserFromDB(pool *pgx.Conn, userID string) (User, error) {
     user := User{UserID: userID}
     query := fmt.Sprintf("SELECT user_id, first_name, last_name, email, push_notification_enabled FROM \"user\" WHERE user_id = $1;")
     err := pool.QueryRow(query, userID).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email, &user.PushNotificationEnabled)
@@ -55,7 +55,7 @@ func UpdateUser(pool *pgx.Conn, user User) error {
 }
 
 // DeleteUserFromDB deletes a user record from the database.
-func DeleteUserFromDB(pool *pgx.Conn, userID int) error {
+func DeleteUserFromDB(pool *pgx.Conn, userID string) error {
     commandTag, err := pool.Exec("DELETE FROM \"user\" WHERE user_id = $1;", userID)
     if err != nil {
         return err
@@ -536,6 +536,27 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
 
     return constraints, rows.Err()
 }
+
+// Get a User by Email
+func UserByEmail(pool *pgx.Conn, user_email string) (*User, error) {
+    user := &User{
+        Email: user_email,
+    }
+
+    query := "SELECT user_id, first_name, last_name FROM \"user\" WHERE email = $1;"
+    err := pool.QueryRow(query, user_email).Scan(&user.UserID, &user.FirstName, &user.LastName)
+
+    if err != nil {
+        if err == pgx.ErrNoRows {
+            // Return an empty user if no rows are found
+            return nil, nil
+        }
+        return nil, err
+    }
+
+    return user, nil
+}
+
 
 
 // CRUD functions for the expo_notification_token table.

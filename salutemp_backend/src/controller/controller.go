@@ -66,6 +66,7 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, insertedMed)
 	})
 
+	
 	r.DELETE("/v1/medications/:medID", func(c *gin.Context) {
 		id := c.Param("medID")
 		intID, err := strconv.Atoi(id)
@@ -116,15 +117,36 @@ func (pg *PgController) Serve() *gin.Engine {
 
 	//user routes
 
+
+	r.GET("v1/userexists/:email", func(c *gin.Context) {
+		email := c.Param("email")
+	
+		// Retrieve the user.
+		user, err := pg.GetUserByEmail(email)
+		if err != nil {
+			// Handle the error, log it, or return an appropriate response.
+			c.JSON(http.StatusNotFound, gin.H{"error": "Something went wrong when finding this user"})
+			return
+		}
+	
+		if user != nil {
+			c.JSON(http.StatusOK, gin.H{"message": "This user was found", "user": user})
+		} else {
+			c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		}
+	})
+	
+
+	
 	r.GET("/v1/users/:id", func(c *gin.Context) {
         id := c.Param("id")
-        intID, err := strconv.Atoi(id)
+        _, err := strconv.Atoi(id)
 
         if err != nil {
             c.JSON(http.StatusBadRequest, "Invalid ID")
             return
         }
-        c.JSON(http.StatusOK, pg.User(int(intID)))
+        c.JSON(http.StatusOK, pg.User(id))
     })
 
     r.GET("/v1/users/", func(c *gin.Context) {
@@ -161,14 +183,14 @@ func (pg *PgController) Serve() *gin.Engine {
 
 	r.DELETE("/v1/users/:id", func(c *gin.Context) {
 		id := c.Param("id")
-		intID, err := strconv.Atoi(id)
+		// intID, err := strconv.Atoi(id)
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "Invalid ID")
-			return
-		}
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, "Invalid ID")
+		// 	return
+		// }
 	
-		err = pg.DeleteUser(int(intID))
+		err := pg.DeleteUser(id)
 	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Failed to delete user")
@@ -188,16 +210,16 @@ func (pg *PgController) Serve() *gin.Engine {
 		}
 
 		id := c.Param("id")
-		intID, err := strconv.Atoi(id)
+		// intID, err := strconv.Atoi(id)
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "Invalid ID")
-			return
-		}
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, "Invalid ID")
+		// 	return
+		// }
 	
-		user.UserID= int(intID)
+		user.UserID = id
 	
-		err = pg.EditUser(user)
+		var err = pg.EditUser(user)
 	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Failed to edit user")

@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS "user";
 CREATE TYPE condition_type AS ENUM ('TEMPERATURE', 'HUMIDITY', 'LIGHT_EXPOSURE');
 
 CREATE TABLE IF NOT EXISTS "user" (
-    user_id integer NOT NULL UNIQUE,
+    user_id varchar NOT NULL UNIQUE,
     first_name varchar NOT NULL,
     last_name varchar NOT NULL,
     email varchar NOT NULL,
@@ -20,14 +20,14 @@ CREATE TABLE IF NOT EXISTS "user" (
 
 CREATE TABLE IF NOT EXISTS expo_notification_token (
     expo_notification_token_id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
+    user_id varchar NOT NULL,
     device_token VARCHAR NOT NULL,
     FOREIGN KEY (user_id) REFERENCES "user" (user_id)
 );
 
 CREATE TABLE IF NOT EXISTS user_device (
     user_device_id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
+    user_id varchar NOT NULL,
     device_id VARCHAR NOT NULL,
     FOREIGN KEY (user_id) REFERENCES "user" (user_id)
 );
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS medication (
 CREATE TABLE IF NOT EXISTS stored_medication ( /*medication_instance?*/
     stored_medication_id integer NOT NULL,
     medication_id integer NOT NULL,
-    user_id integer NOT NULL,
+    user_id varchar NOT NULL,
     current_temperature float,
     current_humidity float,
     current_light float,
@@ -85,11 +85,11 @@ CREATE TABLE IF NOT EXISTS medication_constraint (
 -- Insert sample data into "user" table
 INSERT INTO "user" (user_id, first_name, last_name, email, push_notification_enabled)
 VALUES
-  (1, 'John', 'Doe', 'john.doe@example.com', true),
-  (2, 'Jane', 'Smith', 'jane.smith@example.com', false),
-  (3, 'Bob', 'Johnson', 'bob.johnson@example.com', true),
-  (4, 'Alice', 'Williams', 'alice.williams@example.com', false),
-  (5, 'Charlie', 'Brown', 'charlie.brown@example.com', true);
+  ('1', 'John', 'Doe', 'john.doe@example.com', true),
+  ('2', 'Jane', 'Smith', 'jane.smith@example.com', false),
+  ('3', 'Bob', 'Johnson', 'bob.johnson@example.com', true),
+  ('4', 'Alice', 'Williams', 'alice.williams@example.com', false),
+  ('5', 'Charlie', 'Brown', 'charlie.brown@example.com', true);
 
 -- Insert sample data into "user_device" table
 INSERT INTO user_device (user_device_id, user_id, device_id)

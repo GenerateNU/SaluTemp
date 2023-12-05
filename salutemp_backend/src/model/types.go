@@ -4,14 +4,13 @@ import "time"
 
 
 type User struct {
-    UserID                 int    `json:"user_id"`
-    FirstName              string `json:"first_name"`
-    LastName               string `json:"last_name"`
-    Email                  string `json:"email"`
+    UserID    string    `json:"user_id"`
+    FirstName string `json:"first_name"`
+    LastName  string `json:"last_name"`
+    Email     string `json:"email"`
     PushNotificationEnabled bool   `json:"push_notification_enabled"`
+
 }
-
-
 
 
 type UserDevice struct {
