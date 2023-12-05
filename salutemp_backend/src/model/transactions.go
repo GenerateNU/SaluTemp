@@ -538,3 +538,75 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
 }
 
 
+// CRUD functions for the expo_notification_token table.
+
+// WriteExpoNotificationTokenToDb inserts a new expo_notification_token record into the database.
+func WriteExpoNotificationTokenToDb(pool *pgx.Conn, token ExpoNotificationToken) (ExpoNotificationToken, error) {
+	var insertedToken ExpoNotificationToken
+	err := pool.QueryRow("INSERT INTO expo_notification_token (user_id, device_token) VALUES ($1, $2) RETURNING expo_notification_token_id;",
+		token.UserID, token.DeviceToken).Scan(&insertedToken.ExpoNotificationTokenID)
+	if err != nil {
+		return ExpoNotificationToken{}, err
+	}
+	return insertedToken, nil
+}
+
+// GetExpoNotificationTokenFromDB retrieves an expo_notification_token record from the database by user ID.
+func GetExpoNotificationTokenFromDB(pool *pgx.Conn, userID int) (ExpoNotificationToken, error) {
+	token := ExpoNotificationToken{UserID: userID}
+	query := fmt.Sprintf("SELECT expo_notification_token_id, user_id, device_token FROM expo_notification_token WHERE user_id = $1;")
+	err := pool.QueryRow(query, userID).Scan(&token.ExpoNotificationTokenID, &token.UserID, &token.DeviceToken)
+	if err != nil {
+		return ExpoNotificationToken{}, err
+	}
+	return token, nil
+}
+
+// UpdateExpoNotificationToken updates an expo_notification_token record in the database.
+func UpdateExpoNotificationToken(pool *pgx.Conn, token ExpoNotificationToken) error {
+	commandTag, err := pool.Exec("UPDATE expo_notification_token SET device_token = $1 WHERE user_id = $2;",
+		token.DeviceToken, token.UserID)
+	if err != nil {
+		return err
+	}
+	if commandTag.RowsAffected() == 0 {
+		return errors.New("no rows updated")
+	}
+	return nil
+}
+
+// DeleteExpoNotificationTokenFromDB deletes an expo_notification_token record from the database.
+func DeleteExpoNotificationTokenFromDB(pool *pgx.Conn, userID int) error {
+	commandTag, err := pool.Exec("DELETE FROM expo_notification_token WHERE user_id = $1;", userID)
+	if err != nil {
+		return err
+	}
+	if commandTag.RowsAffected() == 0 {
+		return errors.New("no rows deleted")
+	}
+	return nil
+}
+
+// GetAllExpoNotificationTokensFromDB retrieves all expo_notification_token records from the database.
+func GetAllExpoNotificationTokensFromDB(pool *pgx.Conn) ([]ExpoNotificationToken, error) {
+	rows, err := pool.Query("SELECT expo_notification_token_id, user_id, device_token FROM expo_notification_token;")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tokens []ExpoNotificationToken
+	for rows.Next() {
+		var token ExpoNotificationToken
+		err := rows.Scan(&token.ExpoNotificationTokenID, &token.UserID, &token.DeviceToken)
+		if err != nil {
+			return nil, err
+		}
+		tokens = append(tokens, token)
+	}
+
+	return tokens, rows.Err()
+}
+
+
+

@@ -107,7 +107,22 @@ VALUES
   (2, 'Medication B'),
   (3, 'Medication C'),
   (4, 'Medication D'),
-  (5, 'Medication E');
+  (5, 'Medication E'),
+  (6, 'Medication F'),
+  (7, 'Medication G'),
+  (8, 'Medication H'),
+  (9, 'Medication I'),
+  (10, 'Medication J'),
+  (11, 'Medication K'),
+  (12, 'Medication L'),
+  (13, 'Medication M'),
+  (14, 'Medication N'),
+  (15, 'Medication O'),
+  (16, 'Medication P'),
+  (17, 'Medication Q'),
+  (18, 'Medication R'),
+  (19, 'Medication S'),
+  (20, 'Medication T');
 
 -- Insert sample data into "stored_medication" table
 INSERT INTO stored_medication (stored_medication_id, medication_id, user_id, current_temperature, current_humidity, current_light)
@@ -116,7 +131,17 @@ VALUES
   (2, 2, 2, 22.0, 40.0, 200),
   (3, 3, 3, 26.5, 60.0, 400),
   (4, 4, 4, 23.0, 45.0, 250),
-  (5, 5, 5, 24.5, 55.0, 350);
+  (5, 5, 5, 24.5, 55.0, 350),
+  (6, 6, 1, 25.0, 50.0, 300),
+  (7, 7, 1, 22.0, 40.0, 200),
+  (8, 8, 1, 26.5, 60.0, 400),
+  (9, 9, 1, 23.0, 45.0, 250),
+  (10, 10, 1, 24.5, 55.0, 350),
+  (11, 11, 1, 25.2, 48.0, 290),
+  (12, 12, 1, 22.8, 42.0, 210),
+  (13, 13, 1, 26.0, 58.0, 380),
+  (14, 14, 1, 23.5, 46.0, 260),
+  (15, 15, 1, 24.8, 53.0, 330);
 
 -- Insert sample data into "alert" table
 INSERT INTO alert (warning_id, stored_medication_id, warning_timestamp, warning_description, condition_type)
@@ -146,4 +171,14 @@ VALUES
   (4, 'TEMPERATURE', 28.0, 18.0, '1 day'),
   (5, 'HUMIDITY', 50.0, 35.0, '2 days'),
   (3, 'TEMPERATURE', 50.0, 35.0, '2 days');
+
+  -- Insert sample data into "expo_notification_token" table
+INSERT INTO expo_notification_token (expo_notification_token_id, user_id, device_token)
+VALUES
+  (1, 1, 'expo_device_token_1'),
+  (2, 2, 'expo_device_token_2'),
+  (3, 3, 'expo_device_token_3'),
+  (4, 4, 'expo_device_token_4'),
+  (5, 5, 'expo_device_token_5');
+
 
