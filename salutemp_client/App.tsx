@@ -63,13 +63,6 @@ export default function App() {
             title: 'Forgot Password'
           }}
         />
-        <Stack.Screen
-          name="Register"
-          component={Register}
-          options={{
-            title: 'Register'
-          }}
-        />
         <Stack.Screen name="MedList" options={{ headerShown: false }} component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>

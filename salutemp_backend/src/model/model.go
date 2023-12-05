@@ -15,11 +15,12 @@ type Model interface {
 	AddMedication(Medication) (Medication, error)
 	DeleteMedication(int) error
 	EditMedication(Medication) error
+	GetUserByEmail(string) error
 
-	User(int) User
+	User(string) User
 	AllUsers() ([]User, error)
 	AddUser(User) (User, error)
-	DeleteUser(int) error
+	DeleteUser(string) error
 	EditUser(User) error
 
 	StoredMedication(int) (StoredMedication,error)
@@ -83,6 +84,11 @@ func (m *PgModel) EditMedication(med Medication) (error) {
 	return err
 }
 
+func (m *PgModel) GetUserByEmail(email string) error {
+	err := UserByEmail(m.Conn, email)
+	return err
+}
+
 func (m *PgModel) AllMedications() ([]Medication, error) {
 	meds, err := GetAllMedsFromDB(m.Conn)
 
@@ -92,7 +98,7 @@ func (m *PgModel) AllMedications() ([]Medication, error) {
 	return meds, nil
 }
 
-func (m *PgModel) User(id int) User {
+func (m *PgModel) User(id string) User {
 	user, err := GetUserFromDB(m.Conn, id)
 
 	if err != nil {
@@ -112,7 +118,7 @@ func (m *PgModel) AddUser(user User) (User, error) {
 	return p, nil
 }
 
-func (m *PgModel) DeleteUser(id int) error {
+func (m *PgModel) DeleteUser(id string) error {
 	err := DeleteUserFromDB(m.Conn, id)
 	return err
 }

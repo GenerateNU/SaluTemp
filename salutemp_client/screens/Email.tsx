@@ -4,6 +4,8 @@ import { FIREBASE_APP, FIREBASE_AUTH } from '../firebaseConfig';
 import { signInWithEmailAndPassword, onAuthStateChanged, User } from 'firebase/auth';
 import { useNavigation, StackActions } from '@react-navigation/native';
 import colors from "../config/colors"
+import { API_URL } from '../services/apiLinks';
+import axios from "axios"
 
 const Email = () => {
 
@@ -34,11 +36,21 @@ const Email = () => {
   //   }
   // };
 
+  const getMoviesFromApi = async () => {
+    await axios.get(`${API_URL}/v1/${email}`
+    ).then((response) => {
+      navigation.navigate("EmailAndPassword", {email: email});
+      console.log("exisitng user");
+    }).catch((error) => {
+      navigation.navigate("Name", {email: email});
+      console.log("NOT exisitng user: " + error.message);
+    });
+  };
+
   const handleContinue = async () => {
     if (email != "")
     {
-      navigation.navigate("EmailAndPassword", {email: email});
-      // navigation.navigate("Name", {email: email});
+      getMoviesFromApi()
     }
     else
     {

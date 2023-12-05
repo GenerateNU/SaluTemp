@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS "user";
 CREATE TYPE condition_type AS ENUM ('TEMPERATURE', 'HUMIDITY', 'LIGHT_EXPOSURE');
 
 CREATE TABLE IF NOT EXISTS "user" (
-    user_id integer NOT NULL UNIQUE,
+    user_id varchar NOT NULL UNIQUE,
     first_name varchar NOT NULL,
     last_name varchar NOT NULL,
     email varchar NOT NULL,

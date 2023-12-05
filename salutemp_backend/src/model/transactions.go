@@ -32,7 +32,7 @@ func WriteUserToDb(pool *pgx.Conn, user User) (User, error) {
 }
 
 // GetUserFromDB retrieves a user record from the database by user ID.
-func GetUserFromDB(pool *pgx.Conn, userID int) (User, error) {
+func GetUserFromDB(pool *pgx.Conn, userID string) (User, error) {
     user := User{UserID: userID}
     query := fmt.Sprintf("SELECT user_id, first_name, last_name, email FROM \"user\" WHERE user_id = $1;")
     err := pool.QueryRow(query, userID).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email)
@@ -55,7 +55,7 @@ func UpdateUser(pool *pgx.Conn, user User) error {
 }
 
 // DeleteUserFromDB deletes a user record from the database.
-func DeleteUserFromDB(pool *pgx.Conn, userID int) error {
+func DeleteUserFromDB(pool *pgx.Conn, userID string) error {
     commandTag, err := pool.Exec("DELETE FROM \"user\" WHERE user_id = $1;", userID)
     if err != nil {
         return err
@@ -473,6 +473,21 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
     }
 
     return constraints, rows.Err()
+}
+
+// Get a User by Email
+func UserByEmail(pool *pgx.Conn, user_email string) error {
+	user := User{
+		Email: user_email,
+	}
+
+	err := pool.QueryRow(fmt.Sprintf("SELECT user_id, first_name, last_name FROM user where email = '%s';", user_email)).Scan(&user.UserID, &user.FirstName, &user.LastName)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 
