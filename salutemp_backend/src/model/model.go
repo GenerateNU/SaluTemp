@@ -413,10 +413,11 @@ func (m *PgModel) GetAllUserMedicationsWithConstraint(userId int, constraint str
 			}
 			
 			var current float64
-			switch constraint {
+			
+			switch (constraint) {
 			case "temperature":
 				current = med.CurrentTemperature
-			case "light":
+			case "light_exposure":
 				current = med.CurrentLight
 			case "humidity":
 				current = med.CurrentHumidity
