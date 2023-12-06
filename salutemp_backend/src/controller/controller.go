@@ -724,7 +724,7 @@ r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
 			return
 		}
 		
-		// Call the function to update the medication constraint in the database
+		// Call the funxction to update the medication constraint in the database
 		err = pg.EditMedicationConstraint(constraint)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Failed to update medication constraint")
