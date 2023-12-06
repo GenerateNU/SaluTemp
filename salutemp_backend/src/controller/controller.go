@@ -332,6 +332,25 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, storedMedication)
 	})
 
+	r.GET("/v1/storedmedications/user/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		intID, err := strconv.Atoi(id)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, "Invalid ID")
+			return
+		}
+
+		storedMedication, err := pg.GetAllStoredMedsFromDBByUser(intID)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Oops")
+			return
+		}
+
+		c.JSON(http.StatusOK, storedMedication)
+	})
+
 	r.GET("/v1/storedmedications/", func(c *gin.Context) {
 		storedMedications, err := pg.AllStoredMedications()
 
