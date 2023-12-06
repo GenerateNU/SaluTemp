@@ -418,6 +418,20 @@ r.PUT("/v1/userdevices/:id", func(c *gin.Context) {
 		c.JSON(http.StatusOK, "Stored medication edited successfully")
 	})
 
+	r.GET("/v1/storedmedications/user/:id", func(c *gin.Context) {
+		id := c.Param("id")
+
+
+		storedMedication, err := pg.GetAllStoredMedsFromDBByUser(id)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Oops")
+			return
+		}
+
+		c.JSON(http.StatusOK, storedMedication)
+	})
+
 	//alerts
 
 	r.GET("/v1/alerts/:id", func(c *gin.Context) {
@@ -735,6 +749,19 @@ r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
 		
 		c.JSON(http.StatusOK, constraint)
 	})
+
+
+	r.GET("/v1/medicationconstraints/storedmedication/:storedmedication", func(c *gin.Context) {
+		storedMedication := c.Param("storedmedication")
+		storedMedicationId, err := strconv.Atoi(storedMedication)
+		constraints, err := pg.AllMedicationConstraintsByStoredMedication(storedMedicationId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Oops")
+			return
+		}
+		c.JSON(http.StatusOK, constraints)
+	})
+	
 
 
 	// expo_notification_token routes
