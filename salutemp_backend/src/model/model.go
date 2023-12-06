@@ -445,20 +445,6 @@ func (m *PgModel) GetAllUserMedicationsWithConstraint(userId string, constraint 
 
 			fmt.Println(med.MedicationID, " ",constraint, " COCONESTARING")
 
-			tempConstraint, err := GetMedConstraintFromDB(m.Conn, med.MedicationID, strings.ToUpper(constraint))
-			if err != nil {
-				fmt.Println("Error getting medication constraint:", err)
-				
-				if err.Error() == "no rows in result set" {
-					// Handle the specific case of no rows
-					fmt.Println("No rows in result set")
-					continue
-				}else {
-					// Handle other errors
-					return []StoredMedicationWithConstraint{}, err
-				}
-			}
-			
 			var current float64
 			
 			switch (constraint) {
@@ -469,6 +455,30 @@ func (m *PgModel) GetAllUserMedicationsWithConstraint(userId string, constraint 
 			case "humidity":
 				current = med.CurrentHumidity
 			}
+
+			tempConstraint, err := GetMedConstraintFromDB(m.Conn, med.MedicationID, strings.ToUpper(constraint))
+			if err != nil {
+				fmt.Println("Error getting medication constraint:", err)
+				
+				if err.Error() == "no rows in result set" {
+					// Handle the specific case of no rows
+					fmt.Println("No rows in result set")
+					var userStoredMedWithConstraint StoredMedicationWithConstraint = StoredMedicationWithConstraint{
+						MedicationID:       med.MedicationID,
+						MedicationName:     medName.MedicationName,
+						StoredMedicationID: med.StoredMedicationID,
+						Current:            current,
+					}
+		
+					userStoredMedsWithConstraint = append(userStoredMedsWithConstraint, userStoredMedWithConstraint)
+					continue
+				}else {
+					// Handle other errors
+					return []StoredMedicationWithConstraint{}, err
+				}
+			}
+			
+		
 
 			fmt.Printf("MedicationID: %d, MedicationName: %s, StoredMedicationID: %d, Type: %s, Current: %f, MaxThreshold: %f, MinThreshold: %f, Duration: %f\n",
 				med.MedicationID, medName.MedicationName, med.StoredMedicationID, tempConstraint.ConditionType, current, tempConstraint.MaxThreshold, tempConstraint.MinThreshold, tempConstraint.Duration)
