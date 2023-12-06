@@ -36,6 +36,7 @@ type Model interface {
 	AddStoredMedication(StoredMedication) (StoredMedication, error)
 	DeleteStoredMedication(int) error
 	EditStoredMedication(StoredMedication) error
+	GetAllStoredMedsFromDBByUser(userId string) (userMeds []StoredMedication, err error)
 
 	Alert(int) (Alert,error)
     AllAlerts() ([]Alert, error)
