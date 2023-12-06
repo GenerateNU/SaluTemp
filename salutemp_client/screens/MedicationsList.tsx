@@ -1,9 +1,15 @@
 import React from 'react';
+<<<<<<< HEAD
 import { StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
+=======
+import { StyleSheet, SafeAreaView, Text, View, Button, TouchableHighlight, ScrollView } from 'react-native';
+>>>>>>> feature/login_flow
+import { MaterialIcons } from '@expo/vector-icons';
+import { useNavigation, StackActions } from '@react-navigation/native';
+
 import colors from '../config/colors';
 import { getAllUserMedicationsWithConstraint } from '../services/medicationService';
 import InformationCard from '../components/InformationCard';
-import { useNavigation } from '@react-navigation/native';
 import { StackNavigation } from '../App';
 import Header from '../components/Header';
 import AddIcon from '../assets/header-icons/add.svg';

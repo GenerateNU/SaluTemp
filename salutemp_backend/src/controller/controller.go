@@ -38,6 +38,7 @@ func (pg *PgController) Serve() *gin.Engine {
 		meds, err := pg.AllMedications()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
+			return
 		}
 		c.JSON(http.StatusOK, meds)
 	})
@@ -65,6 +66,7 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, insertedMed)
 	})
 
+	
 	r.DELETE("/v1/medications/:medID", func(c *gin.Context) {
 		id := c.Param("medID")
 		intID, err := strconv.Atoi(id)
@@ -115,21 +117,43 @@ func (pg *PgController) Serve() *gin.Engine {
 
 	//user routes
 
+
+	r.GET("v1/userexists/:email", func(c *gin.Context) {
+		email := c.Param("email")
+	
+		// Retrieve the user.
+		user, err := pg.GetUserByEmail(email)
+		if err != nil {
+			// Handle the error, log it, or return an appropriate response.
+			c.JSON(http.StatusNotFound, gin.H{"error": "Something went wrong when finding this user"})
+			return
+		}
+	
+		if user != nil {
+			c.JSON(http.StatusOK, gin.H{"message": "This user was found", "user": user})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"message": "User not found"})
+		}
+	})
+	
+
+	
 	r.GET("/v1/users/:id", func(c *gin.Context) {
         id := c.Param("id")
-        intID, err := strconv.Atoi(id)
+        _, err := strconv.Atoi(id)
 
         if err != nil {
             c.JSON(http.StatusBadRequest, "Invalid ID")
             return
         }
-        c.JSON(http.StatusOK, pg.User(int(intID)))
+        c.JSON(http.StatusOK, pg.User(id))
     })
 
     r.GET("/v1/users/", func(c *gin.Context) {
         patients, err := pg.AllUsers()
         if err != nil {
             c.JSON(http.StatusInternalServerError, "Oops")
+			return
         }
         c.JSON(http.StatusOK, patients)
     })
@@ -159,14 +183,14 @@ func (pg *PgController) Serve() *gin.Engine {
 
 	r.DELETE("/v1/users/:id", func(c *gin.Context) {
 		id := c.Param("id")
-		intID, err := strconv.Atoi(id)
+		// intID, err := strconv.Atoi(id)
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "Invalid ID")
-			return
-		}
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, "Invalid ID")
+		// 	return
+		// }
 	
-		err = pg.DeleteUser(int(intID))
+		err := pg.DeleteUser(id)
 	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Failed to delete user")
@@ -186,16 +210,16 @@ func (pg *PgController) Serve() *gin.Engine {
 		}
 
 		id := c.Param("id")
-		intID, err := strconv.Atoi(id)
+		// intID, err := strconv.Atoi(id)
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "Invalid ID")
-			return
-		}
+		// if err != nil {
+		// 	c.JSON(http.StatusBadRequest, "Invalid ID")
+		// 	return
+		// }
 	
-		user.UserID = int(intID)
+		user.UserID = id
 	
-		err = pg.EditUser(user)
+		var err = pg.EditUser(user)
 	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Failed to edit user")
@@ -204,6 +228,98 @@ func (pg *PgController) Serve() *gin.Engine {
 
 		c.JSON(http.StatusOK, "User edited successfully")
 	})
+
+	//user devices
+	// user device routes
+
+r.GET("/v1/userdevices/:id", func(c *gin.Context) {
+    id := c.Param("id")
+    intID, err := strconv.Atoi(id)
+
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid ID")
+        return
+    }
+    c.JSON(http.StatusOK, pg.UserDevice(int(intID)))
+})
+
+r.GET("/v1/userdevices/", func(c *gin.Context) {
+    userDevices, err := pg.AllUserDevices()
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, "Oops")
+        return
+    }
+    c.JSON(http.StatusOK, userDevices)
+})
+
+r.POST("/v1/adduserdevices", func(c *gin.Context) {
+    var userDevice model.UserDevice
+
+    if err := c.BindJSON(&userDevice); err != nil {
+        c.JSON(http.StatusBadRequest, "Failed to unmarshal user device")
+        return
+    }
+
+    insertedUserDevice, err := pg.AddUserDevice(userDevice)
+
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Failed to add a user device")
+        panic(err)
+    }
+
+    c.JSON(http.StatusOK, insertedUserDevice)
+})
+
+r.DELETE("/v1/userdevices/:id", func(c *gin.Context) {
+    id := c.Param("id")
+    intID, err := strconv.Atoi(id)
+
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid ID")
+        return
+    }
+
+    err = pg.DeleteUserDevice(int(intID))
+
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, "Failed to delete user device")
+        return
+    }
+
+    c.JSON(http.StatusOK, "User device deleted successfully")
+})
+
+
+r.PUT("/v1/userdevices/:id", func(c *gin.Context) {
+    var userDevice model.UserDevice
+
+    if err := c.BindJSON(&userDevice); err != nil {
+        c.JSON(http.StatusBadRequest, "Failed to unmarshal user device")
+        return
+    }
+
+    id := c.Param("id")
+    intID, err := strconv.Atoi(id)
+
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid ID")
+        return
+    }
+
+    userDevice.UserDeviceID = int(intID)
+
+    err = pg.EditUserDevice(userDevice)
+
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, "Failed to edit user device")
+        return
+    }
+
+    c.JSON(http.StatusOK, "User device edited successfully")
+})
+
+   
+
 
 	//stored medication routes
 
@@ -231,7 +347,7 @@ func (pg *PgController) Serve() *gin.Engine {
 	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
-			return
+			panic(err)
 		}
 	
 		c.JSON(http.StatusOK, storedMedications)
@@ -300,6 +416,20 @@ func (pg *PgController) Serve() *gin.Engine {
 		}
 	
 		c.JSON(http.StatusOK, "Stored medication edited successfully")
+	})
+
+	r.GET("/v1/storedmedications/user/:id", func(c *gin.Context) {
+		id := c.Param("id")
+
+
+		storedMedication, err := pg.GetAllStoredMedsFromDBByUser(id)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Oops")
+			return
+		}
+
+		c.JSON(http.StatusOK, storedMedication)
 	})
 
 	//alerts
@@ -473,30 +603,41 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, "Condition event deleted successfully")
 	})
 	
-	// r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
-	// 	eventTime := c.Param("eventtime")
-	// 	storedMedicationIDStr := c.Param("storedmedicationid")
-	// 	storedMedicationID, err := strconv.Atoi(storedMedicationIDStr)
-	// 	if err != nil {
-	// 		c.JSON(http.StatusBadRequest, "Invalid event time or stored medication ID")
-	// 		return
-	// 	}
-	
-	// 	var event model.StatusReport
-	// 	if err := c.BindJSON(&event); err != nil {
-	// 		c.JSON(http.StatusBadRequest, "Failed to unmarshal status report")
-	// 		return
-	// 	}
-	
-	// 	// Call the function to edit the status report in the database using eventTime and storedMedicationID
-	// 	err = pg.EditStatusReport(eventTime, storedMedicationID, event)
-	// 	if err != nil {
-	// 		c.JSON(http.StatusInternalServerError, "Failed to edit status report")
-	// 		return
-	// 	}
-	
-	// 	c.JSON(http.StatusOK, "Status report edited successfully")
-	// })
+r.PUT("/v1/statusreports/:eventtime/:storedmedicationid", func(c *gin.Context) {
+    eventTimeParam := c.Param("eventtime")
+    storedMedicationIDParam := c.Param("storedmedicationid")
+
+    eventTime, err := time.Parse(time.RFC3339, eventTimeParam)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid event time format")
+        return
+    }
+
+    storedMedicationID, err := strconv.Atoi(storedMedicationIDParam)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, "Invalid stored medication ID")
+        return
+    }
+
+    var event model.StatusReport
+    if err := c.BindJSON(&event); err != nil {
+        c.JSON(http.StatusBadRequest, "Failed to unmarshal status report")
+        return
+    }
+
+    event.EventTime = eventTime
+    event.StoredMedicationID = storedMedicationID
+
+    // Call the function to edit the status report in the database using eventTime and storedMedicationID
+    err = pg.EditStatusReport(event)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, "Failed to edit status report")
+        return
+    }
+
+    c.JSON(http.StatusOK, "Status report edited successfully")
+})
+
 	
 	
 	r.GET("/v1/medicationconstraints/:medicationid/:conditiontype", func(c *gin.Context) {
@@ -524,7 +665,7 @@ func (pg *PgController) Serve() *gin.Engine {
 	
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
-			return
+			panic(err)
 		}
 	
 		c.JSON(http.StatusOK, constraints)
@@ -597,16 +738,10 @@ func (pg *PgController) Serve() *gin.Engine {
 
 	r.GET("/v1/allusermedicationswithconstraint/:userId/:conditiontype", func(c *gin.Context) {
 		userId := c.Param("userId")
-		uId, err := strconv.Atoi(userId)
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, "Invalid medication ID")
-			return
-		}
-		
 		conditionType := c.Param("conditiontype")
 		
-		constraint, err := pg.GetAllUserMedicationsWithConstraint(uId, conditionType)
+		constraint, err := pg.GetAllUserMedicationsWithConstraint(userId, conditionType)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
 			return
@@ -614,6 +749,99 @@ func (pg *PgController) Serve() *gin.Engine {
 		
 		c.JSON(http.StatusOK, constraint)
 	})
+
+
+	r.GET("/v1/medicationconstraints/storedmedication/:storedmedication", func(c *gin.Context) {
+		storedMedication := c.Param("storedmedication")
+		storedMedicationId, err := strconv.Atoi(storedMedication)
+		constraints, err := pg.AllMedicationConstraintsByStoredMedication(storedMedicationId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Oops")
+			return
+		}
+		c.JSON(http.StatusOK, constraints)
+	})
+	
+
+
+	// expo_notification_token routes
+
+	r.GET("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
+		userID := c.Param("user_id")
+	
+		token, err := pg.ExpoNotificationToken(userID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Failed to retrieve Expo notification token")
+			return
+		}
+	
+		c.JSON(http.StatusOK, token)
+	})
+	
+
+r.GET("/v1/expo_notification_tokens/", func(c *gin.Context) {
+	tokens, err := pg.AllExpoNotificationTokens()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Oops")
+		return
+	}
+	c.JSON(http.StatusOK, tokens)
+})
+
+r.POST("/v1/add_expo_notification_token", func(c *gin.Context) {
+	var token model.ExpoNotificationToken
+
+	if err := c.BindJSON(&token); err != nil {
+		c.JSON(http.StatusBadRequest, "Failed to unmarshal expo_notification_token")
+		return
+	}
+
+	insertedToken, err := pg.AddExpoNotificationToken(token)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, "Failed to add an expo_notification_token")
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, insertedToken)
+})
+
+r.DELETE("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
+	userID := c.Param("user_id")
+
+	
+
+	err := pg.DeleteExpoNotificationToken(userID)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Failed to delete expo_notification_token")
+		return
+	}
+
+	c.JSON(http.StatusOK, "Expo Notification Token deleted successfully")
+})
+
+r.PUT("/v1/expo_notification_tokens/:user_id", func(c *gin.Context) {
+	var token model.ExpoNotificationToken
+
+	if err := c.BindJSON(&token); err != nil {
+		c.JSON(http.StatusBadRequest, "Failed to unmarshal expo_notification_token")
+		return
+	}
+
+	userID := c.Param("user_id")
+
+	token.UserID = userID
+
+	err := pg.EditExpoNotificationToken(token)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, "Failed to edit expo_notification_token")
+		return
+	}
+
+	c.JSON(http.StatusOK, "Expo Notification Token edited successfully")
+})
 
 	return r;
 }

@@ -2,12 +2,23 @@ package model
 
 import "time"
 
+
 type User struct {
-    UserID    int    `json:"user_id"`
+    UserID    string    `json:"user_id"`
     FirstName string `json:"first_name"`
     LastName  string `json:"last_name"`
     Email     string `json:"email"`
+    PushNotificationEnabled bool   `json:"push_notification_enabled"`
+
 }
+
+
+type UserDevice struct {
+    UserDeviceID int    `json:"user_device_id"`
+    UserID       string    `json:"user_id"`
+    DeviceID     string `json:"device_id"`
+}
+
 
 type Medication struct {
     MedicationID   int    `json:"medication_id"`
@@ -17,7 +28,7 @@ type Medication struct {
 type StoredMedication struct {
     StoredMedicationID int     `json:"stored_medication_id"`
     MedicationID       int     `json:"medication_id"`
-    UserID             int     `json:"user_id"`
+    UserID             string     `json:"user_id"`
     CurrentTemperature float64 `json:"current_temperature"`
     CurrentHumidity    float64 `json:"current_humidity"`
     CurrentLight       float64 `json:"current_light"`
@@ -40,7 +51,7 @@ type StatusReport struct {
 }
 
 type MedicationConstraint struct {
-    MedicationID  int     `json:"medication_id"`
+    StoredMedicationID  int     `json:"medication_id"`
     ConditionType string  `json:"condition_type"` 
     MaxThreshold  float64 `json:"max_threshold"`
     MinThreshold  float64 `json:"min_threshold"`
@@ -55,4 +66,10 @@ type StoredMedicationWithConstraint struct {
     MaxThreshold       float64 `json:"max_threshold"`
     MinThreshold       float64 `json:"min_threshold"`
     Duration           string  `json:"duration"` 
+}
+
+type ExpoNotificationToken struct {
+	ExpoNotificationTokenID int    `json:"expo_notification_token_id"`
+	UserID                  string    `json:"user_id"`
+	DeviceToken             string `json:"device_token"`
 }
