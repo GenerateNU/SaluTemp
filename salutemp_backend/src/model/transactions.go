@@ -31,7 +31,7 @@ func WriteUserToDb(pool *pgx.Conn, user User) (User, error) {
 }
 
 // GetUserFromDB retrieves a user record from the database by user ID.
-func GetUserFromDB(pool *pgx.Conn, userID int) (User, error) {
+func GetUserFromDB(pool *pgx.Conn, userID string) (User, error) {
     user := User{UserID: userID}
     query := fmt.Sprintf("SELECT user_id, first_name, last_name, email, push_notification_enabled FROM \"user\" WHERE user_id = $1;")
     err := pool.QueryRow(query, userID).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email, &user.PushNotificationEnabled)
@@ -55,7 +55,7 @@ func UpdateUser(pool *pgx.Conn, user User) error {
 }
 
 // DeleteUserFromDB deletes a user record from the database.
-func DeleteUserFromDB(pool *pgx.Conn, userID int) error {
+func DeleteUserFromDB(pool *pgx.Conn, userID string) error {
     commandTag, err := pool.Exec("DELETE FROM \"user\" WHERE user_id = $1;", userID)
     if err != nil {
         return err
@@ -536,5 +536,98 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
 
     return constraints, rows.Err()
 }
+
+// Get a User by Email
+func UserByEmail(pool *pgx.Conn, user_email string) (*User, error) {
+    user := &User{
+        Email: user_email,
+    }
+
+    query := "SELECT user_id, first_name, last_name FROM \"user\" WHERE email = $1;"
+    err := pool.QueryRow(query, user_email).Scan(&user.UserID, &user.FirstName, &user.LastName)
+
+    if err != nil {
+        if err == pgx.ErrNoRows {
+            // Return an empty user if no rows are found
+            return nil, nil
+        }
+        return nil, err
+    }
+
+    return user, nil
+}
+
+
+
+// CRUD functions for the expo_notification_token table.
+
+// WriteExpoNotificationTokenToDb inserts a new expo_notification_token record into the database.
+func WriteExpoNotificationTokenToDb(pool *pgx.Conn, token ExpoNotificationToken) (ExpoNotificationToken, error) {
+	var insertedToken ExpoNotificationToken
+	err := pool.QueryRow("INSERT INTO expo_notification_token (user_id, device_token) VALUES ($1, $2) RETURNING expo_notification_token_id;",
+		token.UserID, token.DeviceToken).Scan(&insertedToken.ExpoNotificationTokenID)
+	if err != nil {
+		return ExpoNotificationToken{}, err
+	}
+	return insertedToken, nil
+}
+
+// GetExpoNotificationTokenFromDB retrieves an expo_notification_token record from the database by user ID.
+func GetExpoNotificationTokenFromDB(pool *pgx.Conn, userID string) (ExpoNotificationToken, error) {
+	token := ExpoNotificationToken{UserID: userID}
+	query := fmt.Sprintf("SELECT expo_notification_token_id, user_id, device_token FROM expo_notification_token WHERE user_id = $1;")
+	err := pool.QueryRow(query, userID).Scan(&token.ExpoNotificationTokenID, &token.UserID, &token.DeviceToken)
+	if err != nil {
+		return ExpoNotificationToken{}, err
+	}
+	return token, nil
+}
+
+// UpdateExpoNotificationToken updates an expo_notification_token record in the database.
+func UpdateExpoNotificationToken(pool *pgx.Conn, token ExpoNotificationToken) error {
+	commandTag, err := pool.Exec("UPDATE expo_notification_token SET device_token = $1 WHERE user_id = $2;",
+		token.DeviceToken, token.UserID)
+	if err != nil {
+		return err
+	}
+	if commandTag.RowsAffected() == 0 {
+		return errors.New("no rows updated")
+	}
+	return nil
+}
+
+// DeleteExpoNotificationTokenFromDB deletes an expo_notification_token record from the database.
+func DeleteExpoNotificationTokenFromDB(pool *pgx.Conn, userID string) error {
+	commandTag, err := pool.Exec("DELETE FROM expo_notification_token WHERE user_id = $1;", userID)
+	if err != nil {
+		return err
+	}
+	if commandTag.RowsAffected() == 0 {
+		return errors.New("no rows deleted")
+	}
+	return nil
+}
+
+// GetAllExpoNotificationTokensFromDB retrieves all expo_notification_token records from the database.
+func GetAllExpoNotificationTokensFromDB(pool *pgx.Conn) ([]ExpoNotificationToken, error) {
+	rows, err := pool.Query("SELECT expo_notification_token_id, user_id, device_token FROM expo_notification_token;")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tokens []ExpoNotificationToken
+	for rows.Next() {
+		var token ExpoNotificationToken
+		err := rows.Scan(&token.ExpoNotificationTokenID, &token.UserID, &token.DeviceToken)
+		if err != nil {
+			return nil, err
+		}
+		tokens = append(tokens, token)
+	}
+
+	return tokens, rows.Err()
+}
+
 
 

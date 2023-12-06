@@ -279,7 +279,7 @@ func TestUser(t *testing.T) {
 
 		// Define the expected user data
 		expectedUser := model.User{
-			UserID:    200,
+			UserID:    "200",
 			FirstName: "John",
 			LastName:  "Doe",
 			Email:     "johndoe@gmail.com",
@@ -295,7 +295,7 @@ func TestUser(t *testing.T) {
 	t.Run("TestAddAndRetrieveUser", func(t *testing.T) {
 		// Prepare a new user to add
 		newUser := model.User{
-			UserID:    2,
+			UserID:    "2",
 			FirstName: "Jane",
 			LastName:  "Smith",
 			Email:     "janesmith@gmail.com",
@@ -335,7 +335,7 @@ func TestUser(t *testing.T) {
 	t.Run("TestEditAndRetrieveUser", func(t *testing.T) {
 		// Prepare the updated user data
 		updatedUser := model.User{
-			UserID:    2,
+			UserID:    "2",
 			FirstName: "UpdatedJane",
 			LastName:  "UpdatedSmith",
 			Email:     "updatedjanesmith@gmail.com",
