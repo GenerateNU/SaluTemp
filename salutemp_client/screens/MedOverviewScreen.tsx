@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Dimensions, ScrollView, TextInput } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import LeftArrow from '../assets/header-icons/left-arrow.svg';
 import EditIcon from '../assets/header-icons/edit.svg';
 
@@ -11,8 +11,17 @@ import Header from '../components/Header';
 import { StackNavigation } from '../App';
 import MedOverviewPopup from '../components/medication-overview-popup/MedOverviewPopup';
 import { PaperProvider } from 'react-native-paper';
-import { MedOverviewTypeEnum, Status } from '../types/medicationTypes';
+import { MedOverviewTypeEnum, Status, getMedOverviewTypeSymbol } from '../types/medicationTypes';
 import MonitorInfoCard from '../components/MonitorInfoCard';
+
+type ParamList = {
+  mt: {
+    medName: string;
+    temperature: string;
+    humidity: string;
+    light: string;
+  };
+};
 
 // TODO: REMOVE HARDCODED STUFF
 function MedOverviewScreen() {
@@ -22,7 +31,10 @@ function MedOverviewScreen() {
   );
 
   const { goBack, navigate } = useNavigation<StackNavigation>();
-  const route = useRoute();
+  const route = useRoute<RouteProp<ParamList, 'mt'>>();
+  console.log(route.params);
+
+  const { medName, temperature, humidity, light } = route.params;
 
   return (
     <PaperProvider>
@@ -41,17 +53,21 @@ function MedOverviewScreen() {
         <ScrollView>
           <View style={styles.topShape}>
             <View style={styles.header}>
-              <Text style={styles.title}>Medication Name</Text>
+              <Text style={styles.title}>{medName}</Text>
               <Union style={styles.union} />
               <StatusGood style={styles.statusSymbol} />
-              <Text style={styles.subHeadingTwo}>Expires on date</Text>
-              <Text style={styles.subHeadingTwo}>Lot #</Text>
             </View>
           </View>
           <View style={styles.monitorDetails}>
-            <MonitorInfoCard category="Temperature" value="60°" />
-            <MonitorInfoCard category="Humidity" value="95%" />
-            <MonitorInfoCard category="Light" value="22 Lumens" />
+            <MonitorInfoCard
+              category="Temperature"
+              value={`${temperature}${getMedOverviewTypeSymbol(MedOverviewTypeEnum.Temperature)}`}
+            />
+            <MonitorInfoCard
+              category="Humidity"
+              value={`${humidity}${getMedOverviewTypeSymbol(MedOverviewTypeEnum.Humidity)}`}
+            />
+            <MonitorInfoCard category="Light" value={`${light} Lumens`} />
             <Text>Notes</Text>
             <TextInput style={styles.textInput}></TextInput>
           </View>
@@ -95,7 +111,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: '500',
-    color: colors.black
+    color: colors.white
   },
 
   icon: {

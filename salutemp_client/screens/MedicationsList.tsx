@@ -1,11 +1,6 @@
 import React from 'react';
-<<<<<<< HEAD
-import { StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
-=======
-import { StyleSheet, SafeAreaView, Text, View, Button, TouchableHighlight, ScrollView } from 'react-native';
->>>>>>> feature/login_flow
-import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation, StackActions } from '@react-navigation/native';
+import { StyleSheet, Text, View, TouchableHighlight, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import colors from '../config/colors';
 import { getAllUserMedicationsWithConstraint } from '../services/medicationService';
@@ -28,47 +23,39 @@ function MedicationsList() {
   const [medicationsTemperatureList, setMedicationsTemperatureList] = React.useState<
     StoredMedicationWithConstraint[]
   >([]);
-  const [medicationsHumidityList, setMedicationsHumidityList] = React.useState<
-    StoredMedicationWithConstraint[]
-  >([]);
-  const [medicationsLightList, setMedicationsLightList] = React.useState<
-    StoredMedicationWithConstraint[]
-  >([]);
+
   const [medicationStatus, setMedicationStatus] = React.useState<MedicationStatus[]>([]);
 
   React.useEffect(() => {
     //const userId = FIREBASE_AUTH.currentUser?.uid;
-    const userId = 1;
+    const userId = '1';
     getAllUserMedicationsWithConstraint(userId, 'temperature').then((ml) =>
       setMedicationsTemperatureList(ml)
-    );
-    getAllUserMedicationsWithConstraint(userId, 'humidity').then((ml) =>
-      setMedicationsLightList(ml)
-    );
-    getAllUserMedicationsWithConstraint(userId, 'light_exposure').then((ml) =>
-      setMedicationsHumidityList(ml)
     );
 
     setMedicationStatus([]);
     medicationsTemperatureList.forEach((mt) => {
-      const status = getStatus(
-        mt.current,
-        mt.min_threshold,
-        mt.max_threshold,
-        medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.current,
-        medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.min_threshold,
-        medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.max_threshold,
-        medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.current,
-        medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.min_threshold,
-        medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.max_threshold
-      );
-
-      setMedicationStatus([
-        ...medicationStatus,
-        { medicationId: mt.medication_id, status: status }
-      ]);
+      // const status = getStatus(
+      //   mt.current,
+      //   mt.min_threshold,
+      //   mt.max_threshold,
+      //   medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.current,
+      //   medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.min_threshold,
+      //   medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.max_threshold,
+      //   medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.current,
+      //   medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.min_threshold,
+      //   medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.max_threshold
+      // );
+      // setMedicationStatus([
+      //   ...medicationStatus,
+      //   { medicationId: mt.medication_id, status: status }
+      // ]);
     });
   }, []);
+
+  React.useEffect(() => {
+    console.log(medicationsTemperatureList.length);
+  }, [medicationsTemperatureList]);
 
   const getStatus = (
     mt: number,
@@ -84,14 +71,11 @@ function MedicationsList() {
     return Status.Good;
   };
 
-  // TODO: FIND ERROR HANDLING
   return (
     <View style={styles.container}>
       <Header title="Medications" rightIcon={<AddIcon />} rightAction={() => navigate('New')} />
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.medicationsList}>
         {medicationsTemperatureList &&
-          medicationsHumidityList &&
-          medicationsLightList &&
           medicationsTemperatureList.map((mt, index) => {
             return (
               <InformationCard
@@ -102,13 +86,10 @@ function MedicationsList() {
                 }
                 cardTouchAction={() =>
                   navigate('MedicationOverview', {
-                    medicationHumidityStatus: medicationsHumidityList.find(
-                      (mh) => mh.medication_id === mt.medication_id
-                    )!,
-                    medicationTemperatureStatus: mt,
-                    medicationLightStatus: medicationsLightList.find(
-                      (ml) => ml.medication_id === mt.medication_id
-                    )!
+                    temperature: mt.current_temperature,
+                    light: mt.current_light,
+                    humidity: mt.current_humidity,
+                    medName: mt.medication_name
                   })
                 }
               >

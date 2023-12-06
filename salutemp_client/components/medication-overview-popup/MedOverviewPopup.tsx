@@ -86,17 +86,6 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
   );
 }
 
-export function getMedOverviewTypeSymbol(type: MedOverviewTypeEnum) {
-  switch (type) {
-    case MedOverviewTypeEnum.Temperature:
-      return '°';
-    case MedOverviewTypeEnum.Humidity:
-      return '%';
-    case MedOverviewTypeEnum.Light:
-      return 'ᴸ';
-  }
-}
-
 const styles = StyleSheet.create({
   modalHeader: {
     flexDirection: 'row',

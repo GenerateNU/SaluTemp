@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, TouchableHighlight, TextInput } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+  TextInput,
+  ScrollView
+} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
 import LeftArrow from '../assets/header-icons/left-arrow.svg';
 import { StackNavigation } from '../App';
 import colors from '../config/colors';
+import CustomSwitch from '../components/switch-button';
 
 const NewMedScreen = () => {
   const { goBack } = useNavigation<StackNavigation>();
@@ -19,6 +28,10 @@ const NewMedScreen = () => {
   const [maxLight, setMaxLight] = useState('');
   const [minLight, setMinLight] = useState('');
 
+  const onSelectSwitch = (index: string) => {
+    alert('Selected index: ' + index);
+  };
+
   return (
     <View style={styles.container}>
       <Header
@@ -26,117 +39,124 @@ const NewMedScreen = () => {
         leftIcon={<LeftArrow height={24} />}
         leftAction={() => goBack()}
       />
-      <TouchableHighlight>
-        <View style={styles.toggleButton}>
-          <Text>Scan</Text>
-          <View style={styles.pill}>
-            <Text>Manual</Text>
-          </View>
-        </View>
-      </TouchableHighlight>
-      <TouchableHighlight style={styles.addPhoto}>
-        <MaterialIcons name="add" size={40} color={colors.neutral} />
-      </TouchableHighlight>
-      <View style={styles.titleAndChildren}>
-        <Text style={styles.title}>Medication Info</Text>
-        <View style={styles.columnStyle}>
-          <Text>Medication Name</Text>
-          <TextInput
-            style={styles.textInputThinLong}
-            onChangeText={(text) => setMedName(text)}
-            value={medName}
-          ></TextInput>
-        </View>
-        <View style={styles.columns}>
-          <View style={styles.columnStyle}>
-            <Text>Nickname (Optional)</Text>
-            <TextInput
-              style={styles.textInputThin}
-              onChangeText={(text) => setNickname(text)}
-              value={nickname}
-            ></TextInput>
-          </View>
-          <View style={styles.columnStyle}>
-            <Text>Expiration Date</Text>
-            <TextInput
-              style={styles.textInputThin}
-              placeholder="mm / dd / yy"
-              onChangeText={(text) => setDate(text)}
-              value={date}
-            ></TextInput>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.titleAndChildren}>
-        <Text>Notes</Text>
-        <TextInput style={styles.textInputWide}></TextInput>
-      </View>
-
-      <View style={styles.titleAndChildren}>
-        <Text style={styles.title}>Storage Conditions</Text>
-        <View style={styles.columns}>
-          <View style={styles.columnStyle}>
-            <Text>Max Temp</Text>
-            <TextInput
-              style={styles.textInputThin}
-              onChangeText={(text) => setMaxTemp(text)}
-              value={maxTemp}
-            ></TextInput>
-            <Text>Max Humidity</Text>
-            <TextInput
-              style={styles.textInputThin}
-              onChangeText={(text) => setMaxHumid(text)}
-              value={maxHumid}
-            ></TextInput>
-            <Text>Max Light</Text>
-            <TextInput
-              style={styles.textInputThin}
-              onChangeText={(text) => setMaxLight(text)}
-              value={maxLight}
-            ></TextInput>
+      <ScrollView>
+        <View style={styles.infoContainer}>
+          <CustomSwitch
+            selectionMode={1}
+            roundCorner={true}
+            option1={'Scan'}
+            option2={'Manual'}
+            onSelectSwitch={onSelectSwitch}
+            selectionColor={'white'}
+          />
+          <TouchableHighlight style={styles.addPhoto}>
+            <MaterialIcons name="add" size={40} color={colors.neutral} />
+          </TouchableHighlight>
+          <View style={styles.titleAndChildren}>
+            <Text style={styles.title}>Medication Info</Text>
+            <View style={styles.columnStyle}>
+              <Text>Medication Name</Text>
+              <TextInput
+                style={styles.textInputThinLong}
+                onChangeText={(text) => setMedName(text)}
+                value={medName}
+              ></TextInput>
+            </View>
+            <View style={styles.columns}>
+              <View style={styles.columnStyle}>
+                <Text>Nickname (Optional)</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setNickname(text)}
+                  value={nickname}
+                ></TextInput>
+              </View>
+              <View style={styles.columnStyle}>
+                <Text>Expiration Date</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  placeholder="mm / dd / yy"
+                  onChangeText={(text) => setDate(text)}
+                  value={date}
+                ></TextInput>
+              </View>
+            </View>
           </View>
 
-          <View style={styles.columnStyle}>
-            <Text>Min Temp</Text>
-            <TextInput
-              style={styles.textInputThin}
-              onChangeText={(text) => setMinTemp(text)}
-              value={minTemp}
-            ></TextInput>
-            <Text>Min Humidity</Text>
-            <TextInput
-              style={styles.textInputThin}
-              onChangeText={(text) => setMinHumid(text)}
-              value={minHumid}
-            ></TextInput>
-            <Text>Min Light</Text>
-            <TextInput
-              style={styles.textInputThin}
-              onChangeText={(text) => setMinLight(text)}
-              value={minLight}
-            ></TextInput>
+          <View style={styles.titleAndChildren}>
+            <Text>Notes</Text>
+            <TextInput style={styles.textInputWide}></TextInput>
           </View>
-        </View>
-      </View>
 
-      <TouchableHighlight>
-        <View style={styles.confirmButton}>
-          <Text style={styles.titleLight}>Confirm</Text>
+          <View style={styles.titleAndChildren}>
+            <Text style={styles.title}>Storage Conditions</Text>
+            <View style={styles.columns}>
+              <View style={styles.columnStyle}>
+                <Text>Max Temp</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMaxTemp(text)}
+                  value={maxTemp}
+                ></TextInput>
+                <Text>Max Humidity</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMaxHumid(text)}
+                  value={maxHumid}
+                ></TextInput>
+                <Text>Max Light</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMaxLight(text)}
+                  value={maxLight}
+                ></TextInput>
+              </View>
+
+              <View style={styles.columnStyle}>
+                <Text>Min Temp</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMinTemp(text)}
+                  value={minTemp}
+                ></TextInput>
+                <Text>Min Humidity</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMinHumid(text)}
+                  value={minHumid}
+                ></TextInput>
+                <Text>Min Light</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMinLight(text)}
+                  value={minLight}
+                ></TextInput>
+              </View>
+            </View>
+          </View>
+
+          <TouchableHighlight>
+            <View style={styles.confirmButton}>
+              <Text style={styles.titleLight}>Confirm</Text>
+            </View>
+          </TouchableHighlight>
         </View>
-      </TouchableHighlight>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.background,
-    flexDirection: 'column',
-    alignItems: 'center',
     width: '100%',
-    height: '100%'
+    height: '100%',
+    display: 'flex'
+  },
+
+  infoContainer: {
+    display: 'flex',
+    alignItems: 'center'
   },
 
   add: {
@@ -149,7 +169,9 @@ const styles = StyleSheet.create({
     height: 140,
     width: 140,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 20
   },
 
   title: {

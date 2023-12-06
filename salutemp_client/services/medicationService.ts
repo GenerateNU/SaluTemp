@@ -8,10 +8,11 @@ export const findMedicationName = async (medication_name: string) => {
   return response.data;
 };
 
-export const getAllUserMedicationsWithConstraint = async (userId: number, constraint: string) => {
+export const getAllUserMedicationsWithConstraint = async (userId: string, constraint: string) => {
   const response = await axios.get(
     `${API_URL}/v1/allusermedicationswithconstraint/${userId}/${constraint}`
   );
+
   return response.data;
 };
 

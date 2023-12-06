@@ -3,13 +3,25 @@ import colors from '../config/colors';
 export enum Status {
   Good = 'Good',
   Bad = 'Bad',
-  Warning = 'Warning'
+  Warning = 'Warning',
+  NoStatus = ''
 }
 
 export enum MedOverviewTypeEnum {
   Temperature = 'Temperature',
   Humidity = 'Humidity',
   Light = 'Light'
+}
+
+export function getMedOverviewTypeSymbol(type: MedOverviewTypeEnum) {
+  switch (type) {
+    case MedOverviewTypeEnum.Temperature:
+      return '°';
+    case MedOverviewTypeEnum.Humidity:
+      return '%';
+    case MedOverviewTypeEnum.Light:
+      return 'ᴸ';
+  }
 }
 
 export function getStatusColors(status: Status) {
@@ -26,6 +38,9 @@ export function getStatusColors(status: Status) {
     case Status.Bad: {
       cardStatusColor = { main: colors.red, side: colors.darkRed };
       break;
+    }
+    case Status.NoStatus: {
+      cardStatusColor = { main: colors.neutral, side: colors.darkNeutral };
     }
   }
 

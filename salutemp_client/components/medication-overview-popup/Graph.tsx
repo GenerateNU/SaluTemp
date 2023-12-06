@@ -9,8 +9,7 @@ import {
   VictoryScatter
 } from 'victory-native';
 import colors from '../../config/colors';
-import { MedOverviewTypeEnum } from '../../types/medicationTypes';
-import { getMedOverviewTypeSymbol } from './MedOverviewPopup';
+import { MedOverviewTypeEnum, getMedOverviewTypeSymbol } from '../../types/medicationTypes';
 
 interface GraphProps {
   type: MedOverviewTypeEnum;

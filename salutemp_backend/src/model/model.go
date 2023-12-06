@@ -422,83 +422,60 @@ func (m *PgModel) EditMedicationConstraint(constraint MedicationConstraint) erro
 }
 
 func (m *PgModel) GetAllUserMedicationsWithConstraint(userId string, constraint string) ([]StoredMedicationWithConstraint, error) {
-	meds, err := GetAllStoredMedsFromDB(m.Conn)
-	fmt.Println("hey")
+
+	meds, err := GetAllStoredMeds(m.Conn)
 
 	if err != nil {
 		fmt.Println("Error getting all stored medications:", err)
-		return []StoredMedicationWithConstraint{}, err
+		return []StoredMedicationWithConstraint{}, nil
 	}
 
 	var userStoredMedsWithConstraint []StoredMedicationWithConstraint
 
 	for _, med := range meds {
-		if med.UserID == userId {
-			fmt.Println("Processing medication for user:", userId)
-			fmt.Println("The medication:", med)
-
-
+		if(med.UserID == userId) {
 			medName, err := GetMedFromDB(m.Conn, med.MedicationID)
 			if err != nil {
 				fmt.Println("Error getting medication name:", err)
-				return []StoredMedicationWithConstraint{}, err
+				return []StoredMedicationWithConstraint{}, nil
 			}
 
-			fmt.Println(med.MedicationID, " ",constraint, " COCONESTARING")
-
-			var current float64
-			
-			switch (constraint) {
-			case "temperature":
-				current = med.CurrentTemperature
-			case "light_exposure":
-				current = med.CurrentLight
-			case "humidity":
-				current = med.CurrentHumidity
-			}
-
-			tempConstraint, err := GetMedConstraintFromDB(m.Conn, med.MedicationID, strings.ToUpper(constraint))
+			tempConstraint, err := GetMedConstraintFromDB(m.Conn, med.MedicationID, strings.ToUpper("temperature"))
 			if err != nil {
-				fmt.Println("Error getting medication constraint:", err)
-				
-				if err.Error() == "no rows in result set" {
-					// Handle the specific case of no rows
-					fmt.Println("No rows in result set")
-					var userStoredMedWithConstraint StoredMedicationWithConstraint = StoredMedicationWithConstraint{
-						MedicationID:       med.MedicationID,
-						MedicationName:     medName.MedicationName,
-						StoredMedicationID: med.StoredMedicationID,
-						Current:            current,
-					}
-		
-					userStoredMedsWithConstraint = append(userStoredMedsWithConstraint, userStoredMedWithConstraint)
-					continue
-				}else {
-					// Handle other errors
-					return []StoredMedicationWithConstraint{}, err
-				}
+				tempConstraint = MedicationConstraint{}
 			}
-			
-		
+			lightConstraint, err2 := GetMedConstraintFromDB(m.Conn, med.MedicationID, strings.ToUpper("light_exposure"))
+			if err2 != nil {
+				lightConstraint = MedicationConstraint{}
+			}
+			humidityConstraint, err3 := GetMedConstraintFromDB(m.Conn, med.MedicationID, strings.ToUpper("humidity"))
 
-			fmt.Printf("MedicationID: %d, MedicationName: %s, StoredMedicationID: %d, Type: %s, Current: %f, MaxThreshold: %f, MinThreshold: %f, Duration: %f\n",
-				med.MedicationID, medName.MedicationName, med.StoredMedicationID, tempConstraint.ConditionType, current, tempConstraint.MaxThreshold, tempConstraint.MinThreshold, tempConstraint.Duration)
+			if err3 != nil {
+				humidityConstraint = MedicationConstraint{}
+			}			
 
 			var userStoredMedWithConstraint StoredMedicationWithConstraint = StoredMedicationWithConstraint{
-				MedicationID:       med.MedicationID,
-				MedicationName:     medName.MedicationName,
-				StoredMedicationID: med.StoredMedicationID,
-				Current:            current,
-				MaxThreshold:       tempConstraint.MaxThreshold,
-				MinThreshold:       tempConstraint.MinThreshold,
-				Duration:           tempConstraint.Duration,
+				MedicationID:       	med.MedicationID,
+				MedicationName:     	medName.MedicationName,
+				StoredMedicationID: 	med.StoredMedicationID,
+				CurrentTemperature:     med.CurrentTemperature,
+				TempMaxThreshold:       tempConstraint.MaxThreshold,
+				TempMinThreshold:       tempConstraint.MinThreshold,
+				TempDuration:           tempConstraint.Duration,
+				CurrentHumidity:     	med.CurrentHumidity,
+				HumidityMaxThreshold:   humidityConstraint.MaxThreshold,
+				HumidityMinThreshold:   humidityConstraint.MinThreshold,
+				HumidityDuration:       humidityConstraint.Duration,
+				CurrentLight:     		med.CurrentLight,
+				LightMaxThreshold:      lightConstraint.MaxThreshold,
+				LightMinThreshold:      lightConstraint.MinThreshold,
+				LightDuration:          lightConstraint.Duration,
 			}
 
 			userStoredMedsWithConstraint = append(userStoredMedsWithConstraint, userStoredMedWithConstraint)
 		}
 	}
 
-	fmt.Println("Finished processing all medications for user:", userId)
 	return userStoredMedsWithConstraint, nil
 }
 
