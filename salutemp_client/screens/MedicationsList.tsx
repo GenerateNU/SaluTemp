@@ -1,5 +1,9 @@
 import React from 'react';
+<<<<<<< HEAD
+import { StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
+=======
 import { StyleSheet, SafeAreaView, Text, View, Button, TouchableHighlight, ScrollView } from 'react-native';
+>>>>>>> feature/login_flow
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, StackActions } from '@react-navigation/native';
 

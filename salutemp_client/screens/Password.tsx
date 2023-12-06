@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet, Image, Dimensions, Text } from 'react-native';
 import { FIREBASE_AUTH } from '../firebaseConfig';
-import { signInWithEmailAndPassword, onAuthStateChanged, User, createUserWithEmailAndPassword, updateCurrentUser } from 'firebase/auth';
+import { signInWithEmailAndPassword, onAuthStateChanged, User, createUserWithEmailAndPassword, updateCurrentUser, deleteUser, UserCredential } from 'firebase/auth';
 import { useNavigation, StackActions, useRoute } from '@react-navigation/native';
 import colors from "../config/colors"
+import axios from 'axios';
+import { API_URL } from '../services/apiLinks';
 
 const Password = () => {
 
@@ -31,11 +33,33 @@ const Password = () => {
   }, []);
 
   const handleSignUp = async () => {
+    var userCred : UserCredential
     try {
-      await createUserWithEmailAndPassword(FIREBASE_AUTH, route.params?.email, password);
+      userCred = await createUserWithEmailAndPassword(FIREBASE_AUTH, route.params?.email, password);
     } catch (error : any) {
         Alert.alert(error.message);
+        return
     }
+    var id = userCred.user.uid;
+    var email = route.params?.email;
+    var namesArr = name.split(' ');
+    var firstName = namesArr[0];
+    var lastName = namesArr[namesArr.length - 1];
+
+    console.log(firstName + " " + lastName);
+
+    await axios.post(`${API_URL}/v1/addusers`, {
+      "UserID": id,
+      "FirstName": firstName,
+      "LastName": lastName,
+      "Email": email
+    }).then(() => {
+      console.log("Successfully created new user")
+      navigation.dispatch(StackActions.replace('MedList'));
+    }).catch((error) => {
+      console.log("Error signing up: " + error.message)
+      deleteUser(userCred.user)
+    });
   };
   
   return (

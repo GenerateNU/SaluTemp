@@ -1,8 +1,10 @@
 package model
 
 import (
-	"github.com/jackc/pgx"
 	"time"
+	"fmt"
+	"github.com/jackc/pgx"
+	"strings"
 )
 
 type PgModel struct {
@@ -15,11 +17,12 @@ type Model interface {
 	AddMedication(Medication) (Medication, error)
 	DeleteMedication(int) error
 	EditMedication(Medication) error
-
-	User(int) User
+	GetUserByEmail(email string) (*User, error)
+	
+	User(string) User
 	AllUsers() ([]User, error)
 	AddUser(User) (User, error)
-	DeleteUser(int) error
+	DeleteUser(string) error
 	EditUser(User) error
 
 	UserDevice(int) UserDevice
@@ -33,6 +36,7 @@ type Model interface {
 	AddStoredMedication(StoredMedication) (StoredMedication, error)
 	DeleteStoredMedication(int) error
 	EditStoredMedication(StoredMedication) error
+	GetAllStoredMedsFromDBByUser(userId string) (userMeds []StoredMedication, err error)
 
 	Alert(int) (Alert,error)
     AllAlerts() ([]Alert, error)
@@ -51,6 +55,15 @@ type Model interface {
     AddMedicationConstraint(MedicationConstraint) (MedicationConstraint,error)
     DeleteMedicationConstraint(int, string) error
     EditMedicationConstraint(MedicationConstraint) error
+	AllMedicationConstraintsByStoredMedication(storedMedicationId int) (medConstraints []MedicationConstraint, err error)
+
+	ExpoNotificationToken(string) (ExpoNotificationToken, error)
+	AddExpoNotificationToken(ExpoNotificationToken) (ExpoNotificationToken, error)
+	DeleteExpoNotificationToken(string) error
+	EditExpoNotificationToken(ExpoNotificationToken) error
+	AllExpoNotificationTokens() ([]ExpoNotificationToken, error)
+
+    GetAllUserMedicationsWithConstraint(userId string, constraint string) ([]StoredMedicationWithConstraint, error)
 }
 
 func (m *PgModel) Medication(id int) Medication {
@@ -89,6 +102,19 @@ func (m *PgModel) EditMedication(med Medication) (error) {
 	return err
 }
 
+func (m *PgModel) GetUserByEmail(email string) (*User, error) {
+    user, err := UserByEmail(m.Conn, email)
+    if err != nil {
+        // Handle the error, log it, or return it based on your application's requirements.
+        return nil, err
+    }
+    
+    // Do something with the retrieved user, if needed.
+
+    return user, nil
+}
+
+
 func (m *PgModel) AllMedications() ([]Medication, error) {
 	meds, err := GetAllMedsFromDB(m.Conn)
 
@@ -98,7 +124,7 @@ func (m *PgModel) AllMedications() ([]Medication, error) {
 	return meds, nil
 }
 
-func (m *PgModel) User(id int) User {
+func (m *PgModel) User(id string) User {
 	user, err := GetUserFromDB(m.Conn, id)
 
 	if err != nil {
@@ -118,7 +144,7 @@ func (m *PgModel) AddUser(user User) (User, error) {
 	return p, nil
 }
 
-func (m *PgModel) DeleteUser(id int) error {
+func (m *PgModel) DeleteUser(id string) error {
 	err := DeleteUserFromDB(m.Conn, id)
 	return err
 }
@@ -225,6 +251,36 @@ func (m *PgModel) AllStoredMedications() ([]StoredMedication, error) {
 	return meds, nil
 }
 
+
+func (m *PgModel) AllMedicationConstraintsByStoredMedication(storedMedicationId int) (medConstraints []MedicationConstraint, err error) {
+	constraints, err := GetAllMedConstraintsFromDB(m.Conn)
+
+	for _, constraint := range constraints {
+		if constraint.StoredMedicationID == storedMedicationId {
+			medConstraints = append(medConstraints, constraint)
+		}
+	}
+
+	if err != nil {
+		return []MedicationConstraint{}, err
+	}
+	return medConstraints, err
+}
+
+func (m *PgModel) GetAllStoredMedsFromDBByUser(userId string) (userMeds []StoredMedication, err error) {
+	meds, err := GetAllStoredMedsFromDB(m.Conn)
+
+	for _, med := range meds {
+		if med.UserID == userId {
+			userMeds = append(userMeds, med)
+		}
+	}
+
+	if err != nil {
+		return []StoredMedication{}, err
+	}
+	return userMeds, err
+}
 
 //alert routes
 
@@ -364,3 +420,124 @@ func (m *PgModel) EditMedicationConstraint(constraint MedicationConstraint) erro
     return err
 }
 
+func (m *PgModel) GetAllUserMedicationsWithConstraint(userId string, constraint string) ([]StoredMedicationWithConstraint, error) {
+	meds, err := GetAllStoredMedsFromDB(m.Conn)
+	fmt.Println("hey")
+
+	if err != nil {
+		fmt.Println("Error getting all stored medications:", err)
+		return []StoredMedicationWithConstraint{}, err
+	}
+
+	var userStoredMedsWithConstraint []StoredMedicationWithConstraint
+
+	for _, med := range meds {
+		if med.UserID == userId {
+			fmt.Println("Processing medication for user:", userId)
+			fmt.Println("The medication:", med)
+
+
+			medName, err := GetMedFromDB(m.Conn, med.MedicationID)
+			if err != nil {
+				fmt.Println("Error getting medication name:", err)
+				return []StoredMedicationWithConstraint{}, err
+			}
+
+			fmt.Println(med.MedicationID, " ",constraint, " COCONESTARING")
+
+			var current float64
+			
+			switch (constraint) {
+			case "temperature":
+				current = med.CurrentTemperature
+			case "light_exposure":
+				current = med.CurrentLight
+			case "humidity":
+				current = med.CurrentHumidity
+			}
+
+			tempConstraint, err := GetMedConstraintFromDB(m.Conn, med.MedicationID, strings.ToUpper(constraint))
+			if err != nil {
+				fmt.Println("Error getting medication constraint:", err)
+				
+				if err.Error() == "no rows in result set" {
+					// Handle the specific case of no rows
+					fmt.Println("No rows in result set")
+					var userStoredMedWithConstraint StoredMedicationWithConstraint = StoredMedicationWithConstraint{
+						MedicationID:       med.MedicationID,
+						MedicationName:     medName.MedicationName,
+						StoredMedicationID: med.StoredMedicationID,
+						Current:            current,
+					}
+		
+					userStoredMedsWithConstraint = append(userStoredMedsWithConstraint, userStoredMedWithConstraint)
+					continue
+				}else {
+					// Handle other errors
+					return []StoredMedicationWithConstraint{}, err
+				}
+			}
+			
+		
+
+			fmt.Printf("MedicationID: %d, MedicationName: %s, StoredMedicationID: %d, Type: %s, Current: %f, MaxThreshold: %f, MinThreshold: %f, Duration: %f\n",
+				med.MedicationID, medName.MedicationName, med.StoredMedicationID, tempConstraint.ConditionType, current, tempConstraint.MaxThreshold, tempConstraint.MinThreshold, tempConstraint.Duration)
+
+			var userStoredMedWithConstraint StoredMedicationWithConstraint = StoredMedicationWithConstraint{
+				MedicationID:       med.MedicationID,
+				MedicationName:     medName.MedicationName,
+				StoredMedicationID: med.StoredMedicationID,
+				Current:            current,
+				MaxThreshold:       tempConstraint.MaxThreshold,
+				MinThreshold:       tempConstraint.MinThreshold,
+				Duration:           tempConstraint.Duration,
+			}
+
+			userStoredMedsWithConstraint = append(userStoredMedsWithConstraint, userStoredMedWithConstraint)
+		}
+	}
+
+	fmt.Println("Finished processing all medications for user:", userId)
+	return userStoredMedsWithConstraint, nil
+}
+
+
+
+func (m *PgModel) ExpoNotificationToken(userID string) (ExpoNotificationToken, error) {
+	token, err := GetExpoNotificationTokenFromDB(m.Conn, userID)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return token, nil
+}
+
+func (m *PgModel) AddExpoNotificationToken(token ExpoNotificationToken) (ExpoNotificationToken, error) {
+	insertedToken, err := WriteExpoNotificationTokenToDb(m.Conn, token)
+
+	if err != nil {
+		return ExpoNotificationToken{}, err
+	}
+
+	return insertedToken, nil
+}
+
+func (m *PgModel) DeleteExpoNotificationToken(userID string) error {
+	err := DeleteExpoNotificationTokenFromDB(m.Conn, userID)
+	return err
+}
+
+func (m *PgModel) EditExpoNotificationToken(token ExpoNotificationToken) error {
+	err := UpdateExpoNotificationToken(m.Conn, token)
+	return err
+}
+
+func (m *PgModel) AllExpoNotificationTokens() ([]ExpoNotificationToken, error) {
+	tokens, err := GetAllExpoNotificationTokensFromDB(m.Conn)
+
+	if err != nil {
+		return []ExpoNotificationToken{}, err
+	}
+	return tokens, nil
+}

@@ -54,7 +54,7 @@ const EmailAndPassword = () => {
 
   if (user)
   {
-    navigation.dispatch(StackActions.replace('MedList', {user: user.uid}));
+    navigation.dispatch(StackActions.replace('MedList'));
   }
   else
   {
