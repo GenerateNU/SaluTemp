@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, ScrollView, TouchableOpacity, Button } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import moment from 'moment';
+import colors from '../config/colors';
 
 const customColors = {
   headerColor: '#022B3A',
@@ -67,7 +68,7 @@ function NotificationsScreen({ onClose }: NotificationsScreenProps) {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Notifications</Text>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <MaterialIcons name="close" size={28} color={customColors.background} />
+          <MaterialIcons name="close" size={28} color={colors.white} />
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.notificationsList}>
@@ -87,7 +88,7 @@ function NotificationsScreen({ onClose }: NotificationsScreenProps) {
           </View>
         ))}
       </ScrollView>
-      <Button title="Mark all as read" onPress={markAllAsRead} color={customColors.headerColor} />
+      <Button title="Mark all as read" onPress={markAllAsRead} color={customColors.textPlaceholder} />
     </SafeAreaView>
   );
 }
