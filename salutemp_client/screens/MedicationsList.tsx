@@ -66,10 +66,8 @@ function MedicationsList() {
         mt.humidity_max_threshold
       );
 
-      setMedicationStatus([
-        ...medicationStatus,
-        { medicationId: mt.medication_id, status: status }
-      ]);
+      medicationStatus.push({ medicationId: mt.medication_id, status: status });
+      setMedicationStatus(medicationStatus);
     });
   }, [medicationsTemperatureList]);
 

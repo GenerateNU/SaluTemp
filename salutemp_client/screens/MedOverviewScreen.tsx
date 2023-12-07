@@ -100,6 +100,9 @@ function MedOverviewScreen() {
           <View style={styles.topShape}>
             <View style={styles.header}>
               <Text style={styles.title}>{medName}</Text>
+              <Text style={styles.subtext}>Last used: 12/08/2023</Text>
+              <Text style={styles.subtext}>Expiration Date: 12/08/2023</Text>
+              <Text style={styles.subtext}>Lot #: 12082023</Text>
               <Union style={styles.union} />
               {medStatus}
             </View>
@@ -195,7 +198,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkNeutral,
     height: 230,
     width: Dimensions.get('window').width,
-    zIndex: 20,
     top: 0
   },
 
@@ -220,6 +222,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: '500',
     color: colors.white
+  },
+
+  subtext: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: colors.white,
+    zIndex: 20
   },
 
   icon: {

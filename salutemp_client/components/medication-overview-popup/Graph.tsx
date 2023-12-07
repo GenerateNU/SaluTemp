@@ -37,6 +37,7 @@ export default function Graph(props: GraphProps) {
         width={width / 1.3}
         height={height / 4}
         padding={{ right: width / 10, left: width / 8, top: height / 20, bottom: height / 20 }}
+        domain={{ x: [0, 36], y: [props.min, props.max] }}
       >
         <VictoryAxis
           tickCount={2}

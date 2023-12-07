@@ -81,7 +81,7 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
             adjustsFontSizeToFit
             style={[styles.titleStyle, { fontSize: width / 20 }]}
           >
-            {props.medOverviewType}
+            {props.medOverviewType == 'LIGHT_EXPOSURE' ? 'LIGHT' : props.medOverviewType}
           </Text>
           <Pressable onTouchEnd={hideModal}>
             <Feather name="x" adjustsFontSizeToFit size={width / 15} color="white" />
