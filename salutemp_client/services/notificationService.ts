@@ -1,9 +1,13 @@
 import * as Notifications from 'expo-notifications';
 
+import { API_URL } from './apiLinks'; 
+
 // Replace with API endpoint
-const API_ENDPOINT = 'https:...';
+//const API_URL = 'https:...';
 // Replace with user ID
-const userId = 'user123';
+//const userId = 'user123';
+
+// ^ see authService and userContext
 
 export async function registerForPushNotificationsAsync() {
   let token;
