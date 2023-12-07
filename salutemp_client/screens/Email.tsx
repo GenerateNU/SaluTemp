@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'flex-start',
       alignItems: 'center',
-      backgroundColor: '#fff',
+      backgroundColor: colors.background,
     },
     imagecontainer: {
         justifyContent: 'flex-start',
