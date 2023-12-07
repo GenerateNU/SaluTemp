@@ -132,7 +132,7 @@ func (pg *PgController) Serve() *gin.Engine {
 		if user != nil {
 			c.JSON(http.StatusOK, gin.H{"message": "This user was found", "user": user})
 		} else {
-			c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+			c.JSON(http.StatusOK, gin.H{"message": "User not found"})
 		}
 	})
 	
