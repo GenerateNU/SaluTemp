@@ -42,15 +42,7 @@ export default function StatusBar(props: StatusBarProps) {
         {() => (
           <>
             <View style={{ alignItems: 'center' }}>
-              <View
-                style={[
-                  {
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                  }
-                ]}
-              >
+              <View style={styles.currText}>
                 <Text style={[styles.numberStyle, { fontSize: width / 8 }]}>{props.curr}</Text>
                 <Text
                   style={
@@ -101,6 +93,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20
+  },
+  currText: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   popupStyle: {
     alignSelf: 'center',

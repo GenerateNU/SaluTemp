@@ -36,15 +36,23 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
 
   React.useEffect(() => {
     if (!props.modalVisible) return;
+    getmedconstraint();
+
+    if (!props.graph) return;
+
+    populateGraph();
+  }, [props.modalVisible]);
+
+  const getmedconstraint = () => {
     getMedicationConstraint(props.medicationInfo.medId, props.medOverviewType).then(
       (constraint) => {
         setConstraint(constraint);
       }
     );
-    if (!props.graph) return;
+  };
+
+  const populateGraph = () => {
     props.graph.forEach((g) => {
-      if (new Date(g.event_time).getDate() != new Date().getDate()) {
-      }
       const curr = new Date().setHours(new Date().getHours() - 5);
       const time = curr - new Date(g.event_time).getTime();
       graph?.push({
@@ -53,8 +61,7 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
       });
       setGraph(graph);
     });
-    console.log(graph);
-  }, [props.modalVisible]);
+  };
 
   return (
     <Portal>

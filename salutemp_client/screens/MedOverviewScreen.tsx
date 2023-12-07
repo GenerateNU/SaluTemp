@@ -45,9 +45,7 @@ function MedOverviewScreen() {
   );
   const [modalInfo, setModalInfo] = React.useState<ModalInfo>();
   const [graph, setGraph] = React.useState<StatusReport[]>([]);
-
   const ref = React.useRef<ScrollView | null>(null);
-
   const { goBack } = useNavigation<StackNavigation>();
   const route = useRoute<RouteProp<ParamList, 'mt'>>();
 

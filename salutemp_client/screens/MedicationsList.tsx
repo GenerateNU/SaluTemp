@@ -42,7 +42,6 @@ function MedicationsList() {
   const [medicationsTemperatureList, setMedicationsTemperatureList] = React.useState<
     StoredMedicationWithConstraint[]
   >([]);
-
   const [medicationStatus, setMedicationStatus] = React.useState<MedicationStatus[]>([]);
 
   React.useEffect(() => {
@@ -66,8 +65,11 @@ function MedicationsList() {
         mt.humidity_min_threshold,
         mt.humidity_max_threshold
       );
-      medicationStatus.push({ medicationId: mt.medication_id, status: status });
-      setMedicationStatus([...medicationStatus]);
+
+      setMedicationStatus([
+        ...medicationStatus,
+        { medicationId: mt.medication_id, status: status }
+      ]);
     });
   }, [medicationsTemperatureList]);
 
