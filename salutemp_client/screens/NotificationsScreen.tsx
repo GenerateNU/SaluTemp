@@ -4,7 +4,13 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import colors from '../config/colors';
 
-function NotificationsScreen() {
+// Define a type for the props expected by NotificationsScreen
+type NotificationsScreenProps = {
+  onClose: () => void; // This function will be called to close the modal
+};
+
+// Update the function signature to accept props
+function NotificationsScreen({ onClose }: NotificationsScreenProps) {
     // Example notification data
     const notifications = [
         { id: 1, message: 'X medication has raised 3 degrees, consider moving', time: '12 minutes ago' },
@@ -16,7 +22,8 @@ function NotificationsScreen() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Notifications</Text>
-                <TouchableOpacity onPress={() => {}}>
+                {/* Use the passed onClose function */}
+                <TouchableOpacity onPress={onClose}>
                     <MaterialIcons name="close" size={28} color={colors.darkNeutral} />
                 </TouchableOpacity>
             </View>
