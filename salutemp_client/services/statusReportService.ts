@@ -2,14 +2,14 @@ import { statusReport, storedMedication, medicationConstraint, alert } from "../
 
 import axios, { Axios } from "axios";
 
-const userId = 1;
+const userId = "2";
 const baseUrl = 'https://mammal-on-shortly.ngrok-free.app'
 
 class statusReportService {
     async statusReports(): Promise<void> {        
-        let temperature = Math.random() * (14) + 28;
-        let humidity = Math.random() * (10) + 20;
-        let light = Math.random() * (10);
+        let temperature = Math.random() * (13) + 17;
+        let humidity = Math.random() * (15) + 35;
+        let light = Math.random() * (400) + 20;
 
         const storedMedicationsResponse = await axios.get(`${baseUrl}/v1/storedmedications/user/${userId}`)
 
@@ -59,13 +59,14 @@ class statusReportService {
                             await axios.post(`${baseUrl}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                         }
                         break;
-                    case "LIGHT":
+                    case "LIGHT_EXPOSURE":
                         console.log(constraint.condition_type, '    ', constraint.max_threshold, '    ',constraint.min_threshold, '    ', light)
                         if (light > constraint.max_threshold) {
                             body = "Heads up! Your medication has exceeded its maximum recommended light exposure!"
                             console.warn(body)
                             await axios.post(`${baseUrl}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                         }
+                        break;
                 }
             }
         };

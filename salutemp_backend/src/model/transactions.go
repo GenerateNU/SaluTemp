@@ -33,13 +33,13 @@ func WriteUserToDb(pool *pgx.Conn, user User) (User, error) {
 
 // GetUserFromDB retrieves a user record from the database by user ID.
 func GetUserFromDB(pool *pgx.Conn, userID string) (User, error) {
-    user := User{UserID: userID}
-    query := fmt.Sprintf("SELECT user_id, first_name, last_name, email, push_notification_enabled FROM \"user\" WHERE user_id = $1;")
-    err := pool.QueryRow(query, userID).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email, &user.PushNotificationEnabled)
-    if err != nil {
-        return User{}, err
-    }
-    return user, nil
+	user := User{UserID: userID}
+	query := fmt.Sprintf("SELECT user_id, first_name, last_name, email, push_notification_enabled FROM \"user\" WHERE user_id = $1;")
+	err := pool.QueryRow(query, userID).Scan(&user.UserID, &user.FirstName, &user.LastName, &user.Email, &user.PushNotificationEnabled)
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
 }
 
 // UpdateUser updates a user record in the database.
@@ -57,14 +57,14 @@ func UpdateUser(pool *pgx.Conn, user User) error {
 
 // DeleteUserFromDB deletes a user record from the database.
 func DeleteUserFromDB(pool *pgx.Conn, userID string) error {
-    commandTag, err := pool.Exec("DELETE FROM \"user\" WHERE user_id = $1;", userID)
-    if err != nil {
-        return err
-    }
-    if commandTag.RowsAffected() == 0 {
-        return errors.New("no rows deleted")
-    }
-    return nil
+	commandTag, err := pool.Exec("DELETE FROM \"user\" WHERE user_id = $1;", userID)
+	if err != nil {
+		return err
+	}
+	if commandTag.RowsAffected() == 0 {
+		return errors.New("no rows deleted")
+	}
+	return nil
 }
 
 // GetAllUsersFromDB retrieves all user records from the database.
@@ -321,27 +321,6 @@ func GetAllStoredMeds(pool *pgx.Conn) ([]StoredMedication, error) {
 	return meds, nil
 }
 
-// GetAllStoredMedsFromDB retrieves all stored medication records.
-func GetAllStoredMedsFromDBByUser(pool *pgx.Conn, userID int) ([]StoredMedication, error) {
-	rows, err := pool.Query("SELECT stored_medication_id, medication_id, user_id, current_temperature, current_humidity, current_light FROM stored_medication WHERE user_id = $1;", userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var meds []StoredMedication
-	for rows.Next() {
-		var med StoredMedication
-		err := rows.Scan(&med.StoredMedicationID, &med.MedicationID, &med.UserID, &med.CurrentTemperature, &med.CurrentHumidity, &med.CurrentLight)
-		if err != nil {
-			return nil, err
-		}
-		meds = append(meds, med)
-	}
-
-	return meds, rows.Err()
-}
-
 // CRUD functions for the alert table
 // WriteAlertToDb inserts a new alert record into the database.
 func WriteAlertToDb(pool *pgx.Conn, alert Alert) (Alert, error) {
@@ -558,25 +537,23 @@ func GetAllMedConstraintsFromDB(pool *pgx.Conn) ([]MedicationConstraint, error) 
 
 // Get a User by Email
 func UserByEmail(pool *pgx.Conn, user_email string) (*User, error) {
-    user := &User{
-        Email: user_email,
-    }
+	user := &User{
+		Email: user_email,
+	}
 
-    query := "SELECT user_id, first_name, last_name FROM \"user\" WHERE email = $1;"
-    err := pool.QueryRow(query, user_email).Scan(&user.UserID, &user.FirstName, &user.LastName)
+	query := "SELECT user_id, first_name, last_name FROM \"user\" WHERE email = $1;"
+	err := pool.QueryRow(query, user_email).Scan(&user.UserID, &user.FirstName, &user.LastName)
 
-    if err != nil {
-        if err == pgx.ErrNoRows {
-            // Return an empty user if no rows are found
-            return nil, nil
-        }
-        return nil, err
-    }
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			// Return an empty user if no rows are found
+			return nil, nil
+		}
+		return nil, err
+	}
 
-    return user, nil
+	return user, nil
 }
-
-
 
 // CRUD functions for the expo_notification_token table.
 
@@ -646,19 +623,4 @@ func GetAllExpoNotificationTokensFromDB(pool *pgx.Conn) ([]ExpoNotificationToken
 	}
 
 	return tokens, rows.Err()
-}
-
-
-
-	var constraints []MedicationConstraint
-	for rows.Next() {
-		var constraint MedicationConstraint
-		err := rows.Scan(&constraint.StoredMedicationID, &constraint.ConditionType, &constraint.MaxThreshold, &constraint.MinThreshold, &constraint.Duration)
-		if err != nil {
-			return nil, err
-		}
-		constraints = append(constraints, constraint)
-	}
-
-	return constraints, rows.Err()
 }
