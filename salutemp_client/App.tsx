@@ -2,8 +2,6 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Email from './screens/Email';
 import { NavigationContainer, NavigationProp } from '@react-navigation/native';
-import Login from './screens/Login';
-import Register from './screens/Register';
 import MedOverviewScreen from './screens/MedOverviewScreen';
 import NewMedScreen from './screens/NewMedScreen';
 import MedicationsList from './screens/MedicationsList';
@@ -17,6 +15,7 @@ import { Text, StyleSheet } from 'react-native';
 import ReminderIcon from './assets/footer-icons/reminder.svg';
 import HomeIcon from './assets/footer-icons/home.svg';
 import BluetoothIcon from './assets/footer-icons/bluetooth.svg';
+import Landing from './screens/Landing';
 
 export type ScreenNames = ['Home', 'Login', 'Register', 'MedicationOverview', 'New', 'MedList']; // type these manually
 export type RootStackParamList = Record<ScreenNames[number], undefined>;
@@ -28,6 +27,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen 
+          name='Landing' 
+          component={Landing} 
+          options={{
+            title: 'SaluTemp'
+          }}
+        />
         <Stack.Screen 
           name='Email' 
           component={Email} 

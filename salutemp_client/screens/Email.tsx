@@ -12,75 +12,84 @@ const Email = () => {
   const navigation = useNavigation();
 
   const [email, setEmail] = useState('');
-  // const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-  //     if (user) {
-  //       setUser(user);
-  //       console.log('signed in');
-  //     } else {
-  //       setUser(null);
-  //       console.log('signed out');
-  //     }
-  //   });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      if (user) {
+        setUser(user);
+        console.log('signed in');
+      } else {
+        setUser(null);
+        console.log('signed out');
+      }
+    });
 
-  //   return unsubscribe;
-  // }, []);
+    return unsubscribe;
+  }, []);
 
-  // const handleLogin = async () => {
-  //   try {
-  //     await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-  //   } catch (error : any) {
-  //       Alert.alert(error.message);
-  //   }
-  // };
-
-  const getMoviesFromApi = async () => {
-    await axios.get(`${API_URL}/v1/${email}`
+  const getUserFromApi = async () => {
+    await axios.get(`${API_URL}v1/userexists/${email.toLocaleLowerCase()}`
     ).then((response) => {
-      navigation.navigate("EmailAndPassword", {email: email});
-      console.log("exisitng user");
+      if (response.data["user"] == null)
+      {
+        console.log("no existing user");
+        navigation.navigate("Name", {email: email.toLocaleLowerCase()});
+      }
+      else
+      {
+        console.log("existing user");
+        navigation.navigate("EmailAndPassword", {email: email.toLocaleLowerCase()});
+      }
     }).catch((error) => {
-      navigation.navigate("Name", {email: email});
-      console.log("NOT exisitng user: " + error.message);
+      console.log(`${API_URL}v1/userexists/${email}`);
+      Alert.alert("Error Contacting Server", error.message)
     });
   };
 
   const handleContinue = async () => {
     if (email != "")
     {
-      getMoviesFromApi()
+      getUserFromApi()
     }
     else
     {
       Alert.alert("Please Enter Email", "We need your email before continuing")
     }
   };
-  
-  return (
-    <View style={styles.container}>
-      <View style={styles.imagecontainer}>
-        <Image
-          source={require('../assets/salutemplogocolor.png')}
-          style={styles.image}/>
+
+  if (user)
+  {
+    navigation.dispatch(StackActions.replace('MedList'));
+  }
+  else
+  {
+    return (
+      <View style={styles.container}>
+        <View style={styles.imagecontainer}>
+          <Image
+            source={require('../assets/salutemplogocolor.png')}
+            style={styles.image}/>
+        </View>
+        <Text style={styles.text}>
+          Log In or Sign Up
+        </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}/>
+        <View style={styles.button}>
+          <Button 
+            title="Continue" 
+            onPress={handleContinue} 
+            color='#fff'/>
+        </View>
       </View>
-      <Text style={styles.text}>
-        Log In or Sign Up
-      </Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={(text) => setEmail(text)}/>
-      <View style={styles.button}>
-        <Button 
-          title="Continue" 
-          onPress={handleContinue} 
-          color='#fff'/>
-      </View>
-    </View>
   );
+
+  }
+
 };
 
 const styles = StyleSheet.create({

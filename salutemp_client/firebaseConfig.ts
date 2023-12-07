@@ -1,12 +1,8 @@
 import { initializeApp } from 'firebase/app';
-import { ReactNativeAsyncStorage, browserLocalPersistence, indexedDBLocalPersistence  } from 'firebase/auth';
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 // Optionally import the services that you want to use
-import { initializeAuth } from "firebase/auth";
-// import {...} from "firebase/database";
-// import {...} from "firebase/firestore";
-// import {...} from "firebase/functions";
-// import {...} from "firebase/storage";
+import { initializeAuth, indexedDBLocalPersistence } from "firebase/auth";
 
 // Initialize Firebase
 const firebaseConfig = {
