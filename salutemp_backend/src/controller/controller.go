@@ -625,20 +625,27 @@ func (pg *PgController) Serve() *gin.Engine {
 		c.JSON(http.StatusOK, "Status report edited successfully")
 	})
 
-	// // Endpoint to get status reports from the last 24 hours
-	// r.GET("/v1/statusreports/recent/", func(c *gin.Context) {
-	// 	// Change the method call to use GetAllStatusReportsLast24Hrs instead of AllStatusReports
-	// 	events, err := pg.GetAllStatusReportsLast24Hrs()
+	// Endpoint to get status reports from the last 24 hours
+	r.GET("/v1/statusreports/recent/:storedmedicationid", func(c *gin.Context) {
+		storedMedicationIDParam := c.Param("storedmedicationid")
 
-	// 	if err != nil {
-	// 		// Respond with an internal server error and the error message
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 		return
-	// 	}
+		storedMedicationID, err := strconv.Atoi(storedMedicationIDParam)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, "Invalid stored medication ID")
+			return
+		}
 
-	// 	// Respond with the filtered status reports
-	// 	c.JSON(http.StatusOK, events)
-	// })
+		events, err := pg.GetAllStatusReportsLast24Hrs(storedMedicationID)
+
+		if err != nil {
+			// Respond with an internal server error and the error message
+			c.JSON(http.StatusInternalServerError, gin.H{"Failed to unmarshal status reports": err.Error()})
+			return
+		}
+
+		// Respond with the filtered status reports
+		c.JSON(http.StatusOK, events)
+	})
 
 	r.GET("/v1/medicationconstraints/:medicationid/:conditiontype", func(c *gin.Context) {
 		medicationIDStr := c.Param("medicationid")

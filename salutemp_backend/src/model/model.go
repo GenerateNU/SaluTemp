@@ -50,7 +50,7 @@ type Model interface {
 	AddStatusReport(StatusReport) (StatusReport, error)
 	DeleteStatusReport(time.Time, int) error
 	EditStatusReport(StatusReport) error
-	//GetAllStatusReportsLast24Hrs() ([]StatusReport, error)
+	GetAllStatusReportsLast24Hrs(int) ([]StatusReport, error)
 
 	MedicationConstraint(int, string) (MedicationConstraint, error)
 	AllMedicationConstraints() ([]MedicationConstraint, error)
@@ -369,26 +369,28 @@ func (m *PgModel) EditStatusReport(event StatusReport) error {
 	return err
 }
 
-// func (m *PgModel) GetAllStatusReportsLast24Hrs() ([]StatusReport, error) {
-// 	events, err := GetAllStatusReportsFromDB(m.Conn)
+func (m *PgModel) GetAllStatusReportsLast24Hrs(storedMedicationID int) ([]StatusReport, error) {
+	events, err := GetAllStatusReportsFromDB(m.Conn)
 
-// 	if err != nil {
-// 		return []StatusReport{}, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	recentReports := func(reports []StatusReport) []StatusReport {
-//         var result []StatusReport
-//         twentyFourHoursAgo := time.Now().Add(-24 * time.Hour)
-//         for _, report := range reports {
-//             if report.EventTime.After(twentyFourHoursAgo) {
-//                 result = append(result, report)
-//             }
-//         }
-// 	}
-// 	return result, nil
-// }
+	recentReports := func(reports []StatusReport) []StatusReport {
+		var result []StatusReport
+		twentyFourHoursAgo := time.Now().Add(-24 * time.Hour)
+		for _, report := range reports {
+			if report.EventTime.After(twentyFourHoursAgo) && report.StoredMedicationID == storedMedicationID {
+				result = append(result, report)
+			}
+		}
+		return result
+	}(events)
 
-//medication contstraints
+	return recentReports, nil
+}
+
+// medication contstraints
 func (m *PgModel) MedicationConstraint(medicationID int, conditionType string) (MedicationConstraint, error) {
 	constraint, err := GetMedConstraintFromDB(m.Conn, medicationID, conditionType)
 
