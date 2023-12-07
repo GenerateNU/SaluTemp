@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     imagecontainer: {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: colors.background,
         width: '30%',
         height: '20%',
         margin: 10,
