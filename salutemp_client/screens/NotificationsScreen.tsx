@@ -64,14 +64,14 @@ function NotificationsScreen({ onClose }: NotificationsScreenProps) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.white }]}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Notifications</Text>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <MaterialIcons name="close" size={28} color={colors.white} />
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.notificationsList}>
+      <ScrollView style={[styles.notificationsList, { backgroundColor: colors.white }]}>
         {Object.keys(notificationsByDay).map(day => (
           <View key={day}>
             <Text style={styles.dayHeader}>{day}</Text>

@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, ScrollView, TouchableOpacity, Button } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
+import CalendarComponent from '../components/Calendar'; 
+import { useNavigation } from '@react-navigation/native'; 
 
 // Mock data for the reminders
 const mockReminders = [
   { id: 1, name: 'Insulin', time: '2:00 PM', completed: false },
-  { id: 2, name: 'Insulin', time: '11:00 AM', completed: true },
+  { id: 2, name: 'Accutane', time: '11:00 AM', completed: true },
+  { id: 3, name: 'Humira', time: '12:00 AM', completed: true },
   // ... more reminders
 ];
 
-function RemindersScreen({ navigation }) {
-  const [reminders, setReminders] = useState(mockReminders);
+function RemindersScreen() {
+    const [reminders, setReminders] = useState(mockReminders);
+    const navigation = useNavigation(); // This hook gives you access to navigation anywhere in the component
 
-  const handlePressReminder = (reminderId) => {
-    // Here you would navigate to the details page for the reminder
-    // navigation.navigate('ReminderDetails', { id: reminderId });
-  };
+    const handlePressReminder = (reminderId) => {
+        // Here you would navigate to the details page for the reminder
+        // navigation.navigate('ReminderDetails', { id: reminderId });
+    };
 
-  const handleToggleReminder = (reminderId) => {
-    setReminders(reminders.map(reminder => 
-      reminder.id === reminderId ? { ...reminder, completed: !reminder.completed } : reminder
-    ));
-  };
+    const handleToggleReminder = (reminderId) => {
+        setReminders(reminders.map(reminder => 
+        reminder.id === reminderId ? { ...reminder, completed: !reminder.completed } : reminder
+        ));
+    };  
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: '#022B3A' }]}>
@@ -30,6 +34,7 @@ function RemindersScreen({ navigation }) {
         <Text style={styles.header}>Reminders</Text>
       </View>
       <ScrollView style={[{ backgroundColor: colors.white }]}>
+      <CalendarComponent onDateSelected={(date: Moment) => console.log(date.format('MMMM D'))} />
         {/* To Take Section */}
         <Text style={styles.sectionTitle}>To take</Text>
         {reminders.filter(r => !r.completed).map((reminder) => (
@@ -65,6 +70,7 @@ function RemindersScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         ))}
+        <Button title="Edit reminders" color={colors.black}/>
       </ScrollView>
     </SafeAreaView>
   );
@@ -100,26 +106,26 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
   },
   checkbox: {
-    height: 24,
-    width: 24,
-    borderRadius: 12,
-    borderWidth: 2,
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+    borderWidth: 1,
     borderColor: '#022B3A',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 15,
   },
   checked: {
-    height: 12,
-    width: 12,
-    borderRadius: 6,
+    height: 24,
+    width: 24,
+    borderRadius: 12,
     backgroundColor: '#022B3A',
   },
   iconPlaceholder: {
     height: 50,
     width: 50,
     backgroundColor: '#BBBBBB',
-    borderRadius: 25,
+    borderRadius: 5,
     marginRight: 15,
   },
   reminderText: {
@@ -127,14 +133,16 @@ const styles = StyleSheet.create({
   },
   medicineName: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 20,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginTop: 15,
     marginLeft: 15,
     marginBottom: 15,
+  },
+  button: {
+    marginTop: 20,
   },
 });
 
