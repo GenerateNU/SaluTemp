@@ -36,7 +36,7 @@ export default function Graph(props: GraphProps) {
       <VictoryChart
         width={width / 1.3}
         height={height / 4}
-        padding={{ right: width / 10, left: width / 10, top: height / 20, bottom: height / 20 }}
+        padding={{ right: width / 10, left: width / 8, top: height / 20, bottom: height / 20 }}
       >
         <VictoryAxis
           tickCount={2}

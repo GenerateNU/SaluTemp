@@ -742,12 +742,10 @@ func (pg *PgController) Serve() *gin.Engine {
 		})
 	})
 
-	r.GET("/v1/allusermedicationswithconstraint/:userId/:conditiontype", func(c *gin.Context) {
+	r.GET("/v1/allusermedicationswithconstraint/:userId", func(c *gin.Context) {
 		userId := c.Param("userId")
 
-		conditionType := c.Param("conditiontype")
-
-		constraint, err := pg.GetAllUserMedicationsWithConstraint(userId, conditionType)
+		constraint, err := pg.GetAllUserMedicationsWithConstraint(userId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Oops")
 			return

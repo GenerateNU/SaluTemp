@@ -1,37 +1,27 @@
 import axios from 'axios';
 
 import { API_URL } from './apiLinks';
-import { MedicationPositionStates } from '../components/medication-overview-popup/MedOverviewPopup';
 
 export const findMedicationName = async (medication_name: string) => {
   const response = await axios.get(`${API_URL}/v1/medications/${medication_name}`);
   return response.data;
 };
 
-export const getAllUserMedicationsWithConstraint = async (userId: string, constraint: string) => {
-  const response = await axios.get(
-    `${API_URL}/v1/allusermedicationswithconstraint/${userId}/${constraint}`
-  );
-
+export const getAllUserMedicationsWithConstraint = async (userId: string) => {
+  const response = await axios.get(`${API_URL}/v1/allusermedicationswithconstraint/${userId}`);
   return response.data;
 };
 
-export const getMedicationStatus = async (medId: number) => {
-  // TODO: update this with an actual api request
-  const medicationStatus: MedicationPositionStates = {
-    max: 60,
-    min: 30,
-    data: [
-      { time: 36, point: 37 },
-      { time: 24, point: 39 },
-      { time: 18, point: 44 },
-      { time: 12, point: 41 },
-      { time: 6, point: 45 },
-      { time: 0, point: 39 }
-    ]
-  };
+export const getMedicationStatus = async (medId: string) => {
+  const response = await axios.get(`${API_URL}/v1/statusreports/recent/${medId}`);
+  return response.data;
+};
 
-  return medicationStatus;
+export const getMedicationConstraint = async (medId: string, constraint: string) => {
+  const response = await axios.get(
+    `${API_URL}/v1/medicationconstraints/${medId}/${constraint.toUpperCase()}`
+  );
+  return response.data;
 };
 
 // *********** THIS IS SAMPLE CODE TAKEN FROM REMO - WILL NEED TO EDIT TO FIT OUT SPECIFICATIONS

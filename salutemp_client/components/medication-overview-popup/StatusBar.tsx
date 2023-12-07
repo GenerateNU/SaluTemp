@@ -29,7 +29,7 @@ export default function StatusBar(props: StatusBarProps) {
         width={width / 30}
         fill={fill}
         rotation={240}
-        duration={1000}
+        duration={3000}
         arcSweepAngle={240}
         tintColor={getStatusColors(props.status).side}
         backgroundColor="white"

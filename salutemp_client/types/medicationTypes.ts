@@ -8,9 +8,9 @@ export enum Status {
 }
 
 export enum MedOverviewTypeEnum {
-  Temperature = 'Temperature',
-  Humidity = 'Humidity',
-  Light = 'Light'
+  Temperature = 'TEMPERATURE',
+  Humidity = 'HUMIDITY',
+  Light = 'LIGHT_EXPOSURE'
 }
 
 export function getMedOverviewTypeSymbol(type: MedOverviewTypeEnum) {

@@ -5,11 +5,13 @@ import { Feather } from '@expo/vector-icons';
 import Graph from './Graph';
 import StatusBar from './StatusBar';
 import { Status, MedOverviewTypeEnum, getStatusColors } from '../../types/medicationTypes';
-import { getMedicationStatus } from '../../services/medicationService';
+import { getMedicationConstraint, getMedicationStatus } from '../../services/medicationService';
+import { MedicationConstraint, StatusReport } from '../../types';
 interface MedicationInfo {
   status: Status;
   curr: number;
-  id: number;
+  medId: string;
+  storedMedId: string;
 }
 
 interface MedOverviewPopupProps {
@@ -17,6 +19,7 @@ interface MedOverviewPopupProps {
   setModalVisible: (input: boolean) => void;
   medOverviewType: MedOverviewTypeEnum;
   medicationInfo: MedicationInfo;
+  graph: StatusReport[];
 }
 
 export interface MedicationPositionStates {
@@ -28,11 +31,30 @@ export interface MedicationPositionStates {
 export default function MedOverviewPopup(props: MedOverviewPopupProps) {
   const hideModal = () => props.setModalVisible(false);
   const { width } = Dimensions.get('window');
-  const [graph, setGraph] = React.useState<MedicationPositionStates | null>(null);
+  const [constraint, setConstraint] = React.useState<MedicationConstraint>();
+  const [graph, setGraph] = React.useState<{ time: number; point: number }[]>([]);
 
   React.useEffect(() => {
-    getMedicationStatus(props.medicationInfo.id).then((status) => setGraph(status));
-  }, [props.medOverviewType]);
+    if (!props.modalVisible) return;
+    getMedicationConstraint(props.medicationInfo.medId, props.medOverviewType).then(
+      (constraint) => {
+        setConstraint(constraint);
+      }
+    );
+    if (!props.graph) return;
+    props.graph.forEach((g) => {
+      if (new Date(g.event_time).getDate() != new Date().getDate()) {
+      }
+      const curr = new Date().setHours(new Date().getHours() - 5);
+      const time = curr - new Date(g.event_time).getTime();
+      graph?.push({
+        point: g.humidity,
+        time: time / 1000 / 60 / 60
+      });
+      setGraph(graph);
+    });
+    console.log(graph);
+  }, [props.modalVisible]);
 
   return (
     <Portal>
@@ -58,27 +80,23 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
             <Feather name="x" adjustsFontSizeToFit size={width / 15} color="white" />
           </Pressable>
         </View>
-        <View
-          style={{
-            height: '98%',
-            backgroundColor: '#EFECE7',
-            width: '100%',
-            borderBottomRightRadius: 20,
-            borderBottomLeftRadius: 20,
-            alignItems: 'center'
-          }}
-        >
-          {graph && (
+        <View style={styles.popup}>
+          {constraint && (
             <StatusBar
               type={props.medOverviewType}
-              min={graph.min}
-              max={graph.max}
+              min={constraint.min_threshold}
+              max={constraint.max_threshold}
               curr={props.medicationInfo.curr}
               status={props.medicationInfo.status}
             />
           )}
-          {graph && (
-            <Graph type={props.medOverviewType} min={graph.min} max={graph.max} data={graph.data} />
+          {constraint && graph && (
+            <Graph
+              type={props.medOverviewType}
+              min={constraint.min_threshold}
+              max={constraint.max_threshold}
+              data={graph}
+            />
           )}
         </View>
       </Modal>
@@ -97,6 +115,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20
+  },
+  popup: {
+    height: '98%',
+    backgroundColor: '#EFECE7',
+    width: '100%',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    alignItems: 'center'
   },
   popupStyle: {
     alignSelf: 'center',

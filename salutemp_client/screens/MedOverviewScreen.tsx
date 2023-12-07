@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, Dimensions, ScrollView, TextInput } from 'react-native';
 import { useNavigation, useRoute, RouteProp, useScrollToTop } from '@react-navigation/native';
 import LeftArrow from '../assets/header-icons/left-arrow.svg';
@@ -15,6 +15,8 @@ import MedOverviewPopup from '../components/medication-overview-popup/MedOvervie
 import { PaperProvider } from 'react-native-paper';
 import { MedOverviewTypeEnum, Status, getMedOverviewTypeSymbol } from '../types/medicationTypes';
 import InformationCard from '../components/InformationCard';
+import { StatusReport } from '../types';
+import { getMedicationStatus } from '../services/medicationService';
 
 type ParamList = {
   mt: {
@@ -26,12 +28,12 @@ type ParamList = {
     statusLight: string;
     statusTemp: string;
     statusHumidity: string;
-    id: number;
+    id: string;
+    storedMedId: string;
   };
 };
 
 interface ModalInfo {
-  id: number;
   current: number;
   status: Status;
 }
@@ -42,6 +44,7 @@ function MedOverviewScreen() {
     MedOverviewTypeEnum.Temperature
   );
   const [modalInfo, setModalInfo] = React.useState<ModalInfo>();
+  const [graph, setGraph] = React.useState<StatusReport[]>([]);
 
   const ref = React.useRef<ScrollView | null>(null);
 
@@ -57,12 +60,14 @@ function MedOverviewScreen() {
     statusHumidity,
     statusLight,
     statusTemp,
-    id
+    id,
+    storedMedId
   } = route.params;
 
   React.useEffect(() => {
     ref.current?.scrollTo({ y: 0 });
-  }, [medName]);
+    getMedicationStatus(id).then((status) => setGraph(status));
+  }, [id]);
 
   const medStatus =
     (status as Status) == Status.Good ? (
@@ -79,10 +84,12 @@ function MedOverviewScreen() {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         medOverviewType={modalType}
+        graph={graph}
         medicationInfo={{
           curr: modalInfo?.current ?? 0,
           status: modalInfo?.status ?? Status.Bad,
-          id: id
+          medId: id,
+          storedMedId: storedMedId
         }}
       />
       <View style={styles.container}>
@@ -104,7 +111,6 @@ function MedOverviewScreen() {
               status={(statusTemp as Status) ?? Status.Bad}
               cardTouchAction={() => {
                 setModalInfo({
-                  id: id,
                   status: statusTemp as Status,
                   current: parseFloat(temperature)
                 });
@@ -123,7 +129,6 @@ function MedOverviewScreen() {
               status={(statusHumidity as Status) ?? Status.Bad}
               cardTouchAction={() => {
                 setModalInfo({
-                  id: id,
                   status: statusHumidity as Status,
                   current: parseFloat(humidity)
                 });
@@ -143,7 +148,6 @@ function MedOverviewScreen() {
               status={(statusLight as Status) ?? Status.Bad}
               cardTouchAction={() => {
                 setModalInfo({
-                  id: id,
                   status: statusLight as Status,
                   current: parseFloat(light)
                 });

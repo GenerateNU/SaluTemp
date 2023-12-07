@@ -48,13 +48,10 @@ function MedicationsList() {
   React.useEffect(() => {
     //const userId = FIREBASE_AUTH.currentUser?.uid;
     const userId = '1';
-    getAllUserMedicationsWithConstraint(userId, 'temperature').then((ml) =>
-      setMedicationsTemperatureList(ml)
-    );
+    getAllUserMedicationsWithConstraint(userId).then((ml) => setMedicationsTemperatureList(ml));
   }, []);
 
   React.useEffect(() => {
-    console.log(medicationsTemperatureList.length);
     setMedicationStatus([]);
 
     medicationsTemperatureList.forEach((mt) => {
@@ -110,6 +107,8 @@ function MedicationsList() {
                 }
                 cardTouchAction={() =>
                   navigate('MedicationOverview', {
+                    id: mt.medication_id,
+                    storedMedId: mt.stored_medication_id,
                     temperature: mt.current_temperature,
                     light: mt.current_light,
                     humidity: mt.current_humidity,

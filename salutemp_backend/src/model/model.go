@@ -65,7 +65,7 @@ type Model interface {
 	EditExpoNotificationToken(ExpoNotificationToken) error
 	AllExpoNotificationTokens() ([]ExpoNotificationToken, error)
 
-	GetAllUserMedicationsWithConstraint(userId string, constraint string) ([]StoredMedicationWithConstraint, error)
+	GetAllUserMedicationsWithConstraint(userId string) ([]StoredMedicationWithConstraint, error)
 }
 
 func (m *PgModel) Medication(id int) Medication {
@@ -378,7 +378,7 @@ func (m *PgModel) GetAllStatusReportsLast24Hrs(storedMedicationID int) ([]Status
 
 	recentReports := func(reports []StatusReport) []StatusReport {
 		var result []StatusReport
-		twentyFourHoursAgo := time.Now().Add(-24 * time.Hour)
+		twentyFourHoursAgo := time.Now().Add(-36 * time.Hour)
 		for _, report := range reports {
 			if report.EventTime.After(twentyFourHoursAgo) && report.StoredMedicationID == storedMedicationID {
 				result = append(result, report)
@@ -433,7 +433,7 @@ func (m *PgModel) EditMedicationConstraint(constraint MedicationConstraint) erro
 	return err
 }
 
-func (m *PgModel) GetAllUserMedicationsWithConstraint(userId string, constraint string) ([]StoredMedicationWithConstraint, error) {
+func (m *PgModel) GetAllUserMedicationsWithConstraint(userId string) ([]StoredMedicationWithConstraint, error) {
 
 	meds, err := GetAllStoredMeds(m.Conn)
 
