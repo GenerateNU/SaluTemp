@@ -917,11 +917,11 @@ func TestMedicationConstraintAPI(t *testing.T) {
 
 		// Prepare a new medication constraint to add
 		newConstraint := model.MedicationConstraint{
-			StoredMedicationID:  305,
-			ConditionType: "HUMIDITY",
-			MaxThreshold:  15.0,
-			MinThreshold:  7.0,
-			Duration:      "2 weeks",
+			StoredMedicationID: 305,
+			ConditionType:      "HUMIDITY",
+			MaxThreshold:       15.0,
+			MinThreshold:       7.0,
+			Duration:           "2 weeks",
 		}
 
 		// Marshal the new constraint to JSON
@@ -959,11 +959,11 @@ func TestMedicationConstraintAPI(t *testing.T) {
 	t.Run("TestEditAndRetrieveMedicationConstraint", func(t *testing.T) {
 		// Prepare the updated medication constraint data
 		updatedConstraint := model.MedicationConstraint{
-			StoredMedicationID:  305,
-			ConditionType: "HUMIDITY",
-			MaxThreshold:  20.0,
-			MinThreshold:  10.0,
-			Duration:      "3 weeks",
+			StoredMedicationID: 305,
+			ConditionType:      "HUMIDITY",
+			MaxThreshold:       20.0,
+			MinThreshold:       10.0,
+			Duration:           "3 weeks",
 		}
 
 		// Marshal the updated constraint to JSON
