@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     curve: {
         position:"absolute",
         bottom:0,
-        center:0
     },
     image: {
         height: 200,
