@@ -2,12 +2,12 @@ import * as Notification from 'expo-notifications';
 
 import * as Device from "expo-device";
 import { Platform } from "react-native";
-import express from 'express';
+//import express from 'express';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-const app = express();
-const port = 8000;
+//const app = express();
+//const port = 8000;
 
 // ^ see authService and userContext
 
