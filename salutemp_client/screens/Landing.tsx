@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect }from 'react';
 import { View, Button, StyleSheet, Image } from 'react-native';
 import { useNavigation, StackActions } from '@react-navigation/native';
 import colors from "../config/colors";
-import Curvy from "../assets/salutempcurvylanding.svg";
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { FIREBASE_AUTH } from '../firebaseConfig';
 
 const Landing = () => {
 
   const navigation = useNavigation();
+
+const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      if (user) {
+        setUser(user);
+        console.log('signed in');
+      } else {
+        setUser(null);
+        console.log('signed out');
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      navigation.dispatch(StackActions.replace('MedList'));
+    }
+  }, [navigation, user]);
 
 
   const handleContinue = async () => {

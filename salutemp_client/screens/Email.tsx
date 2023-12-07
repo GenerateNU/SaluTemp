@@ -50,7 +50,8 @@ const Email = () => {
   const handleContinue = async () => {
     if (email != "")
     {
-      getUserFromApi()
+      // getUserFromApi()
+      navigation.navigate("EmailAndPassword", {email: email.toLocaleLowerCase()});
     }
     else
     {
