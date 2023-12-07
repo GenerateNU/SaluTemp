@@ -40,7 +40,7 @@ export function getStatusColors(status: Status) {
       break;
     }
     case Status.NoStatus: {
-      cardStatusColor = { main: colors.neutral, side: colors.darkNeutral };
+      cardStatusColor = { main: colors.lightNeutral, side: colors.darkNeutral };
     }
   }
 

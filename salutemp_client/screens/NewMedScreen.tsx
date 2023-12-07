@@ -28,10 +28,6 @@ const NewMedScreen = () => {
   const [maxLight, setMaxLight] = useState('');
   const [minLight, setMinLight] = useState('');
 
-  const onSelectSwitch = (index: string) => {
-    alert('Selected index: ' + index);
-  };
-
   return (
     <View style={styles.container}>
       <Header
@@ -46,7 +42,7 @@ const NewMedScreen = () => {
             roundCorner={true}
             option1={'Scan'}
             option2={'Manual'}
-            onSelectSwitch={onSelectSwitch}
+            onSelectSwitch={() => {}}
             selectionColor={'white'}
           />
           <TouchableHighlight style={styles.addPhoto}>

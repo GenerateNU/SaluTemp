@@ -18,6 +18,25 @@ interface MedicationStatus {
   status: Status;
 }
 
+export const getStatusForMedicationConstraint = (
+  current: number,
+  minThreshold: number,
+  maxThreshold: number
+) => {
+  if (maxThreshold == 0 && minThreshold == 0) {
+    return Status.NoStatus;
+  }
+
+  if (current > maxThreshold + 2 || current < minThreshold + 2) {
+    return Status.Bad;
+  }
+  if (current + 1 > maxThreshold || current - 1 < minThreshold) {
+    return Status.Warning;
+  }
+
+  return Status.Good;
+};
+
 function MedicationsList() {
   const { navigate } = useNavigation<StackNavigation>();
   const [medicationsTemperatureList, setMedicationsTemperatureList] = React.useState<
@@ -32,42 +51,47 @@ function MedicationsList() {
     getAllUserMedicationsWithConstraint(userId, 'temperature').then((ml) =>
       setMedicationsTemperatureList(ml)
     );
-
-    setMedicationStatus([]);
-    medicationsTemperatureList.forEach((mt) => {
-      // const status = getStatus(
-      //   mt.current,
-      //   mt.min_threshold,
-      //   mt.max_threshold,
-      //   medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.current,
-      //   medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.min_threshold,
-      //   medicationsHumidityList.find((hl) => hl.medication_id === mt.medication_id)?.max_threshold,
-      //   medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.current,
-      //   medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.min_threshold,
-      //   medicationsLightList.find((hl) => hl.medication_id === mt.medication_id)?.max_threshold
-      // );
-      // setMedicationStatus([
-      //   ...medicationStatus,
-      //   { medicationId: mt.medication_id, status: status }
-      // ]);
-    });
   }, []);
 
   React.useEffect(() => {
     console.log(medicationsTemperatureList.length);
+    setMedicationStatus([]);
+
+    medicationsTemperatureList.forEach((mt) => {
+      const status = getStatus(
+        mt.current_temperature,
+        mt.temp_min_threshold,
+        mt.temp_max_threshold,
+        mt.current_light,
+        mt.light_min_threshold,
+        mt.light_max_threshold,
+        mt.current_humidity,
+        mt.humidity_min_threshold,
+        mt.humidity_max_threshold
+      );
+      medicationStatus.push({ medicationId: mt.medication_id, status: status });
+      setMedicationStatus([...medicationStatus]);
+    });
   }, [medicationsTemperatureList]);
 
   const getStatus = (
     mt: number,
     mt1: number,
     mt2: number,
-    mh?: number,
-    mh1?: number,
-    mh2?: number,
-    ml?: number,
-    ml1?: number,
-    ml2?: number
+    mh: number,
+    mh1: number,
+    mh2: number,
+    ml: number,
+    ml1: number,
+    ml2: number
   ) => {
+    const mts = getStatusForMedicationConstraint(mt, mt1, mt2);
+    const mhs = getStatusForMedicationConstraint(mh, mh1, mh2);
+    const mls = getStatusForMedicationConstraint(ml, ml1, ml2);
+
+    if (mts == Status.Bad || mts == Status.Warning) return mts;
+    if (mhs == Status.Bad || mhs == Status.Warning) return mhs;
+    if (mls == Status.Bad || mls == Status.Warning) return mls;
     return Status.Good;
   };
 
@@ -81,7 +105,7 @@ function MedicationsList() {
               <InformationCard
                 key={index}
                 status={
-                  medicationStatus.find((ms) => ms.medicationId === mt.medication_id)?.status ??
+                  medicationStatus.find((ms) => ms.medicationId == mt.medication_id)?.status ??
                   Status.Bad
                 }
                 cardTouchAction={() =>
@@ -89,7 +113,25 @@ function MedicationsList() {
                     temperature: mt.current_temperature,
                     light: mt.current_light,
                     humidity: mt.current_humidity,
-                    medName: mt.medication_name
+                    medName: mt.medication_name,
+                    status:
+                      medicationStatus.find((ms) => ms.medicationId == mt.medication_id)?.status ??
+                      Status.Bad,
+                    statusTemp: getStatusForMedicationConstraint(
+                      mt.current_temperature,
+                      mt.temp_min_threshold,
+                      mt.temp_max_threshold
+                    ),
+                    statusLight: getStatusForMedicationConstraint(
+                      mt.current_light,
+                      mt.light_min_threshold,
+                      mt.light_max_threshold
+                    ),
+                    statusHumidity: getStatusForMedicationConstraint(
+                      mt.current_humidity,
+                      mt.humidity_min_threshold,
+                      mt.humidity_max_threshold
+                    )
                   })
                 }
               >

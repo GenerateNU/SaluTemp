@@ -19,8 +19,8 @@ export const getAllUserMedicationsWithConstraint = async (userId: string, constr
 export const getMedicationStatus = async (medId: number) => {
   // TODO: update this with an actual api request
   const medicationStatus: MedicationPositionStates = {
-    max: 46,
-    min: 36,
+    max: 60,
+    min: 30,
     data: [
       { time: 36, point: 37 },
       { time: 24, point: 39 },

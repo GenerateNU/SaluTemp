@@ -5,7 +5,7 @@ import { Status, getStatusColors } from '../types/medicationTypes';
 
 interface InformationCardProps {
   status: Status;
-  children: JSX.Element[];
+  children: JSX.Element[] | JSX.Element;
   cardTouchAction: () => any;
 }
 

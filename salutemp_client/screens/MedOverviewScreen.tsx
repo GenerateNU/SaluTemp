@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, Text, View, Dimensions, ScrollView, TextInput } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp, useScrollToTop } from '@react-navigation/native';
 import LeftArrow from '../assets/header-icons/left-arrow.svg';
 import EditIcon from '../assets/header-icons/edit.svg';
 
 import StatusGood from '../assets/statusGood.svg';
+import StatusWarning from '../assets/statusWarning.svg';
+import StatusBad from '../assets/statusBad.svg';
 import Union from '../assets/Union.svg';
 import colors from '../config/colors';
 import Header from '../components/Header';
@@ -12,7 +14,7 @@ import { StackNavigation } from '../App';
 import MedOverviewPopup from '../components/medication-overview-popup/MedOverviewPopup';
 import { PaperProvider } from 'react-native-paper';
 import { MedOverviewTypeEnum, Status, getMedOverviewTypeSymbol } from '../types/medicationTypes';
-import MonitorInfoCard from '../components/MonitorInfoCard';
+import InformationCard from '../components/InformationCard';
 
 type ParamList = {
   mt: {
@@ -20,21 +22,56 @@ type ParamList = {
     temperature: string;
     humidity: string;
     light: string;
+    status: string;
+    statusLight: string;
+    statusTemp: string;
+    statusHumidity: string;
+    id: number;
   };
 };
 
-// TODO: REMOVE HARDCODED STUFF
+interface ModalInfo {
+  id: number;
+  current: number;
+  status: Status;
+}
+
 function MedOverviewScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalType, setModalType] = React.useState<MedOverviewTypeEnum>(
     MedOverviewTypeEnum.Temperature
   );
+  const [modalInfo, setModalInfo] = React.useState<ModalInfo>();
 
-  const { goBack, navigate } = useNavigation<StackNavigation>();
+  const ref = React.useRef<ScrollView | null>(null);
+
+  const { goBack } = useNavigation<StackNavigation>();
   const route = useRoute<RouteProp<ParamList, 'mt'>>();
-  console.log(route.params);
 
-  const { medName, temperature, humidity, light } = route.params;
+  const {
+    medName,
+    temperature,
+    humidity,
+    light,
+    status,
+    statusHumidity,
+    statusLight,
+    statusTemp,
+    id
+  } = route.params;
+
+  React.useEffect(() => {
+    ref.current?.scrollTo({ y: 0 });
+  }, [medName]);
+
+  const medStatus =
+    (status as Status) == Status.Good ? (
+      <StatusGood style={styles.statusSymbol} />
+    ) : (status as Status) == Status.Warning ? (
+      <StatusWarning style={styles.statusSymbol} />
+    ) : (
+      <StatusBad style={styles.statusSymbol} />
+    );
 
   return (
     <PaperProvider>
@@ -42,7 +79,11 @@ function MedOverviewScreen() {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         medOverviewType={modalType}
-        medicationInfo={{ curr: 40, status: Status.Bad, id: 1 }}
+        medicationInfo={{
+          curr: modalInfo?.current ?? 0,
+          status: modalInfo?.status ?? Status.Bad,
+          id: id
+        }}
       />
       <View style={styles.container}>
         <Header
@@ -50,26 +91,73 @@ function MedOverviewScreen() {
           leftAction={() => goBack()}
           rightIcon={<EditIcon height={24} />}
         />
-        <ScrollView>
+        <ScrollView ref={ref}>
           <View style={styles.topShape}>
             <View style={styles.header}>
               <Text style={styles.title}>{medName}</Text>
               <Union style={styles.union} />
-              <StatusGood style={styles.statusSymbol} />
+              {medStatus}
             </View>
           </View>
           <View style={styles.monitorDetails}>
-            <MonitorInfoCard
-              category="Temperature"
-              value={`${temperature}${getMedOverviewTypeSymbol(MedOverviewTypeEnum.Temperature)}`}
-            />
-            <MonitorInfoCard
-              category="Humidity"
-              value={`${humidity}${getMedOverviewTypeSymbol(MedOverviewTypeEnum.Humidity)}`}
-            />
-            <MonitorInfoCard category="Light" value={`${light} Lumens`} />
-            <Text>Notes</Text>
-            <TextInput style={styles.textInput}></TextInput>
+            <InformationCard
+              status={(statusTemp as Status) ?? Status.Bad}
+              cardTouchAction={() => {
+                setModalInfo({
+                  id: id,
+                  status: statusTemp as Status,
+                  current: parseFloat(temperature)
+                });
+                setModalType(MedOverviewTypeEnum.Temperature);
+                setModalVisible(true);
+              }}
+            >
+              <View>
+                <Text style={styles.cardHeading}>Temperature</Text>
+                <Text style={styles.numberText}>{`${temperature}${getMedOverviewTypeSymbol(
+                  MedOverviewTypeEnum.Temperature
+                )}F`}</Text>
+              </View>
+            </InformationCard>
+            <InformationCard
+              status={(statusHumidity as Status) ?? Status.Bad}
+              cardTouchAction={() => {
+                setModalInfo({
+                  id: id,
+                  status: statusHumidity as Status,
+                  current: parseFloat(humidity)
+                });
+                setModalType(MedOverviewTypeEnum.Humidity);
+                setModalVisible(true);
+              }}
+            >
+              <View>
+                <Text style={styles.cardHeading}>Humidity</Text>
+                <Text style={styles.numberText}>{`${humidity}${getMedOverviewTypeSymbol(
+                  MedOverviewTypeEnum.Humidity
+                )}`}</Text>
+              </View>
+            </InformationCard>
+
+            <InformationCard
+              status={(statusLight as Status) ?? Status.Bad}
+              cardTouchAction={() => {
+                setModalInfo({
+                  id: id,
+                  status: statusLight as Status,
+                  current: parseFloat(light)
+                });
+                setModalType(MedOverviewTypeEnum.Light);
+                setModalVisible(true);
+              }}
+            >
+              <View>
+                <Text style={styles.cardHeading}>Light</Text>
+                <Text style={styles.numberText}>{`${light} Lumens`}</Text>
+              </View>
+            </InformationCard>
+            <Text style={styles.notes}>Notes</Text>
+            <View style={styles.textInput}></View>
           </View>
         </ScrollView>
       </View>
@@ -84,11 +172,29 @@ const styles = StyleSheet.create({
     height: '100%'
   },
 
+  cardHeading: {
+    fontSize: 20,
+    fontWeight: '500',
+    paddingBottom: 20
+  },
+
+  numberText: {
+    fontSize: 15,
+    fontWeight: '500'
+  },
+
+  notes: {
+    fontSize: 20,
+    fontWeight: '500',
+    paddingLeft: 10
+  },
+
   topShape: {
     backgroundColor: colors.darkNeutral,
     height: 230,
     width: Dimensions.get('window').width,
-    zIndex: 20
+    zIndex: 20,
+    top: 0
   },
 
   navButton: {
@@ -125,7 +231,8 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 20,
     top: 100,
-    paddingBottom: 120
+    paddingBottom: 120,
+    paddingTop: 50
   },
 
   subHeadingOne: {
@@ -202,7 +309,7 @@ const styles = StyleSheet.create({
   textInput: {
     padding: 8,
     borderRadius: 20,
-    width: 280,
+    width: Dimensions.get('screen').width - 60,
     height: 80,
     fontSize: 14,
     backgroundColor: colors.grey,
