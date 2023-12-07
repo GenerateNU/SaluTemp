@@ -28,6 +28,9 @@ function RemindersScreen() {
         ));
     };  
 
+    // this is where navigation logic should be for the "edit reminders" button
+    // button is down below at end of scroll view 
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: '#022B3A' }]}>
       <View style={{ backgroundColor: '#022B3A', alignItems: 'center', justifyContent: 'center' }}>
@@ -70,6 +73,7 @@ function RemindersScreen() {
             </TouchableOpacity>
           </View>
         ))}
+        {/* This is the edit reminders button */}
         <Button title="Edit reminders" color={colors.black}/>
       </ScrollView>
     </SafeAreaView>
