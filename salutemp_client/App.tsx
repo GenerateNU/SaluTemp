@@ -18,6 +18,7 @@ import BluetoothIcon from './assets/footer-icons/bluetooth.svg';
 import Landing from './screens/Landing';
 import ScanBarcode from './screens/ScanBarcode';
 import ScanReviewScreen from './screens/ScanReviewScreen';
+import startStatusReports from './services/statusReportService';
 
 export type ScreenNames = [
   'Home',
@@ -38,6 +39,7 @@ export type ScreenNames = [
 export type RootStackParamList = Record<ScreenNames[number], any>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
+const statusReports = setInterval(startStatusReports.statusReports, 15000)
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 export default function App() {

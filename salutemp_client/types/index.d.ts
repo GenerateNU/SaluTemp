@@ -61,3 +61,11 @@ export type medicationConstraint = {
   min_threshold:  number,
   duration: string
 }
+
+export type alert = {
+  warning_id:           int,
+  stored_medication_id: int,
+  warning_timestamp:    string,
+  warning_description:  string,
+  condition_type:       string 
+}
