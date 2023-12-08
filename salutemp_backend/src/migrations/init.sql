@@ -153,15 +153,6 @@ VALUES
   (5, 5, '2023-01-05 16:30:00', 'High Humidity', 'HUMIDITY'),
   (6, 3, '2023-01-03 12:45:00', 'High Humidity', 'HUMIDITY');
 
--- Insert sample data into "status_report" table
-INSERT INTO status_report (event_time, stored_medication_id, temperature, humidity, light)
-VALUES
-  ('2023-01-01 08:00:00', 1, 25.0, 49.0, 290),
-  ('2023-01-02 10:30:00', 2, 21.5, 38.0, 180),
-  ('2023-01-03 12:45:00', 3, 26.0, 58.0, 380),
-  ('2023-01-04 14:15:00', 4, 22.5, 44.0, 240),
-  ('2023-01-05 16:30:00', 5, 24.0, 53.0, 330);
-
 -- Insert sample data into "medication_constraint" table
 -- Insert additional sample data into "medication_constraint" table for all medications
 INSERT INTO medication_constraint (stored_medication_id, condition_type, max_threshold, min_threshold, duration)
@@ -169,7 +160,7 @@ VALUES
   -- Medication A
   (1, 'TEMPERATURE', 30.0, 20.0, '1 day'),
   (1, 'HUMIDITY', 55.0, 40.0, '2 days'),
-  (1, 'LIGHT_EXPOSURE', 40.0, 25.0, '3 days'),
+  (1, 'LIGHT_EXPOSURE', 400.0, 250.0, '3 days'),
 
   -- Medication B
   (2, 'TEMPERATURE', 28.0, 18.0, '1 day'),
@@ -194,7 +185,7 @@ VALUES
   
   (6, 'TEMPERATURE', 26.5, 16.5, '1 day'),
   (6, 'HUMIDITY', 49.0, 34.0, '2 days'),
-  (6, 'LIGHT_EXPOSURE', 410.0, 260.0, '3 days'),
+  (6, 'LIGHT_EXPOSURE', 410.0, 220.0, '3 days'),
 
   (7, 'TEMPERATURE', 27.5, 17.5, '1 day'),
   (7, 'HUMIDITY', 50.0, 35.0, '2 days'),
@@ -206,7 +197,7 @@ VALUES
 
   (9, 'TEMPERATURE', 28.0, 18.0, '1 day'),
   (9, 'HUMIDITY', 48.0, 33.0, '2 days'),
-  (9, 'LIGHT_EXPOSURE', 430.0, 270.0, '3 days'),
+  (9, 'LIGHT_EXPOSURE', 430.0, 240.0, '3 days'),
 
   (10, 'TEMPERATURE', 26.0, 16.0, '1 day'),
   (10, 'HUMIDITY', 47.0, 32.0, '2 days'),

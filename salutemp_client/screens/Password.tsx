@@ -48,7 +48,7 @@ const Password = () => {
 
     console.log(firstName + " " + lastName);
 
-    await axios.post(`${API_URL}/v1/addusers`, {
+    await axios.post(`${API_URL}v1/addusers`, {
       "UserID": id,
       "FirstName": firstName,
       "LastName": lastName,
@@ -96,12 +96,12 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'flex-start',
       alignItems: 'center',
-      backgroundColor: '#fff',
+      backgroundColor: colors.background,
     },
     imagecontainer: {
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: 'white',
+        backgroundColor: colors.background,
         width: '30%',
         height: '20%',
         margin: 10,
