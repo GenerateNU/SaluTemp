@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS dosage;
-DROP TYPE IF EXISTS weekday;
 DROP TABLE IF EXISTS medication_constraint;
 DROP TABLE IF EXISTS alert;
 DROP TABLE IF EXISTS status_report;
