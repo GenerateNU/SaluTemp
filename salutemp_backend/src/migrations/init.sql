@@ -153,19 +153,6 @@ VALUES
   (5, 5, '2023-01-05 16:30:00', 'High Humidity', 'HUMIDITY'),
   (6, 3, '2023-01-03 12:45:00', 'High Humidity', 'HUMIDITY');
 
--- Insert sample data into "status_report" table
-INSERT INTO status_report (event_time, stored_medication_id, temperature, humidity, light)
-VALUES
-  ('2023-01-01 08:00:00', 1, 25.0, 49.0, 280),
-  ('2023-12-05 13:45:00', 1, 21.5, 43.0, 180),
-  ('2023-12-05 22:30:00', 1, 21.5, 49.0, 180),
-  ('2023-12-06 11:30:00', 1, 21.5, 47.0, 180),
-  ('2023-12-06 22:30:00', 1, 21.5, 48.0, 180),
-  ('2023-01-02 10:30:00', 2, 21.5, 38.0, 180),
-  ('2023-01-03 12:45:00', 3, 26.0, 58.0, 380),
-  ('2023-01-04 14:15:00', 4, 22.5, 44.0, 240),
-  ('2023-01-05 16:30:00', 5, 24.0, 53.0, 330);
-
 -- Insert sample data into "medication_constraint" table
 -- Insert additional sample data into "medication_constraint" table for all medications
 INSERT INTO medication_constraint (stored_medication_id, condition_type, max_threshold, min_threshold, duration)

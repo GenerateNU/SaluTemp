@@ -36,3 +36,36 @@ export type MedicationConstraint = {
   min_threshold: number;
   duration: string;
 };
+
+export type statusReport = {
+  event_time: string;
+  stored_medication_id: number,
+  temperature: number,
+  humidity: number,
+  light: number;
+  };
+
+export type storedMedication = {
+	stored_medication_id: number,
+	medication_id:       number,
+	user_id:             number,
+	current_temperature: number,
+	current_humidity:    number,
+	current_light:       number,
+}
+
+export type medicationConstraint = {
+  stored_medication_id: number,
+  condition_type: string,
+  max_threshold:  number,
+  min_threshold:  number,
+  duration: string
+}
+
+export type alert = {
+  warning_id:           int,
+  stored_medication_id: int,
+  warning_timestamp:    string,
+  warning_description:  string,
+  condition_type:       string 
+}
