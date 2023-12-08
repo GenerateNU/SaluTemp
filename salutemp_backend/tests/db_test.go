@@ -491,7 +491,7 @@ func TestStoredMed(t *testing.T) {
 		newStoredMedication := model.StoredMedication{
 			StoredMedicationID: 2,
 			MedicationID:       301,
-			UserID:             200,
+			UserID:             "200",
 			CurrentTemperature: 25.5,
 			CurrentHumidity:    60.0,
 			CurrentLight:       300.0,
@@ -535,7 +535,7 @@ func TestStoredMed(t *testing.T) {
 		updatedStoredMedication := model.StoredMedication{
 			StoredMedicationID: 2,
 			MedicationID:       301,
-			UserID:             200,
+			UserID:             "200",
 			CurrentTemperature: 30.0,
 			CurrentHumidity:    50.0,
 			CurrentLight:       250.0,
@@ -889,7 +889,7 @@ func TestMedicationConstraintAPI(t *testing.T) {
 		a.NilError(t, err, "Error unmarshaling JSON response")
 
 		// Check if the retrieved constraint matches the expected data
-		assert.Equal(t, 301, retrievedConstraint.MedicationID)
+		assert.Equal(t, 301, retrievedConstraint.StoredMedicationID)
 		assert.Equal(t, "TEMPERATURE", retrievedConstraint.ConditionType)
 		assert.Equal(t, 90.00, retrievedConstraint.MaxThreshold)
 		assert.Equal(t, 50.00, retrievedConstraint.MinThreshold)
@@ -917,11 +917,11 @@ func TestMedicationConstraintAPI(t *testing.T) {
 
 		// Prepare a new medication constraint to add
 		newConstraint := model.MedicationConstraint{
-			MedicationID:  305,
-			ConditionType: "HUMIDITY",
-			MaxThreshold:  15.0,
-			MinThreshold:  7.0,
-			Duration:      "2 weeks",
+			StoredMedicationID: 305,
+			ConditionType:      "HUMIDITY",
+			MaxThreshold:       15.0,
+			MinThreshold:       7.0,
+			Duration:           "2 weeks",
 		}
 
 		// Marshal the new constraint to JSON
@@ -938,7 +938,7 @@ func TestMedicationConstraintAPI(t *testing.T) {
 
 		// Retrieve the newly added constraint
 		w = httptest.NewRecorder()
-		req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/medicationconstraints/%d/%s", newConstraint.MedicationID, newConstraint.ConditionType), nil)
+		req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/medicationconstraints/%d/%s", newConstraint.StoredMedicationID, newConstraint.ConditionType), nil)
 		router.ServeHTTP(w, req)
 
 		// Check for HTTP Status OK (200)
@@ -949,7 +949,7 @@ func TestMedicationConstraintAPI(t *testing.T) {
 		a.NilError(t, err, "Error unmarshaling JSON response")
 
 		// Check if the retrieved constraint matches the expected data
-		assert.Equal(t, newConstraint.MedicationID, retrievedConstraint.MedicationID)
+		assert.Equal(t, newConstraint.StoredMedicationID, retrievedConstraint.StoredMedicationID)
 		assert.Equal(t, newConstraint.ConditionType, retrievedConstraint.ConditionType)
 		assert.Equal(t, newConstraint.MaxThreshold, retrievedConstraint.MaxThreshold)
 		assert.Equal(t, newConstraint.MinThreshold, retrievedConstraint.MinThreshold)
@@ -959,11 +959,11 @@ func TestMedicationConstraintAPI(t *testing.T) {
 	t.Run("TestEditAndRetrieveMedicationConstraint", func(t *testing.T) {
 		// Prepare the updated medication constraint data
 		updatedConstraint := model.MedicationConstraint{
-			MedicationID:  305,
-			ConditionType: "HUMIDITY",
-			MaxThreshold:  20.0,
-			MinThreshold:  10.0,
-			Duration:      "3 weeks",
+			StoredMedicationID: 305,
+			ConditionType:      "HUMIDITY",
+			MaxThreshold:       20.0,
+			MinThreshold:       10.0,
+			Duration:           "3 weeks",
 		}
 
 		// Marshal the updated constraint to JSON
@@ -971,7 +971,7 @@ func TestMedicationConstraintAPI(t *testing.T) {
 		a.NilError(t, err, "Error marshaling JSON request body")
 
 		// Edit the medication constraint
-		editRequest, _ := http.NewRequest("PUT", fmt.Sprintf("/v1/medicationconstraints/%d/%s", updatedConstraint.MedicationID, updatedConstraint.ConditionType), bytes.NewReader(updatedPayload))
+		editRequest, _ := http.NewRequest("PUT", fmt.Sprintf("/v1/medicationconstraints/%d/%s", updatedConstraint.StoredMedicationID, updatedConstraint.ConditionType), bytes.NewReader(updatedPayload))
 		editResponseRecorder := httptest.NewRecorder()
 		router.ServeHTTP(editResponseRecorder, editRequest)
 
@@ -979,7 +979,7 @@ func TestMedicationConstraintAPI(t *testing.T) {
 		assert.Equal(t, http.StatusOK, editResponseRecorder.Code)
 
 		// Retrieve the edited constraint
-		retrieveRequest, _ := http.NewRequest("GET", fmt.Sprintf("/v1/medicationconstraints/%d/%s", updatedConstraint.MedicationID, updatedConstraint.ConditionType), nil)
+		retrieveRequest, _ := http.NewRequest("GET", fmt.Sprintf("/v1/medicationconstraints/%d/%s", updatedConstraint.StoredMedicationID, updatedConstraint.ConditionType), nil)
 		retrieveResponseRecorder := httptest.NewRecorder()
 		router.ServeHTTP(retrieveResponseRecorder, retrieveRequest)
 
@@ -991,7 +991,7 @@ func TestMedicationConstraintAPI(t *testing.T) {
 		a.NilError(t, err, "Error unmarshaling JSON response")
 
 		// Check if the retrieved constraint's data matches the updated data
-		assert.Equal(t, updatedConstraint.MedicationID, retrievedConstraint.MedicationID)
+		assert.Equal(t, updatedConstraint.StoredMedicationID, retrievedConstraint.StoredMedicationID)
 		assert.Equal(t, updatedConstraint.ConditionType, retrievedConstraint.ConditionType)
 		assert.Equal(t, updatedConstraint.MaxThreshold, retrievedConstraint.MaxThreshold)
 		assert.Equal(t, updatedConstraint.MinThreshold, retrievedConstraint.MinThreshold)
@@ -1013,13 +1013,13 @@ func TestMedicationConstraintAPI(t *testing.T) {
 
 		// Check that there are initially 2 constraints in the database
 		assert.Equal(t, 2, len(initialConstraints))
-		assert.Equal(t, 301, initialConstraints[0].MedicationID)
+		assert.Equal(t, 301, initialConstraints[0].StoredMedicationID)
 		assert.Equal(t, "TEMPERATURE", initialConstraints[0].ConditionType)
 		assert.Equal(t, 90.0, initialConstraints[0].MaxThreshold)
 		assert.Equal(t, 50.0, initialConstraints[0].MinThreshold)
 		assert.Equal(t, "2 Days, 2 Hours, 10 Minutes", initialConstraints[0].Duration)
 
-		assert.Equal(t, 305, initialConstraints[1].MedicationID)
+		assert.Equal(t, 305, initialConstraints[1].StoredMedicationID)
 		assert.Equal(t, "HUMIDITY", initialConstraints[1].ConditionType)
 		assert.Equal(t, 20.0, initialConstraints[1].MaxThreshold)
 		assert.Equal(t, 10.0, initialConstraints[1].MinThreshold)
@@ -1050,7 +1050,7 @@ func TestMedicationConstraintAPI(t *testing.T) {
 		assert.Equal(t, 1, len(finalConstraints))
 
 		// Verify that the deleted constraint is not present in the final constraints list
-		assert.Equal(t, 301, finalConstraints[0].MedicationID)
+		assert.Equal(t, 301, finalConstraints[0].StoredMedicationID)
 		assert.Equal(t, "TEMPERATURE", finalConstraints[0].ConditionType)
 		assert.Equal(t, 90.0, finalConstraints[0].MaxThreshold)
 		assert.Equal(t, 50.0, finalConstraints[0].MinThreshold)

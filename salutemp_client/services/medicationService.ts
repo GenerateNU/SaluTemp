@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Medication, Status } from '../types';
 
 import { API_URL } from './apiLinks';
 
@@ -8,33 +7,21 @@ export const findMedicationName = async (medication_name: string) => {
   return response.data;
 };
 
-export const getUserMedications = async (id: string) => {
-  // TODO: update this with an actual api request
-  const medications: Medication[] = [
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Warning },
-    { name: 'temp', status: Status.Bad },
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Bad },
-    { name: 'temp', status: Status.Warning },
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Warning },
-    { name: 'temp', status: Status.Bad },
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Bad },
-    { name: 'temp', status: Status.Warning },
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Warning },
-    { name: 'temp', status: Status.Bad },
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Good },
-    { name: 'temp', status: Status.Bad },
-    { name: 'temp', status: Status.Warning }
-  ];
+export const getAllUserMedicationsWithConstraint = async (userId: string) => {
+  const response = await axios.get(`${API_URL}/v1/allusermedicationswithconstraint/${userId}`);
+  return response.data;
+};
 
-  return medications;
+export const getMedicationStatus = async (medId: string) => {
+  const response = await axios.get(`${API_URL}/v1/statusreports/recent/${medId}`);
+  return response.data;
+};
+
+export const getMedicationConstraint = async (medId: string, constraint: string) => {
+  const response = await axios.get(
+    `${API_URL}/v1/medicationconstraints/${medId}/${constraint.toUpperCase()}`
+  );
+  return response.data;
 };
 
 // *********** THIS IS SAMPLE CODE TAKEN FROM REMO - WILL NEED TO EDIT TO FIT OUT SPECIFICATIONS

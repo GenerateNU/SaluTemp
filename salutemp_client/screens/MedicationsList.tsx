@@ -1,33 +1,139 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Text, View, Button, TouchableHighlight, ScrollView } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation, StackActions } from '@react-navigation/native';
+import { StyleSheet, Text, View, TouchableHighlight, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import colors from '../config/colors';
-import { Medication, Status } from '../types';
-import { getUserMedications } from '../services/medicationService';
+import { getAllUserMedicationsWithConstraint } from '../services/medicationService';
 import InformationCard from '../components/InformationCard';
 import { StackNavigation } from '../App';
 import Header from '../components/Header';
 import AddIcon from '../assets/header-icons/add.svg';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Status } from '../types/medicationTypes';
+import { StoredMedicationWithConstraint } from '../types';
+import { FIREBASE_AUTH } from '../firebaseConfig';
+
+interface MedicationStatus {
+  medicationId: number;
+  status: Status;
+}
+
+export const getStatusForMedicationConstraint = (
+  current: number,
+  minThreshold: number,
+  maxThreshold: number
+) => {
+  if (maxThreshold == 0 && minThreshold == 0) {
+    return Status.NoStatus;
+  }
+
+  if (current > maxThreshold + 2 || current < minThreshold + 2) {
+    return Status.Bad;
+  }
+  if (current + 1 > maxThreshold || current - 1 < minThreshold) {
+    return Status.Warning;
+  }
+
+  return Status.Good;
+};
 
 function MedicationsList() {
   const { navigate } = useNavigation<StackNavigation>();
-  const [medicationsList, setMedicationsList] = React.useState<Medication[]>([]);
+  const [medicationsTemperatureList, setMedicationsTemperatureList] = React.useState<
+    StoredMedicationWithConstraint[]
+  >([]);
+  const [medicationStatus, setMedicationStatus] = React.useState<MedicationStatus[]>([]);
 
   React.useEffect(() => {
-    // TODO: Do I need an ID here?
-    getUserMedications('1').then((ml) => setMedicationsList(ml));
+    //const userId = FIREBASE_AUTH.currentUser?.uid;
+    const userId = '1';
+    getAllUserMedicationsWithConstraint(userId).then((ml) => setMedicationsTemperatureList(ml));
   }, []);
+
+  React.useEffect(() => {
+    setMedicationStatus([]);
+
+    medicationsTemperatureList.forEach((mt) => {
+      const status = getStatus(
+        mt.current_temperature,
+        mt.temp_min_threshold,
+        mt.temp_max_threshold,
+        mt.current_light,
+        mt.light_min_threshold,
+        mt.light_max_threshold,
+        mt.current_humidity,
+        mt.humidity_min_threshold,
+        mt.humidity_max_threshold
+      );
+
+      medicationStatus.push({ medicationId: mt.medication_id, status: status });
+      setMedicationStatus(medicationStatus);
+    });
+  }, [medicationsTemperatureList]);
+
+  const getStatus = (
+    mt: number,
+    mt1: number,
+    mt2: number,
+    mh: number,
+    mh1: number,
+    mh2: number,
+    ml: number,
+    ml1: number,
+    ml2: number
+  ) => {
+    const mts = getStatusForMedicationConstraint(mt, mt1, mt2);
+    const mhs = getStatusForMedicationConstraint(mh, mh1, mh2);
+    const mls = getStatusForMedicationConstraint(ml, ml1, ml2);
+
+    if (mts == Status.Bad || mts == Status.Warning) return mts;
+    if (mhs == Status.Bad || mhs == Status.Warning) return mhs;
+    if (mls == Status.Bad || mls == Status.Warning) return mls;
+    return Status.Good;
+  };
 
   return (
     <View style={styles.container}>
       <Header title="Medications" rightIcon={<AddIcon />} rightAction={() => navigate('New')} />
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.medicationsList}>
-        {medicationsList &&
-          medicationsList.map((ml, index) => {
+        {medicationsTemperatureList &&
+          medicationsTemperatureList.map((mt, index) => {
             return (
-              <InformationCard key={index} status={ml.status}>
+              <InformationCard
+                key={index}
+                status={
+                  medicationStatus.find((ms) => ms.medicationId == mt.medication_id)?.status ??
+                  Status.Bad
+                }
+                cardTouchAction={() =>
+                  navigate('MedicationOverview', {
+                    id: mt.medication_id,
+                    storedMedId: mt.stored_medication_id,
+                    temperature: mt.current_temperature,
+                    light: mt.current_light,
+                    humidity: mt.current_humidity,
+                    medName: mt.medication_name,
+                    status:
+                      medicationStatus.find((ms) => ms.medicationId == mt.medication_id)?.status ??
+                      Status.Bad,
+                    statusTemp: getStatusForMedicationConstraint(
+                      mt.current_temperature,
+                      mt.temp_min_threshold,
+                      mt.temp_max_threshold
+                    ),
+                    statusLight: getStatusForMedicationConstraint(
+                      mt.current_light,
+                      mt.light_min_threshold,
+                      mt.light_max_threshold
+                    ),
+                    statusHumidity: getStatusForMedicationConstraint(
+                      mt.current_humidity,
+                      mt.humidity_min_threshold,
+                      mt.humidity_max_threshold
+                    )
+                  })
+                }
+              >
                 <TouchableHighlight style={styles.addPhoto}>
                   <MaterialIcons
                     style={{ backgroundColor: colors.grey }}
@@ -37,8 +143,12 @@ function MedicationsList() {
                 </TouchableHighlight>
                 <View style={styles.preview}>
                   <View style={{ gap: 5 }}>
-                    <Text style={{ fontSize: 18 }}>{ml.name}</Text>
-                    <Text style={styles.subtitle}>Status: {Status[ml.status]}</Text>
+                    <Text style={{ fontSize: 18 }}>{mt.medication_name}</Text>
+                    <Text style={styles.subtitle}>
+                      Status:
+                      {medicationStatus.find((ms) => ms.medicationId === mt.medication_id)
+                        ?.status ?? Status.Bad}
+                    </Text>
                   </View>
                 </View>
               </InformationCard>
