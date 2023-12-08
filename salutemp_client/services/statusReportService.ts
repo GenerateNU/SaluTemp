@@ -4,6 +4,7 @@ import axios, { Axios } from "axios";
 import { API_URL } from "./apiLinks";
 
 const userId = "2";
+const expoPushToken = axios.get(`${API_URL}/v1/expo_notification_tokens/${userId}`)
 
 class statusReportService {
     async statusReports(): Promise<void> {        
@@ -39,11 +40,13 @@ class statusReportService {
                             body = "Heads up! Your medication has exceeded its maximum recommended temperature!"
                             console.warn(body)
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            const res = sendPushNotification(body);
                         }
                         if (temperature < constraint.min_threshold) {
                             body = "Heads up! Your medication has exceeded its minimum recommended temperature!"
                             console.warn(body)
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            const res = sendPushNotification(body);
                         }
                         break;
                     case "HUMIDITY":
@@ -52,11 +55,13 @@ class statusReportService {
                             body = "Heads up! Your medication has exceeded its maximum recommended humidity!"
                             console.warn(body)
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            const res = sendPushNotification(body);
                         }
                         if (humidity < constraint.min_threshold) {
                             body = "Heads up! Your medication has exceeded its minimum recommended humidity!"
                             console.warn(body)
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            const res = sendPushNotification(body);
                         }
                         break;
                     case "LIGHT_EXPOSURE":
@@ -65,6 +70,7 @@ class statusReportService {
                             body = "Heads up! Your medication has exceeded its maximum recommended light exposure!"
                             console.warn(body)
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            const res = sendPushNotification(body);
                         }
                         break;
                 }
@@ -86,4 +92,24 @@ function buildAlert(condition_type: any, report: statusReport, body: string): al
     }
 
     return alert
+}
+
+async function sendPushNotification(body: string) {
+    const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: 'Salutemp',
+        body: body,
+        data: { someData: 'alert notification' },
+      };
+
+      await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Accept-encoding': 'gzip, deflate',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
 }
