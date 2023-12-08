@@ -44,6 +44,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="MedList" options={{ headerShown: false }} component={Tabs} />
         <Stack.Screen
           name="Landing"
           component={Landing}
@@ -100,7 +101,6 @@ export default function App() {
             headerShown: true
           }}
         />
-        <Stack.Screen name="MedList" options={{ headerShown: false }} component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

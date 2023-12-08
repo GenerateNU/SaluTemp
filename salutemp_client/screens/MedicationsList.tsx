@@ -42,34 +42,12 @@ function MedicationsList() {
   const [medicationsTemperatureList, setMedicationsTemperatureList] = React.useState<
     StoredMedicationWithConstraint[]
   >([]);
-  const [medicationStatus, setMedicationStatus] = React.useState<MedicationStatus[]>([]);
 
   React.useEffect(() => {
     //const userId = FIREBASE_AUTH.currentUser?.uid;
     const userId = '1';
     getAllUserMedicationsWithConstraint(userId).then((ml) => setMedicationsTemperatureList(ml));
   }, []);
-
-  React.useEffect(() => {
-    setMedicationStatus([]);
-
-    medicationsTemperatureList.forEach((mt) => {
-      const status = getStatus(
-        mt.current_temperature,
-        mt.temp_min_threshold,
-        mt.temp_max_threshold,
-        mt.current_light,
-        mt.light_min_threshold,
-        mt.light_max_threshold,
-        mt.current_humidity,
-        mt.humidity_min_threshold,
-        mt.humidity_max_threshold
-      );
-
-      medicationStatus.push({ medicationId: mt.medication_id, status: status });
-      setMedicationStatus(medicationStatus);
-    });
-  }, [medicationsTemperatureList]);
 
   const getStatus = (
     mt: number,
@@ -98,13 +76,21 @@ function MedicationsList() {
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.medicationsList}>
         {medicationsTemperatureList &&
           medicationsTemperatureList.map((mt, index) => {
+            const status = getStatus(
+              mt.current_temperature,
+              mt.temp_min_threshold,
+              mt.temp_max_threshold,
+              mt.current_light,
+              mt.light_min_threshold,
+              mt.light_max_threshold,
+              mt.current_humidity,
+              mt.humidity_min_threshold,
+              mt.humidity_max_threshold
+            );
             return (
               <InformationCard
                 key={index}
-                status={
-                  medicationStatus.find((ms) => ms.medicationId == mt.medication_id)?.status ??
-                  Status.Bad
-                }
+                status={status}
                 cardTouchAction={() =>
                   navigate('MedicationOverview', {
                     id: mt.medication_id,
@@ -113,9 +99,7 @@ function MedicationsList() {
                     light: mt.current_light,
                     humidity: mt.current_humidity,
                     medName: mt.medication_name,
-                    status:
-                      medicationStatus.find((ms) => ms.medicationId == mt.medication_id)?.status ??
-                      Status.Bad,
+                    status: status,
                     statusTemp: getStatusForMedicationConstraint(
                       mt.current_temperature,
                       mt.temp_min_threshold,
@@ -146,8 +130,7 @@ function MedicationsList() {
                     <Text style={{ fontSize: 18 }}>{mt.medication_name}</Text>
                     <Text style={styles.subtitle}>
                       Status:
-                      {medicationStatus.find((ms) => ms.medicationId === mt.medication_id)
-                        ?.status ?? Status.Bad}
+                      {status}
                     </Text>
                   </View>
                 </View>

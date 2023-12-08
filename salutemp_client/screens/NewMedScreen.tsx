@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableHighlight,
-  TextInput,
-  ScrollView
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, TextInput, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
@@ -240,7 +232,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: 10
+    marginTop: 30,
+    marginBottom: 30
   },
 
   toggleButton: {
