@@ -11,7 +11,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 // ^ see authService and userContext
 
-async function registerForPushNotificationsAsync() /*: Promise<string | null> */ {
+export const registerForPushNotificationsAsync = async () => {  
 	// notifications only work on physical devices
 	if (!Device.isDevice) {
 		alert(
