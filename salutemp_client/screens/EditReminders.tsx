@@ -15,6 +15,9 @@ const mockEditReminders: ReminderItem[] = [
   // ... more reminders
 ];
 
+// logic to connect indivdual reminders with their own edit screen goes here
+// connect to example screen for accutane EditReminderScreen.tsx
+
 const EditRemindersScreen: React.FC = () => {
   const renderItem = ({ item }: { item: ReminderItem }) => (
     <View style={styles.itemContainer}>
