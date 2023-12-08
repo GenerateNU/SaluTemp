@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import Graph from './Graph';
 import StatusBar from './StatusBar';
 import { Status, MedOverviewTypeEnum, getStatusColors } from '../../types/medicationTypes';
-import { getMedicationConstraint, getMedicationStatus } from '../../services/medicationService';
+import { getMedicationConstraint } from '../../services/medicationService';
 import { MedicationConstraint, StatusReport } from '../../types';
 interface MedicationInfo {
   status: Status;

@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableHighlight,
-  TextInput,
-  ScrollView
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, TextInput, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
@@ -27,6 +19,10 @@ const NewMedScreen = () => {
   const [minHumid, setMinHumid] = useState('');
   const [maxLight, setMaxLight] = useState('');
   const [minLight, setMinLight] = useState('');
+
+  function handleSubmit(): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <View style={styles.container}>
@@ -131,7 +127,7 @@ const NewMedScreen = () => {
             </View>
           </View>
 
-          <TouchableHighlight>
+          <TouchableHighlight onPress={() => handleSubmit()}>
             <View style={styles.confirmButton}>
               <Text style={styles.titleLight}>Confirm</Text>
             </View>
@@ -240,7 +236,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: 10
+    marginTop: 30,
+    marginBottom: 30
   },
 
   toggleButton: {
