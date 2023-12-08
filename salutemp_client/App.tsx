@@ -15,6 +15,10 @@ import { Text, StyleSheet } from 'react-native';
 import ReminderIcon from './assets/footer-icons/reminder.svg';
 import HomeIcon from './assets/footer-icons/home.svg';
 import BluetoothIcon from './assets/footer-icons/bluetooth.svg';
+import Landing from './screens/Landing';
+
+import ScanBarcode from './screens/ScanBarcode';
+import ScanReviewScreen from './screens/ScanReviewScreen';
 
 import ScanBarcode from './screens/ScanBarcode';
 import ScanReviewScreen from './screens/ScanReviewScreen';
@@ -43,7 +47,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="MedList" options={{ headerShown: false }} component={Tabs} />
+        <Stack.Screen 
+          name='Landing' 
+          component={Landing} 
+          options={{
+            title: 'SaluTemp'
+          }}
+        />
         <Stack.Screen
           name="Email"
           component={Email}
@@ -93,6 +103,7 @@ export default function App() {
             headerShown: true
           }}
         />
+        <Stack.Screen name="MedList" options={{ headerShown: false }} component={Tabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

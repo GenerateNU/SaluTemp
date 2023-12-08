@@ -30,6 +30,7 @@
     "react-native-svg-transformer": "^1.1.0",
     "axios": "^1.6.1",
     "expo-notifications": "^0.23.0",
+    "undefined": "react-native-svg/lib/typescript/elements/Image",
     "victory-native": "^36.6.12"
   },
   "devDependencies": {
