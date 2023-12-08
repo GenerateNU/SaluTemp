@@ -48,7 +48,7 @@ const Password = () => {
 
     console.log(firstName + " " + lastName);
 
-    await axios.post(`${API_URL}v1/addusers`, {
+    await axios.post(`${API_URL}/v1/addusers`, {
       "UserID": id,
       "FirstName": firstName,
       "LastName": lastName,
