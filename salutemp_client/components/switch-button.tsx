@@ -27,15 +27,15 @@ function CustomSwitch({
   };
 
   return (
-    <View>
+    <View style={{ paddingTop: 10 }}>
       <View
         style={{
           height: 44,
-          width: 215,
+          width: 315,
           backgroundColor: colors.lightNeutral,
           borderRadius: getRoundCorner ? 25 : 0,
           borderWidth: 1,
-          borderColor: selectionColor,
+          borderColor: colors.lightNeutral,
           flexDirection: 'row',
           justifyContent: 'center',
           padding: 2
@@ -55,7 +55,9 @@ function CustomSwitch({
         >
           <Text
             style={{
-              color: 'black'
+              color: 'black',
+              fontWeight: '500',
+              fontSize: 15
             }}
           >
             {option1}
@@ -75,7 +77,9 @@ function CustomSwitch({
         >
           <Text
             style={{
-              color: 'black'
+              color: 'black',
+              fontWeight: '500',
+              fontSize: 15
             }}
           >
             {option2}
