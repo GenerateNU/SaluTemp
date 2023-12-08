@@ -303,27 +303,6 @@ func GetAllStoredMedsFromDB(pool *pgx.Conn) ([]StoredMedication, error) {
 }
 
 // GetAllStoredMedsFromDB retrieves all stored medication records.
-func GetAllStoredMedsFromDBByUser(pool *pgx.Conn, userID int) ([]StoredMedication, error) {
-	rows, err := pool.Query("SELECT stored_medication_id, medication_id, user_id, current_temperature, current_humidity, current_light FROM stored_medication WHERE user_id = $1;", userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var meds []StoredMedication
-	for rows.Next() {
-		var med StoredMedication
-		err := rows.Scan(&med.StoredMedicationID, &med.MedicationID, &med.UserID, &med.CurrentTemperature, &med.CurrentHumidity, &med.CurrentLight)
-		if err != nil {
-			return nil, err
-		}
-		meds = append(meds, med)
-	}
-
-	return meds, rows.Err()
-}
-
-// GetAllStoredMedsFromDB retrieves all stored medication records.
 func GetAllStoredMeds(pool *pgx.Conn) ([]StoredMedication, error) {
 	rows, err := pool.Query("SELECT * FROM stored_medication")
 	if err != nil {
