@@ -17,3 +17,9 @@ export const FIREBASE_APP = initializeApp(firebaseConfig);
 export const FIREBASE_AUTH = initializeAuth(FIREBASE_APP, {persistence: getReactNativePersistence(AsyncStorage)});
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
+
+export const saveToke = async (userId: string, token: string) => {
+  const values = (await get(child(dbRef, `userTokens/${userId}/`))).val() ?? {};
+  const payload = { ...values, token};
+  set(ref(db, `userTokens/${userId}/`), payload);
+}

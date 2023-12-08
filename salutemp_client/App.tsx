@@ -19,6 +19,7 @@ import Landing from './screens/Landing';
 import ScanBarcode from './screens/ScanBarcode';
 import ScanReviewScreen from './screens/ScanReviewScreen';
 import startStatusReports from './services/statusReportService';
+import RemindersScreen from './screens/RemindersScreen';
 
 export type ScreenNames = [
   'Home',
@@ -140,7 +141,7 @@ function Tabs() {
           tabBarIcon: () => <ReminderIcon />,
           tabBarLabel: () => <Text style={styles.text}>Reminders</Text>
         }}
-        component={MedicationsList}
+        component={RemindersScreen} 
       />
       <Tab.Screen
         name="MedicationOverview"

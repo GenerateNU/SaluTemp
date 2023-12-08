@@ -72,7 +72,24 @@ function MedicationsList() {
 
   return (
     <View style={styles.container}>
-      <Header title="Medications" rightIcon={<AddIcon />} rightAction={() => navigate('New')} />
+      <Header
+        title="Medications"
+        rightIcon={<AddIcon />}
+        rightAction={() => navigate('New')}
+        leftIcon={
+          <TouchableHighlight onPress={() => setModalVisible(true)}>
+            <MaterialIcons name="notifications" size={28} color={colors.white} />
+          </TouchableHighlight>
+        }
+      />
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <NotificationsScreen onClose={() => setModalVisible(false)} />
+      </Modal>
       <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.medicationsList}>
         {medicationsTemperatureList &&
           medicationsTemperatureList.map((mt, index) => {
