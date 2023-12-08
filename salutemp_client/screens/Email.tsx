@@ -29,7 +29,7 @@ const Email = () => {
   }, []);
 
   const getUserFromApi = async () => {
-    await axios.get(`${API_URL}v1/userexists/${email.toLocaleLowerCase()}`
+    await axios.get(`${API_URL}/v1/userexists/${email.toLocaleLowerCase()}`
     ).then((response) => {
       if (response.data["user"] == null)
       {
