@@ -153,24 +153,74 @@ VALUES
   (5, 5, '2023-01-05 16:30:00', 'High Humidity', 'HUMIDITY'),
   (6, 3, '2023-01-03 12:45:00', 'High Humidity', 'HUMIDITY');
 
--- Insert sample data into "status_report" table
-INSERT INTO status_report (event_time, stored_medication_id, temperature, humidity, light)
-VALUES
-  ('2023-01-01 08:00:00', 1, 25.0, 49.0, 290),
-  ('2023-01-02 10:30:00', 2, 21.5, 38.0, 180),
-  ('2023-01-03 12:45:00', 3, 26.0, 58.0, 380),
-  ('2023-01-04 14:15:00', 4, 22.5, 44.0, 240),
-  ('2023-01-05 16:30:00', 5, 24.0, 53.0, 330);
-
 -- Insert sample data into "medication_constraint" table
+-- Insert additional sample data into "medication_constraint" table for all medications
 INSERT INTO medication_constraint (stored_medication_id, condition_type, max_threshold, min_threshold, duration)
 VALUES
+  -- Medication A
   (1, 'TEMPERATURE', 30.0, 20.0, '1 day'),
-  (2, 'HUMIDITY', 45.0, 30.0, '2 days'),
-  (3, 'LIGHT_EXPOSURE', 500.0, 300.0, '3 days'),
-  (4, 'TEMPERATURE', 28.0, 18.0, '1 day'),
-  (5, 'HUMIDITY', 50.0, 35.0, '2 days'),
-  (3, 'TEMPERATURE', 50.0, 35.0, '2 days');
+  (1, 'HUMIDITY', 55.0, 40.0, '2 days'),
+  (1, 'LIGHT_EXPOSURE', 400.0, 250.0, '3 days'),
+
+  -- Medication B
+  (2, 'TEMPERATURE', 28.0, 18.0, '1 day'),
+  (2, 'HUMIDITY', 50.0, 35.0, '2 days'),
+  (2, 'LIGHT_EXPOSURE', 420.0, 20.0, '3 days'),
+
+  -- Medication C
+  (3, 'TEMPERATURE', 26.0, 16.0, '1 day'),
+  (3, 'HUMIDITY', 58.0, 42.0, '2 days'),
+  (3, 'LIGHT_EXPOSURE', 450.0, 280.0, '3 days'),
+
+  -- Medication D
+  (4, 'TEMPERATURE', 27.0, 17.0, '1 day'),
+  (4, 'HUMIDITY', 45.0, 30.0, '2 days'),
+  (4, 'LIGHT_EXPOSURE', 430.0, 20.0, '3 days'),
+
+  -- Medication E
+  (5, 'TEMPERATURE', 29.0, 19.0, '1 day'),
+  (5, 'HUMIDITY', 53.0, 38.0, '2 days'),
+  (5, 'LIGHT_EXPOSURE', 410.0, 2.0, '3 days'),
+
+  
+  (6, 'TEMPERATURE', 26.5, 16.5, '1 day'),
+  (6, 'HUMIDITY', 49.0, 34.0, '2 days'),
+  (6, 'LIGHT_EXPOSURE', 410.0, 220.0, '3 days'),
+
+  (7, 'TEMPERATURE', 27.5, 17.5, '1 day'),
+  (7, 'HUMIDITY', 50.0, 35.0, '2 days'),
+  (7, 'LIGHT_EXPOSURE', 400.0, 250.0, '3 days'),
+
+  (8, 'TEMPERATURE', 29.0, 19.0, '1 day'),
+  (8, 'HUMIDITY', 51.0, 36.0, '2 days'),
+  (8, 'LIGHT_EXPOSURE', 420.0, 260.0, '3 days'),
+
+  (9, 'TEMPERATURE', 28.0, 18.0, '1 day'),
+  (9, 'HUMIDITY', 48.0, 33.0, '2 days'),
+  (9, 'LIGHT_EXPOSURE', 430.0, 240.0, '3 days'),
+
+  (10, 'TEMPERATURE', 26.0, 16.0, '1 day'),
+  (10, 'HUMIDITY', 47.0, 32.0, '2 days'),
+  (10, 'LIGHT_EXPOSURE', 450.0, 280.0, '3 days'),
+
+  (11, 'TEMPERATURE', 27.0, 17.0, '1 day'),
+  (11, 'HUMIDITY', 45.0, 30.0, '2 days'),
+  (11, 'LIGHT_EXPOSURE', 440.0, 270.0, '3 days'),
+
+  (12, 'TEMPERATURE', 29.0, 19.0, '1 day'),
+  (12, 'HUMIDITY', 53.0, 38.0, '2 days'),
+  (12, 'LIGHT_EXPOSURE', 410.0, 255.0, '3 days'),
+
+  (13, 'HUMIDITY', 46.0, 31.0, '2 days'),
+  (13, 'LIGHT_EXPOSURE', 420.0, 260.0, '3 days'),
+
+  (14, 'HUMIDITY', 49.0, 34.0, '2 days'),
+  (14, 'LIGHT_EXPOSURE', 400.0, 250.0, '3 days'),
+
+  (15, 'HUMIDITY', 50.0, 35.0, '2 days'),
+  (15, 'LIGHT_EXPOSURE', 410.0, 260.0, '3 days');
+
+
 
   -- Insert sample data into "expo_notification_token" table
 INSERT INTO expo_notification_token (expo_notification_token_id, user_id, device_token)

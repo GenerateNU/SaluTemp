@@ -15,7 +15,7 @@ type User struct {
 
 type UserDevice struct {
     UserDeviceID int    `json:"user_device_id"`
-    UserID       int    `json:"user_id"`
+    UserID       string    `json:"user_id"`
     DeviceID     string `json:"device_id"`
 }
 
@@ -28,7 +28,7 @@ type Medication struct {
 type StoredMedication struct {
     StoredMedicationID int     `json:"stored_medication_id"`
     MedicationID       int     `json:"medication_id"`
-    UserID             int     `json:"user_id"`
+    UserID             string     `json:"user_id"`
     CurrentTemperature float64 `json:"current_temperature"`
     CurrentHumidity    float64 `json:"current_humidity"`
     CurrentLight       float64 `json:"current_light"`
@@ -62,14 +62,22 @@ type StoredMedicationWithConstraint struct {
     StoredMedicationID int     `json:"stored_medication_id"`
     MedicationID       int     `json:"medication_id"`
     MedicationName     string  `json:"medication_name"`
-    Current            float64 `json:"current_"`
-    MaxThreshold       float64 `json:"max_threshold"`
-    MinThreshold       float64 `json:"min_threshold"`
-    Duration           string  `json:"duration"` 
+    CurrentTemperature float64 `json:"current_temperature"`
+    CurrentHumidity    float64 `json:"current_humidity"`
+    CurrentLight       float64 `json:"current_light"`
+    TempMaxThreshold       float64 `json:"temp_max_threshold"`
+    TempMinThreshold       float64 `json:"temp_min_threshold"`
+    LightMaxThreshold       float64 `json:"light_max_threshold"`
+    LightMinThreshold       float64 `json:"light_min_threshold"`
+    HumidityMaxThreshold       float64 `json:"humidity_max_threshold"`
+    HumidityMinThreshold       float64 `json:"humidity_min_threshold"`
+    HumidityDuration           string  `json:"humidity_duration"` 
+    TempDuration           string  `json:"temp_duration"` 
+    LightDuration           string  `json:"light_duration"` 
 }
 
 type ExpoNotificationToken struct {
 	ExpoNotificationTokenID int    `json:"expo_notification_token_id"`
-	UserID                  int    `json:"user_id"`
+	UserID                  string    `json:"user_id"`
 	DeviceToken             string `json:"device_token"`
 }

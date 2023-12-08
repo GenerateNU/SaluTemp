@@ -1,52 +1,58 @@
-import * as Notifications from 'expo-notifications';
+import * as Notification from 'expo-notifications';
 
-// Replace with API endpoint
-const API_ENDPOINT = 'https:...';
-// Replace with user ID
-const userId = 'user123';
+import * as Device from "expo-device";
+import { Platform } from "react-native";
+//import express from 'express';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-export async function registerForPushNotificationsAsync() {
-  let token;
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
+//const app = express();
+//const port = 8000;
 
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
+// ^ see authService and userContext
 
-  if (finalStatus !== 'granted') {
-    return;
-  }
+async function registerForPushNotificationsAsync() /*: Promise<string | null> */ {
+	// notifications only work on physical devices
+	if (!Device.isDevice) {
+		alert(
+			"Must use physical device for Push Notifications. Must be ios or android."
+		);
+		return null;
+	}
 
-  token = (await Notifications.getExpoPushTokenAsync()).data;
+	// ask user for notification permissions
+	const { status } = await Notification.requestPermissionsAsync();
+	if (status !== "granted") {
+		alert("Failed to get push token for push notification!");
+		return null;
+	}
 
-  // send token to backend
-  sendTokenToBackend(token);
+	// android needs notification channel with highest importance so notificaiton goes through always
+	if (Platform.OS === "android") {
+		Notification.setNotificationChannelAsync("default", {
+			name: "default",
+			importance: Notification.AndroidImportance.MAX,
+			// other notification settings that are customizable
+			// vibrationPattern: [0, 250, 250, 250],
+			// lightColor: '#FF231F7C',
+		});
+	}
 
-  return token;
+	// gets push notification token
+	const token = (await Notification.getExpoPushTokenAsync()).data;
+	console.log("ExpoPushToken: ", token);
+
+	return token;
 }
 
-export const sendTokenToBackend = async (token: string) => {
-  try {
-    const response = await fetch('http:...', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userId: 'yourUserId', // Replace with actual user ID
-        token
-      })
-    });
+const Notifications = () => {
+	const route = useRoute();
+	const navigation = useNavigation();
+	const [expoPushToken, setExpoPushToken] = useState("");
 
-    const data = await response.json();
-    if (response.ok) {
-      console.log(data.message);
-    } else {
-      throw new Error(data.message);
-    }
-  } catch (error) {
-    throw error;
-  }
-};
+	useEffect(() => {
+		registerForPushNotificationsAsync().then((token) => setExpoPushToken(token!));
+	}
+)}
+
+export default Notifications;
