@@ -64,7 +64,82 @@ function MedOverviewScreen() {
 
   React.useEffect(() => {
     ref.current?.scrollTo({ y: 0 });
-    getMedicationStatus(id).then((status) => setGraph(status));
+    //getMedicationStatus(id).then((status) => setGraph(status));
+    // Creating dummy data that matches the StatusReport type
+    const dummyData: StatusReport[] = [
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 1,
+        temperature: 22,
+        humidity: 45,
+        light: 300,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 2,
+        temperature: 25,
+        humidity: 50,
+        light: 350,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 3,
+        temperature: 32,
+        humidity: 60,
+        light: 500,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 4,
+        temperature: 40,
+        humidity: 20,
+        light: 200,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 5,
+        temperature: 55,
+        humidity: 80,
+        light: 800,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 6,
+        temperature: 75,
+        humidity: 35,
+        light: 450,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 7,
+        temperature: 90,
+        humidity: 10,
+        light: 100,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 8,
+        temperature: 85,
+        humidity: 95,
+        light: 950,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 9,
+        temperature: 45,
+        humidity: 55,
+        light: 550,
+      },
+      {
+        event_time: new Date().toISOString(),
+        stored_medication_id: 10,
+        temperature: 60,
+        humidity: 70,
+        light: 700,
+      },
+    ];
+    
+    setGraph(dummyData);
   }, [id]);
 
   const medStatus =

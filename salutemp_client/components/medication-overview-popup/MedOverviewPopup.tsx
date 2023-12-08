@@ -52,26 +52,27 @@ export default function MedOverviewPopup(props: MedOverviewPopupProps) {
   };
 
   const populateGraph = () => {
-    props.graph.forEach((g) => {
-      // const curr = new Date().setHours(new Date().getHours() - 5);
-      // const time = curr - new Date(g.event_time).getTime();
-      // graph?.push({
-      //   point: g.humidity,
-      //   time: time / 1000 / 60 / 60
-      // });
-      // setGraph(graph);
-      // Dummy data array
-      const dummyData = [
-        { time: 1, point: 10 },
-        { time: 2, point: 20 },
-        { time: 3, point: 30 },
-        { time: 4, point: 40 },
-        { time: 5, point: 50 },
-        // Add as many points as needed
-      ];
+    // props.graph.forEach((g) => {
+    //   const curr = new Date().setHours(new Date().getHours() - 5);
+    //   const time = curr - new Date(g.event_time).getTime();
+    //   graph?.push({
+    //     point: g.humidity,
+    //     time: time / 1000 / 60 / 60
+    //   });
+    //   setGraph(graph);
+    // });
 
-      setGraph(dummyData);
-    });
+    // Dummy data array
+    const dummyData = [
+      { time: 1, point: 10 },
+      { time: 2, point: 20 },
+      { time: 3, point: 30 },
+      { time: 4, point: 40 },
+      { time: 5, point: 50 },
+    ];
+
+    setGraph(dummyData);
+
   };
 
   return (
