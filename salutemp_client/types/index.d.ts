@@ -38,7 +38,7 @@ export type MedicationConstraint = {
 };
 
 export type statusReport = {
-  time: string;
+  event_time: string;
   stored_medication_id: number,
   temperature: number,
   humidity: number,
