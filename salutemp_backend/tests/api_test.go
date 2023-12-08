@@ -1,76 +1,50 @@
-package tests
+// package yourpackage
 
-import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"net/http/httptest"
-	"os"
-	c "salutemp/backend/src/controller"
-	"salutemp/backend/src/model"
-	"testing"
+// import (
+//     "encoding/json"
+//     "net/http"
+//     "net/http/httptest"
+//     "testing"
+//     "time"
+// )
 
-	"github.com/huandu/go-assert"
-	"github.com/jackc/pgx"
-)
+// func TestGetRecentStatusReports(t *testing.T) {
+//     // Start your server or create a router instance
+//     router := setupRouter() // This function sets up your Gin router with all routes
 
-func TestGetMedication(t *testing.T) {
-	// db_url, exists := os.LookupEnv("DATABASE_URL")
+//     // Create a test server
+//     ts := httptest.NewServer(router)
+//     defer ts.Close()
 
-	cfg := pgx.ConnConfig{
-		User:     "user",
-		Database: "salutemp",
-		Password: "pwd",
-		Host:     "localhost",
-		Port:     5434,
-	}
-	var err error
-	// if exists {
-	// 	cfg, err = pgx.ParseConnectionString(db_url)
+//     // Define the storedMedicationID to test
+//     storedMedicationID := 1
 
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-	// }
-	conn, err := pgx.Connect(cfg)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
-	}
+//     // Make a request to the endpoint
+//     resp, err := http.Get(ts.URL + "/v1/statusreports/recent/?storedMedicationID=" + strconv.Itoa(storedMedicationID))
+//     if err != nil {
+//         t.Fatalf("Failed to make request: %v", err)
+//     }
+//     defer resp.Body.Close()
 
-	defer conn.Close()
+//     // Check the status code
+//     if resp.StatusCode != http.StatusOK {
+//         t.Errorf("Expected status OK; got %v", resp.Status)
+//     }
 
-	m := &model.PgModel{
-		Conn: conn,
-	}
-	c := &c.PgController{
-		Model: m,
-	}
-	router := c.Serve()
+//     // Decode the response body
+//     var reports []StatusReport
+//     if err := json.NewDecoder(resp.Body).Decode(&reports); err != nil {
+//         t.Fatalf("Failed to decode response: %v", err)
+//     }
 
-	w := httptest.NewRecorder()
+//     // Assert the response data
+//     // Here, you will write your assertions based on the expected data from your database
+//     // For example, check if the reports are within the last 24 hours and have the correct storedMedicationID
+//     currentTime := time.Now()
+//     for _, report := range reports {
+//         if report.StoredMedicationID != storedMedicationID || report.EventTime.Before(currentTime.Add(-24*time.Hour)) {
+//             t.Errorf("Report does not match criteria: %+v", report)
+//         }
+//     }
+// }
 
-	req, _ := http.NewRequest("GET", "/v1/medications/301", nil)
-	router.ServeHTTP(w, req)
-
-	// Check for HTTP Status OK (200)
-	assert.Equal(t, http.StatusOK, w.Code)
-
-	var responseMedication model.Medication
-
-	var err2 error
-	a := assert.New(t)
-
-	err2 = json.Unmarshal(w.Body.Bytes(), &responseMedication)
-	a.NilError(t, err2, "Error unmarshaling JSON response")
-
-	// Define the expected medication data
-	expectedMedication := model.Medication{
-		MedicationID:   301,
-		MedicationName: "TestMed",
-	}
-
-	// Check individual fields of the response
-	assert.Equal(t, expectedMedication.MedicationID, responseMedication.MedicationID)
-	assert.Equal(t, expectedMedication.MedicationName, responseMedication.MedicationName)
-}

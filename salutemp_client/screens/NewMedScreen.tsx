@@ -1,122 +1,184 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Image, TouchableHighlight, TextInput, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableHighlight, TextInput, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-
-import colors from '../config/colors';
+import Header from '../components/Header';
 import { useNavigation } from '@react-navigation/native';
-
-
-interface NewMedScreenProps {
-  // Define any props if necessary
-}
+import LeftArrow from '../assets/header-icons/left-arrow.svg';
+import { StackNavigation } from '../App';
+import colors from '../config/colors';
+import CustomSwitch from '../components/switch-button';
 
 const NewMedScreen = () => {
-
-  const navigation = useNavigation();
+  const { goBack } = useNavigation<StackNavigation>();
+  const [medName, setMedName] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [date, setDate] = useState('');
+  const [maxTemp, setMaxTemp] = useState('');
+  const [minTemp, setMinTemp] = useState('');
+  const [maxHumid, setMaxHumid] = useState('');
+  const [minHumid, setMinHumid] = useState('');
+  const [maxLight, setMaxLight] = useState('');
+  const [minLight, setMinLight] = useState('');
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.titleAndChildren}>
-        <Text style={styles.title}>Medication Info</Text>
-        <View style={styles.medInfo}>
+    <View style={styles.container}>
+      <Header
+        title="Add New Medication"
+        leftIcon={<LeftArrow height={24} />}
+        leftAction={() => goBack()}
+      />
+      <ScrollView>
+        <View style={styles.infoContainer}>
+          <CustomSwitch
+            selectionMode={1}
+            roundCorner={true}
+            option1={'Scan'}
+            option2={'Manual'}
+            onSelectSwitch={() => {}}
+            selectionColor={'white'}
+          />
           <TouchableHighlight style={styles.addPhoto}>
-            <MaterialIcons name="add" size={50} color={colors.darkNeutral} />
+            <MaterialIcons name="add" size={40} color={colors.neutral} />
           </TouchableHighlight>
-          <View style={styles.nestedMedInfo}>
-            <Text>Medication Name</Text>
-            <TextInput style={styles.textInputThin}></TextInput>
-            <Text>Expiration Date</Text>
-            <TextInput style={styles.textInputThin}></TextInput>
+          <View style={styles.titleAndChildren}>
+            <Text style={styles.title}>Medication Info</Text>
+            <View style={styles.columnStyle}>
+              <Text>Medication Name</Text>
+              <TextInput
+                style={styles.textInputThinLong}
+                onChangeText={(text) => setMedName(text)}
+                value={medName}
+              ></TextInput>
+            </View>
+            <View style={styles.columns}>
+              <View style={styles.columnStyle}>
+                <Text>Nickname (Optional)</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setNickname(text)}
+                  value={nickname}
+                ></TextInput>
+              </View>
+              <View style={styles.columnStyle}>
+                <Text>Expiration Date</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  placeholder="mm / dd / yy"
+                  onChangeText={(text) => setDate(text)}
+                  value={date}
+                ></TextInput>
+              </View>
+            </View>
           </View>
-        </View>
-      </View>
 
-      <View style={styles.titleAndChildren}>
-        <Text>Notes</Text>
-        <TextInput style={styles.textInputWide}></TextInput>
-      </View>
-
-      <View style={styles.titleAndChildren}>
-        <Text style={styles.title}>Storage Conditions</Text>
-        <View style={styles.columns}>
-          <View style={styles.columnStyle}>
-            <Text>Max Temp</Text>
-            <TextInput style={styles.textInputThin}></TextInput>
-            <Text>Max Humidity</Text>
-            <TextInput style={styles.textInputThin}></TextInput>
-            <Text>Max Light</Text>
-            <TextInput style={styles.textInputThin}></TextInput>
+          <View style={styles.titleAndChildren}>
+            <Text>Notes</Text>
+            <TextInput style={styles.textInputWide}></TextInput>
           </View>
 
-          <View style={styles.columnStyle}>
-            <Text>Min Temp</Text>
-            <TextInput style={styles.textInputThin}></TextInput>
-            <Text>Min Humidity</Text>
-            <TextInput style={styles.textInputThin}></TextInput>
-            <Text>Min Light</Text>
-            <TextInput style={styles.textInputThin}></TextInput>
-          </View>
-        </View>
-      </View>
+          <View style={styles.titleAndChildren}>
+            <Text style={styles.title}>Storage Conditions</Text>
+            <View style={styles.columns}>
+              <View style={styles.columnStyle}>
+                <Text>Max Temp</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMaxTemp(text)}
+                  value={maxTemp}
+                ></TextInput>
+                <Text>Max Humidity</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMaxHumid(text)}
+                  value={maxHumid}
+                ></TextInput>
+                <Text>Max Light</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMaxLight(text)}
+                  value={maxLight}
+                ></TextInput>
+              </View>
 
-      <TouchableHighlight>
-        <View style={styles.confirmButton}>
-          <Text style={styles.titleLight}>Confirm</Text>
+              <View style={styles.columnStyle}>
+                <Text>Min Temp</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMinTemp(text)}
+                  value={minTemp}
+                ></TextInput>
+                <Text>Min Humidity</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMinHumid(text)}
+                  value={minHumid}
+                ></TextInput>
+                <Text>Min Light</Text>
+                <TextInput
+                  style={styles.textInputThin}
+                  onChangeText={(text) => setMinLight(text)}
+                  value={minLight}
+                ></TextInput>
+              </View>
+            </View>
+          </View>
+
+          <TouchableHighlight>
+            <View style={styles.confirmButton}>
+              <Text style={styles.titleLight}>Confirm</Text>
+            </View>
+          </TouchableHighlight>
         </View>
-      </TouchableHighlight>
-    </SafeAreaView>
+      </ScrollView>
+    </View>
   );
-}
-
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    gap: 20,
     backgroundColor: colors.background,
-    flexDirection: 'column',
+    width: '100%',
+    height: '100%',
+    display: 'flex'
+  },
+
+  infoContainer: {
+    display: 'flex',
+    alignItems: 'center'
+  },
+
+  add: {
+    textAlign: 'left'
   },
 
   addPhoto: {
-    backgroundColor: colors.lightNeutral,
+    backgroundColor: colors.grey,
     borderRadius: 8,
-    height: 160,
-    width: 160,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-
-  medInfo: {
-    display: 'flex',
-    flexDirection: 'row',
+    height: 140,
+    width: 140,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 15
-  },
-
-  nestedMedInfo: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 14
+    marginTop: 20,
+    marginBottom: 20
   },
 
   title: {
     backgroundColor: colors.background,
     fontSize: 20,
     fontWeight: '500',
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   titleLight: {
     fontSize: 20,
     fontWeight: '400',
-    color: colors.white,
+    color: colors.white
   },
 
   medName: {
     fontSize: 20,
     color: colors.bodyText,
-    marginBottom: 10,
+    marginBottom: 10
   },
 
   textInputThin: {
@@ -125,7 +187,16 @@ const styles = StyleSheet.create({
     width: 160,
     fontSize: 14,
     backgroundColor: colors.grey,
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
+  },
+
+  textInputThinLong: {
+    padding: 8,
+    borderRadius: 8,
+    width: 330,
+    fontSize: 14,
+    backgroundColor: colors.grey,
+    color: colors.darkNeutral
   },
 
   textInputWide: {
@@ -135,10 +206,11 @@ const styles = StyleSheet.create({
     height: 80,
     fontSize: 14,
     backgroundColor: colors.grey,
-    color: colors.darkNeutral,
+    color: colors.darkNeutral
   },
 
   titleAndChildren: {
+    paddingTop: 3,
     alignSelf: 'center',
     gap: 14
   },
@@ -153,16 +225,37 @@ const styles = StyleSheet.create({
   },
 
   confirmButton: {
-    backgroundColor: colors.coordinatingColor,
+    backgroundColor: colors.darkNeutral,
     borderRadius: 50,
     height: 60,
     width: 340,
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginTop: 10
-  }
+    marginTop: 30,
+    marginBottom: 30
+  },
 
+  toggleButton: {
+    backgroundColor: colors.lightNeutral,
+    borderRadius: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    height: 40,
+    width: 280
+  },
+
+  pill: {
+    backgroundColor: colors.white,
+    borderRadius: 30,
+    height: 30,
+    width: 140,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
 });
 
 export default NewMedScreen;
