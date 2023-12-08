@@ -1,9 +1,9 @@
 import { statusReport, storedMedication, medicationConstraint, alert } from "../types/index";
 
 import axios, { Axios } from "axios";
+import { API_URL } from "./apiLinks";
 
 const userId = "2";
-const baseUrl = 'https://mammal-on-shortly.ngrok-free.app'
 
 class statusReportService {
     async statusReports(): Promise<void> {        
@@ -11,7 +11,7 @@ class statusReportService {
         let humidity = Math.random() * (15) + 35;
         let light = Math.random() * (400) + 20;
 
-        const storedMedicationsResponse = await axios.get(`${baseUrl}/v1/storedmedications/user/${userId}`)
+        const storedMedicationsResponse = await axios.get(`${API_URL}/v1/storedmedications/user/${userId}`)
 
         const storedMedications = storedMedicationsResponse.data
 
@@ -26,9 +26,9 @@ class statusReportService {
                 light: light
             }
 
-            await axios.post(`${baseUrl}/v1/addstatusreports`, report);
+            await axios.post(`${API_URL}/v1/addstatusreports`, report);
 
-            const constraints = (await axios.get(`${baseUrl}/v1/medicationconstraints/storedmedication/${stored_medication_id}`)).data
+            const constraints = (await axios.get(`${API_URL}/v1/medicationconstraints/storedmedication/${stored_medication_id}`)).data
 
             for (const constraint of constraints) {
                 let body: string;
@@ -38,12 +38,12 @@ class statusReportService {
                         if (temperature > constraint.max_threshold) {
                             body = "Heads up! Your medication has exceeded its maximum recommended temperature!"
                             console.warn(body)
-                            await axios.post(`${baseUrl}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                         }
                         if (temperature < constraint.min_threshold) {
                             body = "Heads up! Your medication has exceeded its minimum recommended temperature!"
                             console.warn(body)
-                            await axios.post(`${baseUrl}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                         }
                         break;
                     case "HUMIDITY":
@@ -51,12 +51,12 @@ class statusReportService {
                         if (humidity > constraint.max_threshold) {
                             body = "Heads up! Your medication has exceeded its maximum recommended humidity!"
                             console.warn(body)
-                            await axios.post(`${baseUrl}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                         }
                         if (humidity < constraint.min_threshold) {
                             body = "Heads up! Your medication has exceeded its minimum recommended humidity!"
                             console.warn(body)
-                            await axios.post(`${baseUrl}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                         }
                         break;
                     case "LIGHT_EXPOSURE":
@@ -64,7 +64,7 @@ class statusReportService {
                         if (light > constraint.max_threshold) {
                             body = "Heads up! Your medication has exceeded its maximum recommended light exposure!"
                             console.warn(body)
-                            await axios.post(`${baseUrl}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
+                            await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                         }
                         break;
                 }
