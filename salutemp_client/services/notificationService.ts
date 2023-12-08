@@ -5,11 +5,20 @@ import { Platform } from "react-native";
 //import express from 'express';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import Constants from 'expo-constants';
 
 //const app = express();
 //const port = 8000;
 
 // ^ see authService and userContext
+
+Notification.setNotificationHandler({
+	handleNotification: async () => ({
+	  shouldShowAlert: true,
+	  shouldPlaySound: false,
+	  shouldSetBadge: false,
+	}),
+  });
 
 export const registerForPushNotificationsAsync = async () => {  
 	// notifications only work on physical devices
@@ -39,7 +48,9 @@ export const registerForPushNotificationsAsync = async () => {
 	}
 
 	// gets push notification token
-	const token = (await Notification.getExpoPushTokenAsync()).data;
+	const token = (await Notification.getExpoPushTokenAsync({
+		projectId: Constants.expoConfig?.extra?.eas.projectId
+	})).data;
 	console.log("ExpoPushToken: ", token);
 
 	return token;

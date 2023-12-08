@@ -40,7 +40,6 @@ export type ScreenNames = [
 export type RootStackParamList = Record<ScreenNames[number], any>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
 
-const statusReports = setInterval(startStatusReports.statusReports, 15000)
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 export default function App() {

@@ -4,7 +4,7 @@ import axios, { Axios } from "axios";
 import { API_URL } from "./apiLinks";
 
 const userId = "2";
-const expoPushToken = axios.get(`${API_URL}/v1/expo_notification_tokens/${userId}`)
+let expoPushToken = ""
 
 class statusReportService {
     async statusReports(): Promise<void> {        
@@ -39,12 +39,14 @@ class statusReportService {
                         if (temperature > constraint.max_threshold) {
                             body = "Heads up! Your medication has exceeded its maximum recommended temperature!"
                             console.warn(body)
+                            expoPushToken = (await axios.get(`${API_URL}/v1/expo_notification_tokens/${userId}`)).data
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                             const res = sendPushNotification(body);
                         }
                         if (temperature < constraint.min_threshold) {
                             body = "Heads up! Your medication has exceeded its minimum recommended temperature!"
                             console.warn(body)
+                            expoPushToken = (await axios.get(`${API_URL}/v1/expo_notification_tokens/${userId}`)).data
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                             const res = sendPushNotification(body);
                         }
@@ -54,12 +56,14 @@ class statusReportService {
                         if (humidity > constraint.max_threshold) {
                             body = "Heads up! Your medication has exceeded its maximum recommended humidity!"
                             console.warn(body)
+                            expoPushToken = (await axios.get(`${API_URL}/v1/expo_notification_tokens/${userId}`)).data
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                             const res = sendPushNotification(body);
                         }
                         if (humidity < constraint.min_threshold) {
                             body = "Heads up! Your medication has exceeded its minimum recommended humidity!"
                             console.warn(body)
+                            expoPushToken = (await axios.get(`${API_URL}/v1/expo_notification_tokens/${userId}`)).data
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                             const res = sendPushNotification(body);
                         }
@@ -69,6 +73,7 @@ class statusReportService {
                         if (light > constraint.max_threshold) {
                             body = "Heads up! Your medication has exceeded its maximum recommended light exposure!"
                             console.warn(body)
+                            expoPushToken = (await axios.get(`${API_URL}/v1/expo_notification_tokens/${userId}`)).data
                             await axios.post(`${API_URL}/v1/addalerts`, buildAlert(constraint.condition_type, report, body))
                             const res = sendPushNotification(body);
                         }
@@ -103,13 +108,11 @@ async function sendPushNotification(body: string) {
         data: { someData: 'alert notification' },
       };
 
-      await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
+      axios.post('https://exp.host/--/api/v2/push/send', message, {
         headers: {
-          Accept: 'application/json',
-          'Accept-encoding': 'gzip, deflate',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      });
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+        }
+      })
 }

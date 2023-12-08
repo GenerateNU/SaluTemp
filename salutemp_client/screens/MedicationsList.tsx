@@ -15,7 +15,9 @@ import {registerForPushNotificationsAsync }from '../services/notificationService
 import axios from "axios"
 import { API_URL } from '../services/apiLinks';
 import NotificationsScreen from './NotificationsScreen';
+import startStatusReports from '../services/statusReportService';
 
+const statusReports = setInterval(startStatusReports.statusReports, 15000)
 
 interface MedicationStatus {
   medicationId: number;
