@@ -415,9 +415,8 @@ func (m *PgModel) DeleteMedicationConstraint(medicationID int, conditionType str
 }
 
 func (m *PgModel) EditMedicationConstraint(constraint MedicationConstraint) error {
-    err := UpdateMedConstraint(m.Conn, constraint)
-
-    return err
+	err := UpdateMedConstraint(m.Conn, constraint)
+	return err
 }
 
 func (m *PgModel) GetAllUserMedicationsWithConstraint(userId string, constraint string) ([]StoredMedicationWithConstraint, error) {

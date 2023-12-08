@@ -564,8 +564,13 @@ func UserByEmail(pool *pgx.Conn, user_email string) (*User, error) {
 // WriteExpoNotificationTokenToDb inserts a new expo_notification_token record into the database.
 func WriteExpoNotificationTokenToDb(pool *pgx.Conn, token ExpoNotificationToken) (ExpoNotificationToken, error) {
 	var insertedToken ExpoNotificationToken
-	err := pool.QueryRow("INSERT INTO expo_notification_token (user_id, device_token) VALUES ($1, $2) RETURNING expo_notification_token_id;",
-		token.UserID, token.DeviceToken).Scan(&insertedToken.ExpoNotificationTokenID)
+	err := pool.QueryRow(`
+		INSERT INTO expo_notification_token (user_id, device_token)
+		VALUES ($1, $2)
+		ON CONFLICT (user_id)
+		DO UPDATE SET device_token = $2
+		RETURNING expo_notification_token_id;
+	`, token.UserID, token.DeviceToken).Scan(&insertedToken.ExpoNotificationTokenID)
 	if err != nil {
 		return ExpoNotificationToken{}, err
 	}

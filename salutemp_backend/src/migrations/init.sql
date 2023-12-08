@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 
 CREATE TABLE IF NOT EXISTS expo_notification_token (
     expo_notification_token_id SERIAL PRIMARY KEY,
-    user_id varchar NOT NULL,
+    user_id varchar UNIQUE NOT NULL,  -- Add UNIQUE constraint here
     device_token VARCHAR NOT NULL,
     FOREIGN KEY (user_id) REFERENCES "user" (user_id)
 );
@@ -92,13 +92,13 @@ VALUES
   ('5', 'Charlie', 'Brown', 'charlie.brown@example.com', true);
 
 -- Insert sample data into "user_device" table
-INSERT INTO user_device (user_device_id, user_id, device_id)
+INSERT INTO user_device (user_id, device_id)
 VALUES
-  (1, 1, 'device_1'),
-  (2, 2, 'device_2'),
-  (3, 3, 'device_3'),
-  (4, 4, 'device_4'),
-  (5, 5, 'device_5');
+  (1, 'device_1'),
+  (2, 'device_2'),
+  (3, 'device_3'),
+  (4, 'device_4'),
+  (5, 'device_5');
 
 -- Insert sample data into "medication" table
 INSERT INTO medication (medication_id, medication_name)
@@ -232,12 +232,11 @@ VALUES
 
 
   -- Insert sample data into "expo_notification_token" table
-INSERT INTO expo_notification_token (expo_notification_token_id, user_id, device_token)
+INSERT INTO expo_notification_token (user_id, device_token)
 VALUES
-  (1, 1, 'expo_device_token_1'),
-  (2, 2, 'expo_device_token_2'),
-  (3, 3, 'expo_device_token_3'),
-  (4, 4, 'expo_device_token_4'),
-  (5, 5, 'expo_device_token_5');
+  (2, 'expo_device_token_2'),
+  (3, 'expo_device_token_3'),
+  (4, 'expo_device_token_4'),
+  (5, 'expo_device_token_5');
 
 
