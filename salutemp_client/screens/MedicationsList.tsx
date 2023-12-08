@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
 import colors from '../config/colors';
 import { getAllUserMedicationsWithConstraint } from '../services/medicationService';
 import InformationCard from '../components/InformationCard';
@@ -12,6 +11,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Status } from '../types/medicationTypes';
 import { StoredMedicationWithConstraint } from '../types';
 import { FIREBASE_AUTH } from '../firebaseConfig';
+import {registerForPushNotificationsAsync }from '../services/notificationService';
+import axios from "axios"
+import { API_URL } from '../services/apiLinks';
+
 
 interface MedicationStatus {
   medicationId: number;
@@ -47,6 +50,20 @@ function MedicationsList() {
     //const userId = FIREBASE_AUTH.currentUser?.uid;
     const userId = '1';
     getAllUserMedicationsWithConstraint(userId).then((ml) => setMedicationsTemperatureList(ml));
+
+    registerForPushNotificationsAsync().then((token) =>  {
+      if (token != null) {
+        axios.post(`${API_URL}/v1/add_expo_notification_token`, {
+          "user_id": FIREBASE_AUTH.currentUser?.uid,
+          "device_token": token
+        }).then(() => {
+          console.log("Successfully registered for push notifications")
+        }).catch((error) => {
+          console.log("Error registering for push notifications" + error.message)
+        });
+      }
+    })
+
   }, []);
 
   const getStatus = (
