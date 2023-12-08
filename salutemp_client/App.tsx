@@ -16,10 +16,6 @@ import ReminderIcon from './assets/footer-icons/reminder.svg';
 import HomeIcon from './assets/footer-icons/home.svg';
 import BluetoothIcon from './assets/footer-icons/bluetooth.svg';
 import Landing from './screens/Landing';
-
-import ScanBarcode from './screens/ScanBarcode';
-import ScanReviewScreen from './screens/ScanReviewScreen';
-
 import ScanBarcode from './screens/ScanBarcode';
 import ScanReviewScreen from './screens/ScanReviewScreen';
 
@@ -36,7 +32,8 @@ export type ScreenNames = [
   'EmailAndPassword',
   'Name',
   'Password',
-  'ForgotPassword'
+  'ForgotPassword',
+  'Landing'
 ]; // type these manually
 export type RootStackParamList = Record<ScreenNames[number], any>;
 export type StackNavigation = NavigationProp<RootStackParamList>;
@@ -47,9 +44,9 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen 
-          name='Landing' 
-          component={Landing} 
+        <Stack.Screen
+          name="Landing"
+          component={Landing}
           options={{
             title: 'SaluTemp'
           }}

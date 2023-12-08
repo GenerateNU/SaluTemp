@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions, ScrollView, TextInput } from 'react-native';
-import { useNavigation, useRoute, RouteProp, useScrollToTop } from '@react-navigation/native';
+import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import LeftArrow from '../assets/header-icons/left-arrow.svg';
 import EditIcon from '../assets/header-icons/edit.svg';
 
