@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableHighlight, ScrollView, Modal} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import colors from '../config/colors';
 import { getAllUserMedicationsWithConstraint } from '../services/medicationService';
@@ -14,6 +14,7 @@ import { FIREBASE_AUTH } from '../firebaseConfig';
 import {registerForPushNotificationsAsync }from '../services/notificationService';
 import axios from "axios"
 import { API_URL } from '../services/apiLinks';
+import NotificationsScreen from './NotificationsScreen';
 
 
 interface MedicationStatus {
@@ -45,6 +46,7 @@ function MedicationsList() {
   const [medicationsTemperatureList, setMedicationsTemperatureList] = React.useState<
     StoredMedicationWithConstraint[]
   >([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   React.useEffect(() => {
     //const userId = FIREBASE_AUTH.currentUser?.uid;
@@ -100,8 +102,8 @@ function MedicationsList() {
         }
       />
       <Modal
-        visible={modalVisible}
         animationType="slide"
+        visible={modalVisible}
         transparent={true}
         onRequestClose={() => setModalVisible(false)}
       >
