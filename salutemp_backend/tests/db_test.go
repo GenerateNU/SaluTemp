@@ -74,16 +74,10 @@ func TestMedication(t *testing.T) {
 	router := c.Serve()
 	a := assert.New(t)
 
+	// TestGetMedication
 	t.Run("TestGetMedication", func(t *testing.T) {
-		// initialRequest, _ := http.NewRequest("GET", "/v1/medications", nil)
-		// initialResponseRecorder := httptest.NewRecorder()
-		// router.ServeHTTP(initialResponseRecorder, initialRequest)
-
-		// // Check for HTTP Status OK (200) when retrieving all medications initially
-		// assert.Equal(t, http.StatusOK, initialResponseRecorder.Code)
-
 		w := httptest.NewRecorder()
-		req, _ := http.NewRequest("GET", "/v1/medications/301", nil)
+		req, _ := http.NewRequest("GET", "/v1/medications/1", nil) // Retrieve first medication
 		router.ServeHTTP(w, req)
 
 		// Check for HTTP Status OK (200)
@@ -93,15 +87,9 @@ func TestMedication(t *testing.T) {
 		err := json.Unmarshal(w.Body.Bytes(), &responseMedication)
 		a.NilError(t, err, "Error unmarshaling JSON response")
 
-		// Define the expected medication data
-		expectedMedication := model.Medication{
-			MedicationID:   301,
-			MedicationName: "TestMed",
-		}
-
-		// Check individual fields of the response
-		assert.Equal(t, expectedMedication.MedicationID, responseMedication.MedicationID)
-		assert.Equal(t, expectedMedication.MedicationName, responseMedication.MedicationName)
+		// Check that the response is "Medication A"
+		assert.Equal(t, 1, responseMedication.MedicationID)
+		assert.Equal(t, "Medication A", responseMedication.MedicationName)
 	})
 
 	t.Run("TestAddAndRetrieveMedication", func(t *testing.T) {
@@ -183,21 +171,22 @@ func TestMedication(t *testing.T) {
 		// Check for HTTP Status OK (200) when retrieving all medications initially
 		assert.Equal(t, http.StatusOK, initialResponseRecorder.Code)
 
-		fmt.Println(initialResponseRecorder)
+		//fmt.Println(initialResponseRecorder)
 
 		var initialMedications []model.Medication
 		err := json.Unmarshal(initialResponseRecorder.Body.Bytes(), &initialMedications)
 		a.NilError(t, err, "Error unmarshaling JSON response")
 
-		fmt.Println("flkdsmng;klsdfmglkdsfmfl")
+		//fmt.Println("flkdsmng;klsdfmglkdsfmfl")
 		fmt.Println(initialMedications)
 
-		// Check that there are initially 2 medications in the database
-		assert.Equal(t, 2, len(initialMedications))
-		assert.Equal(t, 301, initialMedications[0].MedicationID)
-		assert.Equal(t, "TestMed", initialMedications[0].MedicationName)
-		assert.Equal(t, 305, initialMedications[1].MedicationID)
-		assert.Equal(t, "EditMed", initialMedications[1].MedicationName)
+		// Check that there are initially 21 medications in the database
+		assert.Equal(t, 21, len(initialMedications))
+		assert.Equal(t, 20, initialMedications[19].MedicationID)
+		assert.Equal(t, "Medication A", initialMedications[0].MedicationName)
+		assert.Equal(t, 305, initialMedications[20].MedicationID)
+		assert.Equal(t, "EditMed", initialMedications[20].MedicationName)
+		assert.Equal(t, "EditMed", initialMedications[20].MedicationName)
 
 		// Delete the medication with ID 305
 		deleteRequest, _ := http.NewRequest("DELETE", "/v1/medications/305", nil)
@@ -220,11 +209,11 @@ func TestMedication(t *testing.T) {
 		a.NilError(t, err, "Error unmarshaling JSON response")
 
 		// Check that there is only 1 medication remaining in the database after deletion
-		assert.Equal(t, 1, len(finalMedications))
+		assert.Equal(t, 20, len(finalMedications))
 
-		// Check that the remaining medication has the ID 301 and the name "TestMed"
-		assert.Equal(t, 301, finalMedications[0].MedicationID)
-		assert.Equal(t, "TestMed", finalMedications[0].MedicationName)
+		// Check that the last medication is 20 and the name "Medication T"
+		assert.Equal(t, 301, finalMedications[len(finalMedications)-1].MedicationID)
+		assert.Equal(t, "Medication T", finalMedications[len(finalMedications)-1].MedicationName)
 	})
 
 }
@@ -315,7 +304,7 @@ func TestUser(t *testing.T) {
 
 		// Retrieve the newly added user
 		w = httptest.NewRecorder()
-		req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/users/%d", newUser.UserID), nil)
+		req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/users/%s", newUser.UserID), nil)
 		router.ServeHTTP(w, req)
 
 		// Check for HTTP Status OK (200)
@@ -346,7 +335,7 @@ func TestUser(t *testing.T) {
 		a.NilError(t, err, "Error marshaling JSON request body")
 
 		// Edit the user
-		editRequest, _ := http.NewRequest("PUT", fmt.Sprintf("/v1/users/%d", updatedUser.UserID), bytes.NewReader(updatedPayload))
+		editRequest, _ := http.NewRequest("PUT", fmt.Sprintf("/v1/users/%s", updatedUser.UserID), bytes.NewReader(updatedPayload))
 		editResponseRecorder := httptest.NewRecorder()
 		router.ServeHTTP(editResponseRecorder, editRequest)
 
@@ -354,7 +343,7 @@ func TestUser(t *testing.T) {
 		assert.Equal(t, http.StatusOK, editResponseRecorder.Code)
 
 		// Retrieve the edited user
-		retrieveRequest, _ := http.NewRequest("GET", fmt.Sprintf("/v1/users/%d", updatedUser.UserID), nil)
+		retrieveRequest, _ := http.NewRequest("GET", fmt.Sprintf("/v1/users/%s", updatedUser.UserID), nil)
 		retrieveResponseRecorder := httptest.NewRecorder()
 		router.ServeHTTP(retrieveResponseRecorder, retrieveRequest)
 

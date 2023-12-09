@@ -1,4 +1,4 @@
-// package yourpackage
+package tests
 
 // import (
 //     "encoding/json"
@@ -47,4 +47,3 @@
 //         }
 //     }
 // }
-
